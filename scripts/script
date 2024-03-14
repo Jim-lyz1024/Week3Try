@@ -1,0 +1,8 @@
+VIGIL - DG CoCoOp
+python train.py --gpu 6 --seed 42 --output-dir output/CoCoOp --dataset Digits --source-domains mnist_m svhn syn --target-domains mnist --model CoCoOp --model-config-file config/cocoop.yaml
+
+VIGIL - DG KD
+python train.py --gpu 0 --seed 42 --output-dir output/NKD --dataset PACS --source-domains cartoon photo sketch --target-domains art_painting --model NKD --model-config-file config/nkd.yaml
+
+VIGIL - DG RISE
+python train.py --gpu 0 --seed 42 --output-dir output/RISE --dataset PACS --source-domains cartoon photo sketch --target-domains art_painting --model RISE --model-config-file config/rise.yaml
