@@ -1,7 +1,11 @@
 import os
 
-program_directory = "/data/dzha866/Project/VIGIL/"
+# program_directory = "/data/dzha866/Project/VIGIL/"
+program_directory = "E:/Documents/GitHub/Week3Try"
 os.chdir(program_directory)
+
+""" current_working_directory = os.getcwd()
+print(current_working_directory) """
 
 gpu = 0
 
@@ -9,9 +13,9 @@ gpu = 0
 # source_domains = "mnist_m svhn syn"
 # target_domains = "mnist"
 
-# dataset = "PACS"
-# source_domains = "cartoon photo sketch"
-# target_domains = "art_painting"
+dataset = "PACS"
+source_domains = "cartoon photo sketch"
+target_domains = "art_painting"
 
 # dataset = "OfficeHome"
 # source_domains = "clipart product real_world"
@@ -29,9 +33,9 @@ gpu = 0
 # source_domains = "dim grass outdoor rock water"
 # target_domains = "autumn"
 
-dataset = "DomainNet"
+""" dataset = "DomainNet"
 source_domains = "infograph painting quickdraw real sketch"
-target_domains = "clipart"
+target_domains = "clipart" """
 
 backbone = "ViTB32"
 model = "CLIPAdapter"
@@ -55,6 +59,6 @@ for seed in seeds:
             model_config_file,
         )
     )
-    os.system("clear")
+    # os.system("clear")
     print(command)
     os.system(command)
