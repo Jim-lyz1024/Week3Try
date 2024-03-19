@@ -99,6 +99,7 @@ def main(args):
 
 
 if __name__ == "__main__":
+    # Use the argparse library to parse arguments entered on the command line.
     parser = argparse.ArgumentParser()
     parser.add_argument("--gpu", type=int, default=0)
     parser.add_argument("--seed", type=int, default=42)

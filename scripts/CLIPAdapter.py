@@ -1,7 +1,7 @@
 import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
-program_directory = "E:/Documents/GitHub/Week3Try"
+program_directory = "/home/yil708/data/yil708/Week3Try/"
 os.chdir(program_directory)
 
 """ current_working_directory = os.getcwd()
