@@ -12,7 +12,7 @@ from utils import PROMPT_TEMPLATES
 
 
 class Adapter(nn.Module):
-    def __init__(self, channel_in, reduction=4):
+    def __init__(self, channel_in, reduction=4): # reduction=4 refer to the original paper
         super().__init__()
         self.fc = nn.Sequential(
             nn.Linear(channel_in, channel_in // reduction, bias=False),
@@ -34,9 +34,11 @@ class CustomCLIP(nn.Module):
         # Adapter for RN50 CLIP Backbone
         # self.adapter = Adapter(1024, 4).to(clip_model.dtype)
         # Adapter for VITB32 CLIP Backbone
+        # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
         self.adapter = Adapter(512, 4).to(clip_model.dtype)
         self.dtype = clip_model.dtype
 
+        # Construct Prompts
         prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
         prompts = [
             prompt_template.format(class_name.replace("_", " "))
@@ -53,15 +55,19 @@ class CustomCLIP(nn.Module):
 
     def forward(self, image):
         adapter_ratio = 0.2
+        # computes the image features using the CLIP image encoder
         image_features = self.image_encoder(image.type(self.dtype))
+        # obtain adapted features
         adapter_features = self.adapter(image_features)
         image_features = (
             adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features
         )
+        # 正则化，避免gradient更新过快 将数据10 20 30变为1 2 3的过程
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
 
+        # Calculate similarity
         logit_scale = self.logit_scale.exp()
-        logits = logit_scale * image_features @ self.text_features.t()
+        logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
 
         return logits
 
@@ -105,6 +111,7 @@ class CLIPAdapter(Trainer):
         self.optimizer = build_optimizer(self.model.adapter, self.cfg.OPTIM)
         self.lr_scheduler = build_lr_scheduler(self.optimizer, self.cfg.OPTIM)
 
+        # Encapsulate the three operations of optimize, simplify the process by just use the model, don't have to perform the three operations in turn
         self.model_registeration(
             "clip_adapter",
             self.model.adapter,
