@@ -9,17 +9,17 @@ print(current_working_directory) """
 
 gpu = 0
 
-# dataset = "Digits"
-# source_domains = "mnist_m svhn syn"
-# target_domains = "mnist"
+""" dataset = "Digits"
+source_domains = "mnist_m svhn syn"
+target_domains = "mnist" """
 
 dataset = "PACS"
 source_domains = "cartoon photo sketch"
 target_domains = "art_painting"
 
-# dataset = "OfficeHome"
-# source_domains = "clipart product real_world"
-# target_domains = "art"
+""" dataset = "OfficeHome"
+source_domains = "clipart product real_world"
+target_domains = "art" """
 
 # dataset = "VLCS"
 # source_domains = "labelme pascal sun"

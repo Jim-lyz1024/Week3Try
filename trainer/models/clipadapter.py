@@ -27,7 +27,7 @@ class Adapter(nn.Module):
 
 
 class CustomCLIP(nn.Module):
-    def __init__(self, cfg, class_names, clip_model):
+    def __init__(self, cfg, class_names, clip_model, domain_names):
         super().__init__()
         self.image_encoder = clip_model.visual
         self.logit_scale = clip_model.logit_scale
@@ -37,13 +37,26 @@ class CustomCLIP(nn.Module):
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
         self.adapter = Adapter(512, 4).to(clip_model.dtype)
         self.dtype = clip_model.dtype
+        
+        print("Class: ", class_names)
+        print("Domains: ", domain_names)
 
         # Construct Prompts
         prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
-        prompts = [
+        
+        """ prompts = [
             prompt_template.format(class_name.replace("_", " "))
             for class_name in class_names
+        ] """
+        
+        prompts = [
+            prompt_template.format(domain_name.replace("_", " ") + ' ' + class_name.replace("_", " "))
+            for domain_name in domain_names for class_name in class_names
         ]
+        
+        print("Prompts:", prompts)
+        # print("Class name: ", class_names)
+        
         prompts = torch.cat([clip.tokenize(prompt) for prompt in prompts])
         prompts = prompts.to(torch.cuda.current_device())
 
@@ -52,6 +65,8 @@ class CustomCLIP(nn.Module):
             self.text_features = self.text_features / self.text_features.norm(
                 dim=-1, keepdim=True
             )
+        
+        # print("Text features:", self.text_features)
 
     def forward(self, image):
         adapter_ratio = 0.2
@@ -59,6 +74,10 @@ class CustomCLIP(nn.Module):
         image_features = self.image_encoder(image.type(self.dtype))
         # obtain adapted features
         adapter_features = self.adapter(image_features)
+        
+        # print("Image features:", image_features)
+        # print("Adapter features:", adapter_features)
+    
         image_features = (
             adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features
         )
@@ -81,6 +100,9 @@ class CLIPAdapter(Trainer):
     """
 
     def build_model(self):
+        # domain_names = self.data_manager.dataset.domains
+        # print("Domain: ", domain_names)
+    
         print("Loading CLIP Backbone: {}".format(self.cfg.MODEL.CLIPAdapter.BACKBONE))
         clip_model, _ = clip.load(
             self.cfg.MODEL.CLIPAdapter.BACKBONE,
@@ -90,7 +112,7 @@ class CLIPAdapter(Trainer):
 
         print("Building Custom CLIP")
         self.model = CustomCLIP(
-            self.cfg, self.data_manager.dataset.class_names, clip_model
+            self.cfg, self.data_manager.dataset.class_names, clip_model, self.data_manager.dataset.domains
         )
 
         print("Turning Off Gradients in Image and Text Encoder")

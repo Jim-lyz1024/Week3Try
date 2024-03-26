@@ -1,0 +1,301 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: OfficeHome
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-OfficeHome-art
+root: ./data/
+seed: 607
+source_domains: ['clipart', 'product', 'real_world']
+target_domains: ['art']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: OfficeHome
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['clipart', 'product', 'real_world']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['art']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 5
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-OfficeHome-art
+SEED: 607
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: OfficeHome
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ------------------------------------
+Dataset         OfficeHome
+Source Domains  ['clipart', 'product', 'real_world']
+Target Domains  ['art']
+# Classes       65
+# Train Data    11,770
+# Val Data      1,391
+# Test Data     2,427
+--------------  ------------------------------------
+Loading CLIP Backbone: ViT-B/32
+Building Custom CLIP
+Domains:  ['art', 'clipart', 'product', 'real_world']
+Prompts: ['a picture of a art alarm clock.', 'a picture of a art backpack.', 'a picture of a art batteries.', 'a picture of a art bed.', 'a picture of a art bike.', 'a picture of a art bottle.', 'a picture of a art bucket.', 'a picture of a art calculator.', 'a picture of a art calendar.', 'a picture of a art candles.', 'a picture of a art chair.', 'a picture of a art clipboards.', 'a picture of a art computer.', 'a picture of a art couch.', 'a picture of a art curtains.', 'a picture of a art desk lamp.', 'a picture of a art drill.', 'a picture of a art eraser.', 'a picture of a art exit sign.', 'a picture of a art fan.', 'a picture of a art file cabinet.', 'a picture of a art flipflops.', 'a picture of a art flowers.', 'a picture of a art folder.', 'a picture of a art fork.', 'a picture of a art glasses.', 'a picture of a art hammer.', 'a picture of a art helmet.', 'a picture of a art kettle.', 'a picture of a art keyboard.', 'a picture of a art knives.', 'a picture of a art lamp shade.', 'a picture of a art laptop.', 'a picture of a art marker.', 'a picture of a art monitor.', 'a picture of a art mop.', 'a picture of a art mouse.', 'a picture of a art mug.', 'a picture of a art notebook.', 'a picture of a art oven.', 'a picture of a art pan.', 'a picture of a art paper clip.', 'a picture of a art pen.', 'a picture of a art pencil.', 'a picture of a art postit notes.', 'a picture of a art printer.', 'a picture of a art push pin.', 'a picture of a art radio.', 'a picture of a art refrigerator.', 'a picture of a art ruler.', 'a picture of a art scissors.', 'a picture of a art screwdriver.', 'a picture of a art shelf.', 'a picture of a art sink.', 'a picture of a art sneakers.', 'a picture of a art soda.', 'a picture of a art speaker.', 'a picture of a art spoon.', 'a picture of a art tv.', 'a picture of a art table.', 'a picture of a art telephone.', 'a picture of a art toothbrush.', 'a picture of a art toys.', 'a picture of a art trash can.', 'a picture of a art webcam.', 'a picture of a clipart alarm clock.', 'a picture of a clipart backpack.', 'a picture of a clipart batteries.', 'a picture of a clipart bed.', 'a picture of a clipart bike.', 'a picture of a clipart bottle.', 'a picture of a clipart bucket.', 'a picture of a clipart calculator.', 'a picture of a clipart calendar.', 'a picture of a clipart candles.', 'a picture of a clipart chair.', 'a picture of a clipart clipboards.', 'a picture of a clipart computer.', 'a picture of a clipart couch.', 'a picture of a clipart curtains.', 'a picture of a clipart desk lamp.', 'a picture of a clipart drill.', 'a picture of a clipart eraser.', 'a picture of a clipart exit sign.', 'a picture of a clipart fan.', 'a picture of a clipart file cabinet.', 'a picture of a clipart flipflops.', 'a picture of a clipart flowers.', 'a picture of a clipart folder.', 'a picture of a clipart fork.', 'a picture of a clipart glasses.', 'a picture of a clipart hammer.', 'a picture of a clipart helmet.', 'a picture of a clipart kettle.', 'a picture of a clipart keyboard.', 'a picture of a clipart knives.', 'a picture of a clipart lamp shade.', 'a picture of a clipart laptop.', 'a picture of a clipart marker.', 'a picture of a clipart monitor.', 'a picture of a clipart mop.', 'a picture of a clipart mouse.', 'a picture of a clipart mug.', 'a picture of a clipart notebook.', 'a picture of a clipart oven.', 'a picture of a clipart pan.', 'a picture of a clipart paper clip.', 'a picture of a clipart pen.', 'a picture of a clipart pencil.', 'a picture of a clipart postit notes.', 'a picture of a clipart printer.', 'a picture of a clipart push pin.', 'a picture of a clipart radio.', 'a picture of a clipart refrigerator.', 'a picture of a clipart ruler.', 'a picture of a clipart scissors.', 'a picture of a clipart screwdriver.', 'a picture of a clipart shelf.', 'a picture of a clipart sink.', 'a picture of a clipart sneakers.', 'a picture of a clipart soda.', 'a picture of a clipart speaker.', 'a picture of a clipart spoon.', 'a picture of a clipart tv.', 'a picture of a clipart table.', 'a picture of a clipart telephone.', 'a picture of a clipart toothbrush.', 'a picture of a clipart toys.', 'a picture of a clipart trash can.', 'a picture of a clipart webcam.', 'a picture of a product alarm clock.', 'a picture of a product backpack.', 'a picture of a product batteries.', 'a picture of a product bed.', 'a picture of a product bike.', 'a picture of a product bottle.', 'a picture of a product bucket.', 'a picture of a product calculator.', 'a picture of a product calendar.', 'a picture of a product candles.', 'a picture of a product chair.', 'a picture of a product clipboards.', 'a picture of a product computer.', 'a picture of a product couch.', 'a picture of a product curtains.', 'a picture of a product desk lamp.', 'a picture of a product drill.', 'a picture of a product eraser.', 'a picture of a product exit sign.', 'a picture of a product fan.', 'a picture of a product file cabinet.', 'a picture of a product flipflops.', 'a picture of a product flowers.', 'a picture of a product folder.', 'a picture of a product fork.', 'a picture of a product glasses.', 'a picture of a product hammer.', 'a picture of a product helmet.', 'a picture of a product kettle.', 'a picture of a product keyboard.', 'a picture of a product knives.', 'a picture of a product lamp shade.', 'a picture of a product laptop.', 'a picture of a product marker.', 'a picture of a product monitor.', 'a picture of a product mop.', 'a picture of a product mouse.', 'a picture of a product mug.', 'a picture of a product notebook.', 'a picture of a product oven.', 'a picture of a product pan.', 'a picture of a product paper clip.', 'a picture of a product pen.', 'a picture of a product pencil.', 'a picture of a product postit notes.', 'a picture of a product printer.', 'a picture of a product push pin.', 'a picture of a product radio.', 'a picture of a product refrigerator.', 'a picture of a product ruler.', 'a picture of a product scissors.', 'a picture of a product screwdriver.', 'a picture of a product shelf.', 'a picture of a product sink.', 'a picture of a product sneakers.', 'a picture of a product soda.', 'a picture of a product speaker.', 'a picture of a product spoon.', 'a picture of a product tv.', 'a picture of a product table.', 'a picture of a product telephone.', 'a picture of a product toothbrush.', 'a picture of a product toys.', 'a picture of a product trash can.', 'a picture of a product webcam.', 'a picture of a real_world alarm clock.', 'a picture of a real_world backpack.', 'a picture of a real_world batteries.', 'a picture of a real_world bed.', 'a picture of a real_world bike.', 'a picture of a real_world bottle.', 'a picture of a real_world bucket.', 'a picture of a real_world calculator.', 'a picture of a real_world calendar.', 'a picture of a real_world candles.', 'a picture of a real_world chair.', 'a picture of a real_world clipboards.', 'a picture of a real_world computer.', 'a picture of a real_world couch.', 'a picture of a real_world curtains.', 'a picture of a real_world desk lamp.', 'a picture of a real_world drill.', 'a picture of a real_world eraser.', 'a picture of a real_world exit sign.', 'a picture of a real_world fan.', 'a picture of a real_world file cabinet.', 'a picture of a real_world flipflops.', 'a picture of a real_world flowers.', 'a picture of a real_world folder.', 'a picture of a real_world fork.', 'a picture of a real_world glasses.', 'a picture of a real_world hammer.', 'a picture of a real_world helmet.', 'a picture of a real_world kettle.', 'a picture of a real_world keyboard.', 'a picture of a real_world knives.', 'a picture of a real_world lamp shade.', 'a picture of a real_world laptop.', 'a picture of a real_world marker.', 'a picture of a real_world monitor.', 'a picture of a real_world mop.', 'a picture of a real_world mouse.', 'a picture of a real_world mug.', 'a picture of a real_world notebook.', 'a picture of a real_world oven.', 'a picture of a real_world pan.', 'a picture of a real_world paper clip.', 'a picture of a real_world pen.', 'a picture of a real_world pencil.', 'a picture of a real_world postit notes.', 'a picture of a real_world printer.', 'a picture of a real_world push pin.', 'a picture of a real_world radio.', 'a picture of a real_world refrigerator.', 'a picture of a real_world ruler.', 'a picture of a real_world scissors.', 'a picture of a real_world screwdriver.', 'a picture of a real_world shelf.', 'a picture of a real_world sink.', 'a picture of a real_world sneakers.', 'a picture of a real_world soda.', 'a picture of a real_world speaker.', 'a picture of a real_world spoon.', 'a picture of a real_world tv.', 'a picture of a real_world table.', 'a picture of a real_world telephone.', 'a picture of a real_world toothbrush.', 'a picture of a real_world toys.', 'a picture of a real_world trash can.', 'a picture of a real_world webcam.']
+Turning Off Gradients in Image and Text Encoder
+Parameters to be updated: {'adapter.fc.2.weight', 'adapter.fc.0.weight'}
+Build Evaluator: Classification
+epoch [1/5] batch [5/183] loss 3.5352 (3.9000) acc 9.3750 (5.6250) lr 1.0000e-05 eta 0:05:59
+epoch [1/5] batch [10/183] loss 3.8320 (3.9828) acc 12.5000 (5.9375) lr 1.0000e-05 eta 0:03:08
+epoch [1/5] batch [15/183] loss 4.1797 (4.0003) acc 6.2500 (6.0417) lr 1.0000e-05 eta 0:02:11
+epoch [1/5] batch [20/183] loss 3.5137 (3.9445) acc 12.5000 (6.5625) lr 1.0000e-05 eta 0:01:43
+epoch [1/5] batch [25/183] loss 3.9121 (3.9326) acc 1.5625 (6.4375) lr 1.0000e-05 eta 0:01:26
+epoch [1/5] batch [30/183] loss 4.0234 (3.9463) acc 7.8125 (6.3021) lr 1.0000e-05 eta 0:01:14
+epoch [1/5] batch [35/183] loss 4.0508 (3.9497) acc 4.6875 (6.6964) lr 1.0000e-05 eta 0:01:06
+epoch [1/5] batch [40/183] loss 3.5117 (3.9487) acc 3.1250 (6.2500) lr 1.0000e-05 eta 0:01:00
+epoch [1/5] batch [45/183] loss 4.0938 (3.9448) acc 1.5625 (6.0069) lr 1.0000e-05 eta 0:00:56
+epoch [1/5] batch [50/183] loss 3.8301 (3.9521) acc 10.9375 (6.0938) lr 1.0000e-05 eta 0:00:53
+epoch [1/5] batch [55/183] loss 3.4941 (3.9474) acc 9.3750 (6.0227) lr 1.0000e-05 eta 0:00:50
+epoch [1/5] batch [60/183] loss 3.6172 (3.9279) acc 6.2500 (6.2500) lr 1.0000e-05 eta 0:00:48
+epoch [1/5] batch [65/183] loss 3.5566 (3.9146) acc 3.1250 (6.1779) lr 1.0000e-05 eta 0:00:45
+epoch [1/5] batch [70/183] loss 4.0664 (3.9124) acc 7.8125 (6.0714) lr 1.0000e-05 eta 0:00:44
+epoch [1/5] batch [75/183] loss 3.8320 (3.9009) acc 6.2500 (6.1875) lr 1.0000e-05 eta 0:00:43
+epoch [1/5] batch [80/183] loss 4.3242 (3.9043) acc 4.6875 (6.1914) lr 1.0000e-05 eta 0:00:41
+epoch [1/5] batch [85/183] loss 4.3008 (3.9174) acc 1.5625 (6.1029) lr 1.0000e-05 eta 0:00:40
+epoch [1/5] batch [90/183] loss 3.8164 (3.9214) acc 4.6875 (6.0764) lr 1.0000e-05 eta 0:00:39
+epoch [1/5] batch [95/183] loss 3.9199 (3.9183) acc 4.6875 (5.9868) lr 1.0000e-05 eta 0:00:37
+epoch [1/5] batch [100/183] loss 4.2578 (3.9258) acc 4.6875 (5.9531) lr 1.0000e-05 eta 0:00:37
+epoch [1/5] batch [105/183] loss 3.4941 (3.9174) acc 3.1250 (5.8780) lr 1.0000e-05 eta 0:00:36
+epoch [1/5] batch [110/183] loss 3.3574 (3.9211) acc 7.8125 (5.8807) lr 1.0000e-05 eta 0:00:35
+epoch [1/5] batch [115/183] loss 4.3906 (3.9227) acc 0.0000 (5.8288) lr 1.0000e-05 eta 0:00:34
+epoch [1/5] batch [120/183] loss 3.8750 (3.9234) acc 4.6875 (5.7552) lr 1.0000e-05 eta 0:00:34
+epoch [1/5] batch [125/183] loss 4.5234 (3.9272) acc 3.1250 (5.7375) lr 1.0000e-05 eta 0:00:33
+epoch [1/5] batch [130/183] loss 3.7891 (3.9261) acc 7.8125 (5.8293) lr 1.0000e-05 eta 0:00:33
+epoch [1/5] batch [135/183] loss 3.9883 (3.9195) acc 1.5625 (5.8102) lr 1.0000e-05 eta 0:00:32
+epoch [1/5] batch [140/183] loss 3.7500 (3.9197) acc 6.2500 (5.7924) lr 1.0000e-05 eta 0:00:31
+epoch [1/5] batch [145/183] loss 4.3203 (3.9273) acc 3.1250 (5.7866) lr 1.0000e-05 eta 0:00:31
+epoch [1/5] batch [150/183] loss 3.8379 (3.9282) acc 4.6875 (5.8438) lr 1.0000e-05 eta 0:00:30
+epoch [1/5] batch [155/183] loss 3.5840 (3.9230) acc 1.5625 (5.8367) lr 1.0000e-05 eta 0:00:30
+epoch [1/5] batch [160/183] loss 3.5703 (3.9248) acc 6.2500 (5.7910) lr 1.0000e-05 eta 0:00:29
+epoch [1/5] batch [165/183] loss 3.7109 (3.9255) acc 9.3750 (5.8523) lr 1.0000e-05 eta 0:00:29
+epoch [1/5] batch [170/183] loss 3.3594 (3.9218) acc 6.2500 (5.8456) lr 1.0000e-05 eta 0:00:29
+epoch [1/5] batch [175/183] loss 4.0391 (3.9250) acc 7.8125 (5.8125) lr 1.0000e-05 eta 0:00:28
+epoch [1/5] batch [180/183] loss 3.8027 (3.9204) acc 1.5625 (5.7986) lr 1.0000e-05 eta 0:00:28
+epoch [2/5] batch [5/183] loss 4.2109 (3.8355) acc 7.8125 (7.5000) lr 2.0000e-03 eta 0:01:52
+epoch [2/5] batch [10/183] loss 3.8047 (3.9023) acc 14.0625 (7.6562) lr 2.0000e-03 eta 0:01:05
+epoch [2/5] batch [15/183] loss 3.2812 (3.8082) acc 17.1875 (8.3333) lr 2.0000e-03 eta 0:00:48
+epoch [2/5] batch [20/183] loss 2.8398 (3.6612) acc 17.1875 (9.9219) lr 2.0000e-03 eta 0:00:40
+epoch [2/5] batch [25/183] loss 2.8027 (3.5846) acc 12.5000 (10.6875) lr 2.0000e-03 eta 0:00:37
+epoch [2/5] batch [30/183] loss 2.4277 (3.4422) acc 26.5625 (12.5000) lr 2.0000e-03 eta 0:00:33
+epoch [2/5] batch [35/183] loss 2.9141 (3.3527) acc 29.6875 (14.2411) lr 2.0000e-03 eta 0:00:31
+epoch [2/5] batch [40/183] loss 2.0312 (3.2144) acc 40.6250 (17.1875) lr 2.0000e-03 eta 0:00:29
+epoch [2/5] batch [45/183] loss 2.0391 (3.0967) acc 53.1250 (20.7292) lr 2.0000e-03 eta 0:00:28
+epoch [2/5] batch [50/183] loss 1.5420 (2.9522) acc 67.1875 (24.6250) lr 2.0000e-03 eta 0:00:27
+epoch [2/5] batch [55/183] loss 1.4111 (2.8416) acc 65.6250 (27.7841) lr 2.0000e-03 eta 0:00:26
+epoch [2/5] batch [60/183] loss 1.2764 (2.7374) acc 68.7500 (30.5469) lr 2.0000e-03 eta 0:00:26
+epoch [2/5] batch [65/183] loss 2.0059 (2.6510) acc 54.6875 (32.8846) lr 2.0000e-03 eta 0:00:25
+epoch [2/5] batch [70/183] loss 1.5557 (2.5761) acc 65.6250 (35.1339) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [75/183] loss 1.6680 (2.5131) acc 62.5000 (36.8542) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [80/183] loss 1.6064 (2.4550) acc 65.6250 (38.3203) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [85/183] loss 1.4404 (2.4016) acc 70.3125 (39.9081) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [90/183] loss 1.3779 (2.3541) acc 68.7500 (41.1458) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [95/183] loss 1.3945 (2.3077) acc 68.7500 (42.3849) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [100/183] loss 1.5049 (2.2650) acc 65.6250 (43.3594) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [105/183] loss 1.8770 (2.2328) acc 51.5625 (44.1220) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [110/183] loss 1.2422 (2.1955) acc 71.8750 (45.0710) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [115/183] loss 1.5244 (2.1692) acc 62.5000 (45.8016) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [120/183] loss 1.6143 (2.1387) acc 64.0625 (46.5755) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [125/183] loss 1.6475 (2.1211) acc 60.9375 (47.0500) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [130/183] loss 1.7051 (2.0989) acc 59.3750 (47.6322) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [135/183] loss 1.4287 (2.0756) acc 60.9375 (48.1481) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [140/183] loss 1.6025 (2.0570) acc 60.9375 (48.6049) lr 2.0000e-03 eta 0:00:19
+epoch [2/5] batch [145/183] loss 1.4023 (2.0356) acc 64.0625 (49.1487) lr 2.0000e-03 eta 0:00:19
+epoch [2/5] batch [150/183] loss 1.6221 (2.0177) acc 51.5625 (49.5000) lr 2.0000e-03 eta 0:00:19
+epoch [2/5] batch [155/183] loss 1.6504 (1.9997) acc 56.2500 (49.9294) lr 2.0000e-03 eta 0:00:19
+epoch [2/5] batch [160/183] loss 1.7568 (1.9839) acc 56.2500 (50.4395) lr 2.0000e-03 eta 0:00:18
+epoch [2/5] batch [165/183] loss 1.5732 (1.9704) acc 59.3750 (50.8144) lr 2.0000e-03 eta 0:00:18
+epoch [2/5] batch [170/183] loss 1.4268 (1.9553) acc 62.5000 (51.2132) lr 2.0000e-03 eta 0:00:18
+epoch [2/5] batch [175/183] loss 1.4150 (1.9414) acc 64.0625 (51.6429) lr 2.0000e-03 eta 0:00:18
+epoch [2/5] batch [180/183] loss 1.4238 (1.9253) acc 68.7500 (52.1354) lr 2.0000e-03 eta 0:00:17
+epoch [3/5] batch [5/183] loss 1.2754 (1.4350) acc 68.7500 (64.6875) lr 1.8090e-03 eta 0:01:13
+epoch [3/5] batch [10/183] loss 1.2891 (1.4242) acc 68.7500 (63.9062) lr 1.8090e-03 eta 0:00:47
+epoch [3/5] batch [15/183] loss 1.6650 (1.4510) acc 59.3750 (63.7500) lr 1.8090e-03 eta 0:00:35
+epoch [3/5] batch [20/183] loss 1.4863 (1.4365) acc 62.5000 (63.8281) lr 1.8090e-03 eta 0:00:30
+epoch [3/5] batch [25/183] loss 1.4824 (1.4270) acc 64.0625 (64.0000) lr 1.8090e-03 eta 0:00:27
+epoch [3/5] batch [30/183] loss 1.4326 (1.4522) acc 65.6250 (63.3333) lr 1.8090e-03 eta 0:00:24
+epoch [3/5] batch [35/183] loss 1.2900 (1.4605) acc 64.0625 (63.1696) lr 1.8090e-03 eta 0:00:23
+epoch [3/5] batch [40/183] loss 1.4336 (1.4490) acc 64.0625 (63.4766) lr 1.8090e-03 eta 0:00:21
+epoch [3/5] batch [45/183] loss 1.6689 (1.4678) acc 56.2500 (62.9514) lr 1.8090e-03 eta 0:00:21
+epoch [3/5] batch [50/183] loss 1.4600 (1.4738) acc 62.5000 (62.9062) lr 1.8090e-03 eta 0:00:20
+epoch [3/5] batch [55/183] loss 1.2871 (1.4840) acc 67.1875 (62.8409) lr 1.8090e-03 eta 0:00:19
+epoch [3/5] batch [60/183] loss 1.2695 (1.4787) acc 67.1875 (62.7604) lr 1.8090e-03 eta 0:00:19
+epoch [3/5] batch [65/183] loss 1.4229 (1.4710) acc 70.3125 (63.0048) lr 1.8090e-03 eta 0:00:18
+epoch [3/5] batch [70/183] loss 1.2793 (1.4649) acc 70.3125 (63.0134) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [75/183] loss 1.2100 (1.4601) acc 68.7500 (63.2083) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [80/183] loss 1.4639 (1.4662) acc 57.8125 (62.9492) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [85/183] loss 1.3008 (1.4701) acc 68.7500 (62.8860) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [90/183] loss 1.3184 (1.4676) acc 65.6250 (62.8472) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [95/183] loss 1.3467 (1.4636) acc 64.0625 (62.9441) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [100/183] loss 2.1719 (1.4707) acc 43.7500 (62.8281) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [105/183] loss 1.3672 (1.4683) acc 64.0625 (62.9315) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [110/183] loss 1.6279 (1.4688) acc 56.2500 (62.8977) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [115/183] loss 1.6289 (1.4625) acc 56.2500 (63.0435) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [120/183] loss 1.7305 (1.4680) acc 50.0000 (62.8516) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [125/183] loss 1.3262 (1.4681) acc 68.7500 (62.8000) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [130/183] loss 1.1182 (1.4701) acc 70.3125 (62.8005) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [135/183] loss 1.4688 (1.4668) acc 64.0625 (62.9167) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [140/183] loss 1.3223 (1.4650) acc 71.8750 (63.0357) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [145/183] loss 1.8027 (1.4636) acc 64.0625 (63.1142) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [150/183] loss 1.3906 (1.4599) acc 65.6250 (63.2604) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [155/183] loss 1.3574 (1.4564) acc 64.0625 (63.3770) lr 1.8090e-03 eta 0:00:12
+epoch [3/5] batch [160/183] loss 1.0654 (1.4512) acc 79.6875 (63.5742) lr 1.8090e-03 eta 0:00:12
+epoch [3/5] batch [165/183] loss 1.3594 (1.4542) acc 70.3125 (63.5417) lr 1.8090e-03 eta 0:00:12
+epoch [3/5] batch [170/183] loss 1.1602 (1.4546) acc 73.4375 (63.5018) lr 1.8090e-03 eta 0:00:12
+epoch [3/5] batch [175/183] loss 1.2217 (1.4559) acc 75.0000 (63.5089) lr 1.8090e-03 eta 0:00:12
+epoch [3/5] batch [180/183] loss 1.5703 (1.4542) acc 64.0625 (63.5417) lr 1.8090e-03 eta 0:00:11
+epoch [4/5] batch [5/183] loss 1.5244 (1.5941) acc 60.9375 (60.3125) lr 1.3090e-03 eta 0:00:57
+epoch [4/5] batch [10/183] loss 1.4609 (1.4792) acc 60.9375 (63.2812) lr 1.3090e-03 eta 0:00:33
+epoch [4/5] batch [15/183] loss 1.1963 (1.4085) acc 68.7500 (64.6875) lr 1.3090e-03 eta 0:00:24
+epoch [4/5] batch [20/183] loss 1.7656 (1.4445) acc 56.2500 (63.5938) lr 1.3090e-03 eta 0:00:20
+epoch [4/5] batch [25/183] loss 1.4912 (1.4187) acc 67.1875 (64.5000) lr 1.3090e-03 eta 0:00:18
+epoch [4/5] batch [30/183] loss 1.4707 (1.4167) acc 56.2500 (64.6875) lr 1.3090e-03 eta 0:00:16
+epoch [4/5] batch [35/183] loss 1.6729 (1.4116) acc 54.6875 (64.6875) lr 1.3090e-03 eta 0:00:15
+epoch [4/5] batch [40/183] loss 1.8750 (1.4320) acc 53.1250 (64.4922) lr 1.3090e-03 eta 0:00:14
+epoch [4/5] batch [45/183] loss 1.3242 (1.4288) acc 70.3125 (64.5486) lr 1.3090e-03 eta 0:00:13
+epoch [4/5] batch [50/183] loss 1.4668 (1.4218) acc 67.1875 (64.5625) lr 1.3090e-03 eta 0:00:13
+epoch [4/5] batch [55/183] loss 1.4463 (1.4218) acc 62.5000 (64.4318) lr 1.3090e-03 eta 0:00:12
+epoch [4/5] batch [60/183] loss 1.1748 (1.4188) acc 71.8750 (64.8958) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [65/183] loss 1.5273 (1.4273) acc 62.5000 (64.7356) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [70/183] loss 1.5322 (1.4327) acc 62.5000 (64.6875) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [75/183] loss 1.6035 (1.4349) acc 60.9375 (64.6250) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [80/183] loss 1.2666 (1.4315) acc 70.3125 (64.7266) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [85/183] loss 1.6230 (1.4310) acc 60.9375 (64.7059) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [90/183] loss 1.4336 (1.4405) acc 60.9375 (64.4792) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [95/183] loss 1.4785 (1.4486) acc 59.3750 (64.1941) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [100/183] loss 0.9150 (1.4460) acc 79.6875 (64.1562) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [105/183] loss 1.2402 (1.4464) acc 70.3125 (64.0625) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [110/183] loss 1.3770 (1.4444) acc 65.6250 (63.9773) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [115/183] loss 1.0742 (1.4402) acc 78.1250 (64.1576) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [120/183] loss 1.7178 (1.4448) acc 62.5000 (64.1016) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [125/183] loss 1.4277 (1.4415) acc 67.1875 (64.2625) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [130/183] loss 1.4971 (1.4461) acc 59.3750 (64.0264) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [135/183] loss 1.6855 (1.4413) acc 57.8125 (64.1204) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [140/183] loss 1.4365 (1.4393) acc 65.6250 (64.1518) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [145/183] loss 1.4316 (1.4403) acc 57.8125 (64.0409) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [150/183] loss 1.4160 (1.4422) acc 64.0625 (63.8333) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [155/183] loss 1.5898 (1.4443) acc 57.8125 (63.8105) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [160/183] loss 1.3223 (1.4469) acc 68.7500 (63.7793) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [165/183] loss 1.5303 (1.4493) acc 59.3750 (63.6837) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [170/183] loss 1.1943 (1.4474) acc 70.3125 (63.8051) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [175/183] loss 1.3340 (1.4446) acc 67.1875 (63.8571) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [180/183] loss 1.2852 (1.4387) acc 70.3125 (64.0191) lr 1.3090e-03 eta 0:00:06
+epoch [5/5] batch [5/183] loss 1.3945 (1.3277) acc 60.9375 (66.8750) lr 6.9098e-04 eta 0:00:25
+epoch [5/5] batch [10/183] loss 1.5547 (1.3763) acc 67.1875 (65.9375) lr 6.9098e-04 eta 0:00:14
+epoch [5/5] batch [15/183] loss 1.0391 (1.3872) acc 68.7500 (64.8958) lr 6.9098e-04 eta 0:00:10
+epoch [5/5] batch [20/183] loss 1.6328 (1.4049) acc 57.8125 (64.7656) lr 6.9098e-04 eta 0:00:09
+epoch [5/5] batch [25/183] loss 1.0791 (1.3974) acc 73.4375 (64.8750) lr 6.9098e-04 eta 0:00:08
+epoch [5/5] batch [30/183] loss 1.3105 (1.3986) acc 68.7500 (65.0000) lr 6.9098e-04 eta 0:00:07
+epoch [5/5] batch [35/183] loss 1.6270 (1.4056) acc 56.2500 (64.8214) lr 6.9098e-04 eta 0:00:06
+epoch [5/5] batch [40/183] loss 1.6025 (1.4044) acc 60.9375 (64.7266) lr 6.9098e-04 eta 0:00:06
+epoch [5/5] batch [45/183] loss 1.7666 (1.4115) acc 57.8125 (64.7222) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [50/183] loss 1.0684 (1.4042) acc 75.0000 (64.8125) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [55/183] loss 1.3330 (1.4172) acc 64.0625 (64.2045) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [60/183] loss 1.2148 (1.4084) acc 65.6250 (64.2708) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [65/183] loss 1.0479 (1.4028) acc 68.7500 (64.5433) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [70/183] loss 1.4697 (1.4126) acc 64.0625 (64.4643) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [75/183] loss 1.2891 (1.4050) acc 68.7500 (64.7292) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [80/183] loss 1.4150 (1.4077) acc 64.0625 (64.8242) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [85/183] loss 1.1611 (1.4053) acc 67.1875 (64.8162) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [90/183] loss 1.3809 (1.3998) acc 62.5000 (64.9653) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [95/183] loss 1.2891 (1.3942) acc 62.5000 (65.1974) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [100/183] loss 0.9971 (1.3952) acc 73.4375 (65.2812) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [105/183] loss 1.2773 (1.3958) acc 65.6250 (65.1786) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [110/183] loss 1.2383 (1.3955) acc 71.8750 (65.2415) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [115/183] loss 1.4844 (1.3947) acc 60.9375 (65.2174) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [120/183] loss 1.2549 (1.3964) acc 70.3125 (65.2214) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [125/183] loss 1.2188 (1.3920) acc 71.8750 (65.3500) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [130/183] loss 1.6357 (1.3945) acc 53.1250 (65.3726) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [135/183] loss 1.3164 (1.3965) acc 68.7500 (65.3125) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [140/183] loss 1.2207 (1.3908) acc 70.3125 (65.5134) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [145/183] loss 1.4424 (1.3958) acc 65.6250 (65.3879) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [150/183] loss 1.7441 (1.4056) acc 62.5000 (65.1979) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [155/183] loss 1.4541 (1.4092) acc 59.3750 (65.0000) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [160/183] loss 1.2588 (1.4107) acc 68.7500 (65.0195) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [165/183] loss 1.8184 (1.4152) acc 57.8125 (64.9811) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [170/183] loss 1.2852 (1.4138) acc 70.3125 (65.0827) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [175/183] loss 1.5225 (1.4111) acc 67.1875 (65.1518) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [180/183] loss 1.3594 (1.4115) acc 68.7500 (65.1736) lr 6.9098e-04 eta 0:00:00
+Model Saved to: output/CLIPAdapter-ViTB32-OfficeHome-art/model.pth.tar-5
+Finish Training
+Evaluate on the Test Set
+----------  ------
+Total #     2,427
+Correct #   1,783
+Accuracy    73.47%
+Error Rate  26.53%
+Macro_F1    67.50%
+----------  ------

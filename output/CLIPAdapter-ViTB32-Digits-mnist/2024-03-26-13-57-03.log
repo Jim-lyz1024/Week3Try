@@ -1,0 +1,401 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: Digits
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-Digits-mnist
+root: ./data/
+seed: 232
+source_domains: ['mnist_m', 'svhn', 'syn']
+target_domains: ['mnist']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: Digits
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['mnist_m', 'svhn', 'syn']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['mnist']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 5
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-Digits-mnist
+SEED: 232
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: Digits
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  --------------------------
+Dataset         Digits
+Source Domains  ['mnist_m', 'svhn', 'syn']
+Target Domains  ['mnist']
+# Classes       10
+# Train Data    18,000
+# Val Data      3,600
+# Test Data     6,000
+--------------  --------------------------
+Loading CLIP Backbone: ViT-B/32
+Building Custom CLIP
+Domains:  ['mnist', 'mnist_m', 'svhn', 'syn']
+Prompts: ['a picture of a mnist 0.', 'a picture of a mnist 1.', 'a picture of a mnist 2.', 'a picture of a mnist 3.', 'a picture of a mnist 4.', 'a picture of a mnist 5.', 'a picture of a mnist 6.', 'a picture of a mnist 7.', 'a picture of a mnist 8.', 'a picture of a mnist 9.', 'a picture of a mnist_m 0.', 'a picture of a mnist_m 1.', 'a picture of a mnist_m 2.', 'a picture of a mnist_m 3.', 'a picture of a mnist_m 4.', 'a picture of a mnist_m 5.', 'a picture of a mnist_m 6.', 'a picture of a mnist_m 7.', 'a picture of a mnist_m 8.', 'a picture of a mnist_m 9.', 'a picture of a svhn 0.', 'a picture of a svhn 1.', 'a picture of a svhn 2.', 'a picture of a svhn 3.', 'a picture of a svhn 4.', 'a picture of a svhn 5.', 'a picture of a svhn 6.', 'a picture of a svhn 7.', 'a picture of a svhn 8.', 'a picture of a svhn 9.', 'a picture of a syn 0.', 'a picture of a syn 1.', 'a picture of a syn 2.', 'a picture of a syn 3.', 'a picture of a syn 4.', 'a picture of a syn 5.', 'a picture of a syn 6.', 'a picture of a syn 7.', 'a picture of a syn 8.', 'a picture of a syn 9.']
+Turning Off Gradients in Image and Text Encoder
+Parameters to be updated: {'adapter.fc.0.weight', 'adapter.fc.2.weight'}
+Build Evaluator: Classification
+epoch [1/5] batch [5/281] loss 3.5527 (3.5418) acc 0.0000 (1.5625) lr 1.0000e-05 eta 0:08:27
+epoch [1/5] batch [10/281] loss 3.6191 (3.5764) acc 3.1250 (2.1875) lr 1.0000e-05 eta 0:04:29
+epoch [1/5] batch [15/281] loss 3.5781 (3.5669) acc 1.5625 (2.0833) lr 1.0000e-05 eta 0:03:09
+epoch [1/5] batch [20/281] loss 3.5254 (3.5762) acc 4.6875 (2.1875) lr 1.0000e-05 eta 0:02:29
+epoch [1/5] batch [25/281] loss 3.5508 (3.5770) acc 4.6875 (2.1875) lr 1.0000e-05 eta 0:02:05
+epoch [1/5] batch [30/281] loss 3.4609 (3.5675) acc 4.6875 (2.2396) lr 1.0000e-05 eta 0:01:49
+epoch [1/5] batch [35/281] loss 3.5840 (3.5629) acc 4.6875 (2.4107) lr 1.0000e-05 eta 0:01:37
+epoch [1/5] batch [40/281] loss 3.5371 (3.5649) acc 3.1250 (2.5391) lr 1.0000e-05 eta 0:01:28
+epoch [1/5] batch [45/281] loss 3.6426 (3.5674) acc 3.1250 (2.5000) lr 1.0000e-05 eta 0:01:21
+epoch [1/5] batch [50/281] loss 3.4023 (3.5591) acc 7.8125 (2.8438) lr 1.0000e-05 eta 0:01:16
+epoch [1/5] batch [55/281] loss 3.4062 (3.5610) acc 4.6875 (2.7557) lr 1.0000e-05 eta 0:01:11
+epoch [1/5] batch [60/281] loss 3.3750 (3.5609) acc 6.2500 (2.8906) lr 1.0000e-05 eta 0:01:08
+epoch [1/5] batch [65/281] loss 3.5625 (3.5623) acc 6.2500 (2.9327) lr 1.0000e-05 eta 0:01:04
+epoch [1/5] batch [70/281] loss 3.6582 (3.5643) acc 3.1250 (2.9018) lr 1.0000e-05 eta 0:01:02
+epoch [1/5] batch [75/281] loss 3.4668 (3.5619) acc 3.1250 (2.9583) lr 1.0000e-05 eta 0:00:59
+epoch [1/5] batch [80/281] loss 3.7324 (3.5615) acc 0.0000 (3.0078) lr 1.0000e-05 eta 0:00:57
+epoch [1/5] batch [85/281] loss 3.6699 (3.5608) acc 0.0000 (3.0515) lr 1.0000e-05 eta 0:00:55
+epoch [1/5] batch [90/281] loss 3.5938 (3.5617) acc 4.6875 (3.0035) lr 1.0000e-05 eta 0:00:54
+epoch [1/5] batch [95/281] loss 3.6484 (3.5606) acc 4.6875 (2.9441) lr 1.0000e-05 eta 0:00:52
+epoch [1/5] batch [100/281] loss 3.6719 (3.5613) acc 3.1250 (3.0000) lr 1.0000e-05 eta 0:00:51
+epoch [1/5] batch [105/281] loss 3.4941 (3.5618) acc 1.5625 (3.0208) lr 1.0000e-05 eta 0:00:49
+epoch [1/5] batch [110/281] loss 3.6348 (3.5627) acc 3.1250 (3.0256) lr 1.0000e-05 eta 0:00:48
+epoch [1/5] batch [115/281] loss 3.5039 (3.5618) acc 0.0000 (2.9755) lr 1.0000e-05 eta 0:00:47
+epoch [1/5] batch [120/281] loss 3.5586 (3.5617) acc 3.1250 (3.0339) lr 1.0000e-05 eta 0:00:46
+epoch [1/5] batch [125/281] loss 3.5547 (3.5620) acc 4.6875 (3.0500) lr 1.0000e-05 eta 0:00:45
+epoch [1/5] batch [130/281] loss 3.6289 (3.5625) acc 3.1250 (3.0529) lr 1.0000e-05 eta 0:00:44
+epoch [1/5] batch [135/281] loss 3.5605 (3.5630) acc 1.5625 (2.9861) lr 1.0000e-05 eta 0:00:44
+epoch [1/5] batch [140/281] loss 3.6426 (3.5637) acc 1.5625 (3.0022) lr 1.0000e-05 eta 0:00:43
+epoch [1/5] batch [145/281] loss 3.6543 (3.5627) acc 3.1250 (3.0603) lr 1.0000e-05 eta 0:00:42
+epoch [1/5] batch [150/281] loss 3.4551 (3.5632) acc 7.8125 (3.0938) lr 1.0000e-05 eta 0:00:42
+epoch [1/5] batch [155/281] loss 3.5098 (3.5624) acc 4.6875 (3.1048) lr 1.0000e-05 eta 0:00:41
+epoch [1/5] batch [160/281] loss 3.4688 (3.5624) acc 4.6875 (3.1348) lr 1.0000e-05 eta 0:00:40
+epoch [1/5] batch [165/281] loss 3.4863 (3.5616) acc 7.8125 (3.1629) lr 1.0000e-05 eta 0:00:40
+epoch [1/5] batch [170/281] loss 3.4434 (3.5617) acc 4.6875 (3.1434) lr 1.0000e-05 eta 0:00:39
+epoch [1/5] batch [175/281] loss 3.5840 (3.5616) acc 4.6875 (3.1518) lr 1.0000e-05 eta 0:00:39
+epoch [1/5] batch [180/281] loss 3.5996 (3.5628) acc 4.6875 (3.1510) lr 1.0000e-05 eta 0:00:38
+epoch [1/5] batch [185/281] loss 3.6738 (3.5626) acc 0.0000 (3.1250) lr 1.0000e-05 eta 0:00:38
+epoch [1/5] batch [190/281] loss 3.6816 (3.5644) acc 1.5625 (3.1332) lr 1.0000e-05 eta 0:00:37
+epoch [1/5] batch [195/281] loss 3.5137 (3.5635) acc 4.6875 (3.1571) lr 1.0000e-05 eta 0:00:37
+epoch [1/5] batch [200/281] loss 3.6152 (3.5620) acc 1.5625 (3.1406) lr 1.0000e-05 eta 0:00:36
+epoch [1/5] batch [205/281] loss 3.5840 (3.5616) acc 4.6875 (3.1326) lr 1.0000e-05 eta 0:00:36
+epoch [1/5] batch [210/281] loss 3.7324 (3.5635) acc 4.6875 (3.1027) lr 1.0000e-05 eta 0:00:36
+epoch [1/5] batch [215/281] loss 3.5469 (3.5630) acc 3.1250 (3.1032) lr 1.0000e-05 eta 0:00:35
+epoch [1/5] batch [220/281] loss 3.5820 (3.5635) acc 0.0000 (3.0895) lr 1.0000e-05 eta 0:00:35
+epoch [1/5] batch [225/281] loss 3.6367 (3.5630) acc 1.5625 (3.1458) lr 1.0000e-05 eta 0:00:34
+epoch [1/5] batch [230/281] loss 3.6289 (3.5635) acc 3.1250 (3.1590) lr 1.0000e-05 eta 0:00:34
+epoch [1/5] batch [235/281] loss 3.3984 (3.5638) acc 6.2500 (3.1715) lr 1.0000e-05 eta 0:00:34
+epoch [1/5] batch [240/281] loss 3.5137 (3.5644) acc 3.1250 (3.1510) lr 1.0000e-05 eta 0:00:33
+epoch [1/5] batch [245/281] loss 3.4688 (3.5643) acc 4.6875 (3.1696) lr 1.0000e-05 eta 0:00:33
+epoch [1/5] batch [250/281] loss 3.6289 (3.5646) acc 3.1250 (3.1812) lr 1.0000e-05 eta 0:00:33
+epoch [1/5] batch [255/281] loss 3.6426 (3.5648) acc 1.5625 (3.1434) lr 1.0000e-05 eta 0:00:33
+epoch [1/5] batch [260/281] loss 3.6133 (3.5647) acc 1.5625 (3.1430) lr 1.0000e-05 eta 0:00:32
+epoch [1/5] batch [265/281] loss 3.5039 (3.5639) acc 3.1250 (3.1545) lr 1.0000e-05 eta 0:00:32
+epoch [1/5] batch [270/281] loss 3.4902 (3.5631) acc 3.1250 (3.1597) lr 1.0000e-05 eta 0:00:32
+epoch [1/5] batch [275/281] loss 3.6465 (3.5641) acc 0.0000 (3.1477) lr 1.0000e-05 eta 0:00:31
+epoch [1/5] batch [280/281] loss 3.4902 (3.5645) acc 1.5625 (3.1306) lr 1.0000e-05 eta 0:00:31
+epoch [2/5] batch [5/281] loss 3.5332 (3.5645) acc 0.0000 (3.4375) lr 2.0000e-03 eta 0:02:25
+epoch [2/5] batch [10/281] loss 3.5195 (3.5154) acc 3.1250 (3.7500) lr 2.0000e-03 eta 0:01:24
+epoch [2/5] batch [15/281] loss 3.2539 (3.4608) acc 6.2500 (3.7500) lr 2.0000e-03 eta 0:01:04
+epoch [2/5] batch [20/281] loss 3.3203 (3.4273) acc 1.5625 (3.5156) lr 2.0000e-03 eta 0:00:54
+epoch [2/5] batch [25/281] loss 3.1270 (3.3759) acc 4.6875 (3.8750) lr 2.0000e-03 eta 0:00:47
+epoch [2/5] batch [30/281] loss 2.9258 (3.3254) acc 14.0625 (4.3229) lr 2.0000e-03 eta 0:00:43
+epoch [2/5] batch [35/281] loss 2.8867 (3.2677) acc 6.2500 (5.2232) lr 2.0000e-03 eta 0:00:40
+epoch [2/5] batch [40/281] loss 2.8242 (3.2184) acc 9.3750 (5.5859) lr 2.0000e-03 eta 0:00:38
+epoch [2/5] batch [45/281] loss 2.7012 (3.1660) acc 12.5000 (6.0417) lr 2.0000e-03 eta 0:00:36
+epoch [2/5] batch [50/281] loss 2.6074 (3.1129) acc 10.9375 (6.6250) lr 2.0000e-03 eta 0:00:35
+epoch [2/5] batch [55/281] loss 2.5645 (3.0671) acc 7.8125 (7.0455) lr 2.0000e-03 eta 0:00:34
+epoch [2/5] batch [60/281] loss 2.5059 (3.0213) acc 7.8125 (7.5260) lr 2.0000e-03 eta 0:00:33
+epoch [2/5] batch [65/281] loss 2.4160 (2.9790) acc 20.3125 (7.9567) lr 2.0000e-03 eta 0:00:32
+epoch [2/5] batch [70/281] loss 2.5273 (2.9429) acc 3.1250 (8.1027) lr 2.0000e-03 eta 0:00:31
+epoch [2/5] batch [75/281] loss 2.4121 (2.9081) acc 12.5000 (8.3750) lr 2.0000e-03 eta 0:00:30
+epoch [2/5] batch [80/281] loss 2.4375 (2.8759) acc 6.2500 (8.5938) lr 2.0000e-03 eta 0:00:30
+epoch [2/5] batch [85/281] loss 2.4062 (2.8475) acc 14.0625 (8.7132) lr 2.0000e-03 eta 0:00:29
+epoch [2/5] batch [90/281] loss 2.4180 (2.8219) acc 6.2500 (8.9757) lr 2.0000e-03 eta 0:00:28
+epoch [2/5] batch [95/281] loss 2.3789 (2.7989) acc 15.6250 (9.0625) lr 2.0000e-03 eta 0:00:28
+epoch [2/5] batch [100/281] loss 2.3711 (2.7773) acc 18.7500 (9.3594) lr 2.0000e-03 eta 0:00:28
+epoch [2/5] batch [105/281] loss 2.3496 (2.7564) acc 18.7500 (9.6131) lr 2.0000e-03 eta 0:00:27
+epoch [2/5] batch [110/281] loss 2.3574 (2.7379) acc 10.9375 (9.7301) lr 2.0000e-03 eta 0:00:27
+epoch [2/5] batch [115/281] loss 2.2832 (2.7199) acc 21.8750 (10.0000) lr 2.0000e-03 eta 0:00:26
+epoch [2/5] batch [120/281] loss 2.3340 (2.7043) acc 18.7500 (10.1042) lr 2.0000e-03 eta 0:00:26
+epoch [2/5] batch [125/281] loss 2.3691 (2.6906) acc 10.9375 (10.1375) lr 2.0000e-03 eta 0:00:26
+epoch [2/5] batch [130/281] loss 2.3594 (2.6770) acc 14.0625 (10.3486) lr 2.0000e-03 eta 0:00:26
+epoch [2/5] batch [135/281] loss 2.3242 (2.6648) acc 7.8125 (10.3588) lr 2.0000e-03 eta 0:00:25
+epoch [2/5] batch [140/281] loss 2.3418 (2.6529) acc 6.2500 (10.3460) lr 2.0000e-03 eta 0:00:25
+epoch [2/5] batch [145/281] loss 2.3496 (2.6419) acc 6.2500 (10.3556) lr 2.0000e-03 eta 0:00:25
+epoch [2/5] batch [150/281] loss 2.3027 (2.6315) acc 12.5000 (10.3750) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [155/281] loss 2.3262 (2.6217) acc 18.7500 (10.4335) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [160/281] loss 2.2832 (2.6128) acc 10.9375 (10.3809) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [165/281] loss 2.3242 (2.6046) acc 14.0625 (10.4356) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [170/281] loss 2.3340 (2.5961) acc 10.9375 (10.5331) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [175/281] loss 2.3262 (2.5880) acc 10.9375 (10.6339) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [180/281] loss 2.2969 (2.5801) acc 17.1875 (10.7205) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [185/281] loss 2.2715 (2.5725) acc 15.6250 (10.8361) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [190/281] loss 2.3047 (2.5659) acc 15.6250 (10.8964) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [195/281] loss 2.3125 (2.5592) acc 15.6250 (10.9936) lr 2.0000e-03 eta 0:00:23
+epoch [2/5] batch [200/281] loss 2.3164 (2.5532) acc 12.5000 (11.0547) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [205/281] loss 2.2949 (2.5470) acc 15.6250 (11.1433) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [210/281] loss 2.3262 (2.5416) acc 10.9375 (11.1533) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [215/281] loss 2.3105 (2.5362) acc 9.3750 (11.2137) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [220/281] loss 2.3145 (2.5311) acc 15.6250 (11.2926) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [225/281] loss 2.3516 (2.5264) acc 10.9375 (11.3194) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [230/281] loss 2.2852 (2.5217) acc 20.3125 (11.3519) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [235/281] loss 2.3301 (2.5173) acc 9.3750 (11.3697) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [240/281] loss 2.3008 (2.5132) acc 14.0625 (11.4062) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [245/281] loss 2.3633 (2.5090) acc 9.3750 (11.4477) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [250/281] loss 2.3262 (2.5051) acc 10.9375 (11.4875) lr 2.0000e-03 eta 0:00:21
+epoch [2/5] batch [255/281] loss 2.3203 (2.5014) acc 7.8125 (11.4828) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [260/281] loss 2.3008 (2.4977) acc 15.6250 (11.4724) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [265/281] loss 2.2715 (2.4936) acc 17.1875 (11.5920) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [270/281] loss 2.2754 (2.4901) acc 18.7500 (11.6551) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [275/281] loss 2.3066 (2.4868) acc 7.8125 (11.6591) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [280/281] loss 2.3008 (2.4834) acc 12.5000 (11.6406) lr 2.0000e-03 eta 0:00:20
+epoch [3/5] batch [5/281] loss 2.2793 (2.3086) acc 17.1875 (11.5625) lr 1.8090e-03 eta 0:01:44
+epoch [3/5] batch [10/281] loss 2.3027 (2.3039) acc 9.3750 (12.1875) lr 1.8090e-03 eta 0:01:00
+epoch [3/5] batch [15/281] loss 2.2949 (2.2958) acc 15.6250 (14.1667) lr 1.8090e-03 eta 0:00:46
+epoch [3/5] batch [20/281] loss 2.3145 (2.2996) acc 7.8125 (13.7500) lr 1.8090e-03 eta 0:00:39
+epoch [3/5] batch [25/281] loss 2.2949 (2.2974) acc 18.7500 (15.1250) lr 1.8090e-03 eta 0:00:34
+epoch [3/5] batch [30/281] loss 2.2695 (2.2971) acc 14.0625 (14.6354) lr 1.8090e-03 eta 0:00:31
+epoch [3/5] batch [35/281] loss 2.2891 (2.2968) acc 14.0625 (14.1518) lr 1.8090e-03 eta 0:00:29
+epoch [3/5] batch [40/281] loss 2.2754 (2.2952) acc 18.7500 (14.3750) lr 1.8090e-03 eta 0:00:28
+epoch [3/5] batch [45/281] loss 2.2852 (2.2961) acc 14.0625 (14.4097) lr 1.8090e-03 eta 0:00:26
+epoch [3/5] batch [50/281] loss 2.3086 (2.2957) acc 15.6250 (14.4688) lr 1.8090e-03 eta 0:00:25
+epoch [3/5] batch [55/281] loss 2.3066 (2.2961) acc 9.3750 (14.5455) lr 1.8090e-03 eta 0:00:24
+epoch [3/5] batch [60/281] loss 2.3418 (2.2962) acc 15.6250 (14.5312) lr 1.8090e-03 eta 0:00:23
+epoch [3/5] batch [65/281] loss 2.3418 (2.2968) acc 10.9375 (14.7115) lr 1.8090e-03 eta 0:00:23
+epoch [3/5] batch [70/281] loss 2.2871 (2.2970) acc 15.6250 (14.5759) lr 1.8090e-03 eta 0:00:22
+epoch [3/5] batch [75/281] loss 2.2695 (2.2971) acc 23.4375 (14.4167) lr 1.8090e-03 eta 0:00:22
+epoch [3/5] batch [80/281] loss 2.3340 (2.2970) acc 3.1250 (14.3164) lr 1.8090e-03 eta 0:00:21
+epoch [3/5] batch [85/281] loss 2.3281 (2.2965) acc 9.3750 (14.3750) lr 1.8090e-03 eta 0:00:21
+epoch [3/5] batch [90/281] loss 2.3066 (2.2960) acc 12.5000 (14.5139) lr 1.8090e-03 eta 0:00:20
+epoch [3/5] batch [95/281] loss 2.2539 (2.2956) acc 25.0000 (14.6711) lr 1.8090e-03 eta 0:00:20
+epoch [3/5] batch [100/281] loss 2.2891 (2.2963) acc 20.3125 (14.5469) lr 1.8090e-03 eta 0:00:20
+epoch [3/5] batch [105/281] loss 2.3047 (2.2966) acc 15.6250 (14.5089) lr 1.8090e-03 eta 0:00:19
+epoch [3/5] batch [110/281] loss 2.3008 (2.2963) acc 12.5000 (14.4602) lr 1.8090e-03 eta 0:00:19
+epoch [3/5] batch [115/281] loss 2.2812 (2.2969) acc 17.1875 (14.4701) lr 1.8090e-03 eta 0:00:19
+epoch [3/5] batch [120/281] loss 2.3047 (2.2978) acc 17.1875 (14.4401) lr 1.8090e-03 eta 0:00:19
+epoch [3/5] batch [125/281] loss 2.3125 (2.2979) acc 4.6875 (14.3875) lr 1.8090e-03 eta 0:00:18
+epoch [3/5] batch [130/281] loss 2.3242 (2.2976) acc 14.0625 (14.3990) lr 1.8090e-03 eta 0:00:18
+epoch [3/5] batch [135/281] loss 2.3711 (2.2985) acc 6.2500 (14.2245) lr 1.8090e-03 eta 0:00:18
+epoch [3/5] batch [140/281] loss 2.2598 (2.2983) acc 18.7500 (14.1741) lr 1.8090e-03 eta 0:00:18
+epoch [3/5] batch [145/281] loss 2.3047 (2.2984) acc 14.0625 (14.0948) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [150/281] loss 2.3047 (2.2980) acc 12.5000 (14.1146) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [155/281] loss 2.3086 (2.2978) acc 17.1875 (14.1028) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [160/281] loss 2.3125 (2.2982) acc 4.6875 (13.9648) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [165/281] loss 2.2754 (2.2975) acc 12.5000 (13.9583) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [170/281] loss 2.2832 (2.2972) acc 15.6250 (14.0074) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [175/281] loss 2.2910 (2.2967) acc 9.3750 (14.0089) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [180/281] loss 2.2656 (2.2960) acc 18.7500 (14.1146) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [185/281] loss 2.2598 (2.2958) acc 15.6250 (14.1301) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [190/281] loss 2.2891 (2.2955) acc 18.7500 (14.1201) lr 1.8090e-03 eta 0:00:16
+epoch [3/5] batch [195/281] loss 2.2910 (2.2953) acc 10.9375 (14.1426) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [200/281] loss 2.2891 (2.2953) acc 9.3750 (14.1094) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [205/281] loss 2.3379 (2.2958) acc 10.9375 (13.9863) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [210/281] loss 2.2812 (2.2959) acc 15.6250 (13.9286) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [215/281] loss 2.2500 (2.2956) acc 20.3125 (13.9462) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [220/281] loss 2.2891 (2.2956) acc 14.0625 (13.8920) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [225/281] loss 2.3184 (2.2955) acc 6.2500 (13.8750) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [230/281] loss 2.2773 (2.2951) acc 14.0625 (13.9130) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [235/281] loss 2.3086 (2.2950) acc 9.3750 (13.9229) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [240/281] loss 2.2949 (2.2952) acc 12.5000 (13.8281) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [245/281] loss 2.2676 (2.2951) acc 20.3125 (13.9158) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [250/281] loss 2.2832 (2.2950) acc 12.5000 (13.8875) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [255/281] loss 2.2969 (2.2950) acc 14.0625 (13.8971) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [260/281] loss 2.2559 (2.2944) acc 14.0625 (13.9243) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [265/281] loss 2.2480 (2.2940) acc 20.3125 (13.9976) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [270/281] loss 2.2871 (2.2938) acc 9.3750 (14.0220) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [275/281] loss 2.2871 (2.2936) acc 10.9375 (14.0057) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [280/281] loss 2.2754 (2.2935) acc 14.0625 (13.9788) lr 1.8090e-03 eta 0:00:13
+epoch [4/5] batch [5/281] loss 2.2988 (2.2926) acc 14.0625 (12.5000) lr 1.3090e-03 eta 0:01:08
+epoch [4/5] batch [10/281] loss 2.2969 (2.2891) acc 12.5000 (14.0625) lr 1.3090e-03 eta 0:00:42
+epoch [4/5] batch [15/281] loss 2.2754 (2.2855) acc 9.3750 (13.8542) lr 1.3090e-03 eta 0:00:31
+epoch [4/5] batch [20/281] loss 2.3008 (2.2921) acc 10.9375 (13.0469) lr 1.3090e-03 eta 0:00:26
+epoch [4/5] batch [25/281] loss 2.2832 (2.2895) acc 12.5000 (13.5625) lr 1.3090e-03 eta 0:00:23
+epoch [4/5] batch [30/281] loss 2.2246 (2.2866) acc 17.1875 (13.5938) lr 1.3090e-03 eta 0:00:21
+epoch [4/5] batch [35/281] loss 2.2949 (2.2864) acc 7.8125 (13.6607) lr 1.3090e-03 eta 0:00:19
+epoch [4/5] batch [40/281] loss 2.2988 (2.2855) acc 9.3750 (13.5938) lr 1.3090e-03 eta 0:00:18
+epoch [4/5] batch [45/281] loss 2.3086 (2.2875) acc 12.5000 (13.4722) lr 1.3090e-03 eta 0:00:17
+epoch [4/5] batch [50/281] loss 2.2734 (2.2879) acc 12.5000 (13.5312) lr 1.3090e-03 eta 0:00:16
+epoch [4/5] batch [55/281] loss 2.3301 (2.2874) acc 12.5000 (13.5227) lr 1.3090e-03 eta 0:00:16
+epoch [4/5] batch [60/281] loss 2.2812 (2.2879) acc 12.5000 (13.3854) lr 1.3090e-03 eta 0:00:15
+epoch [4/5] batch [65/281] loss 2.3418 (2.2894) acc 7.8125 (13.2933) lr 1.3090e-03 eta 0:00:15
+epoch [4/5] batch [70/281] loss 2.2695 (2.2896) acc 10.9375 (13.3259) lr 1.3090e-03 eta 0:00:14
+epoch [4/5] batch [75/281] loss 2.3047 (2.2900) acc 12.5000 (13.2917) lr 1.3090e-03 eta 0:00:14
+epoch [4/5] batch [80/281] loss 2.2988 (2.2898) acc 6.2500 (13.2422) lr 1.3090e-03 eta 0:00:13
+epoch [4/5] batch [85/281] loss 2.2930 (2.2893) acc 18.7500 (13.3088) lr 1.3090e-03 eta 0:00:13
+epoch [4/5] batch [90/281] loss 2.2578 (2.2887) acc 14.0625 (13.2118) lr 1.3090e-03 eta 0:00:13
+epoch [4/5] batch [95/281] loss 2.3008 (2.2889) acc 9.3750 (13.1414) lr 1.3090e-03 eta 0:00:12
+epoch [4/5] batch [100/281] loss 2.2715 (2.2887) acc 15.6250 (13.2344) lr 1.3090e-03 eta 0:00:12
+epoch [4/5] batch [105/281] loss 2.3027 (2.2887) acc 15.6250 (13.3185) lr 1.3090e-03 eta 0:00:12
+epoch [4/5] batch [110/281] loss 2.2949 (2.2885) acc 9.3750 (13.3523) lr 1.3090e-03 eta 0:00:12
+epoch [4/5] batch [115/281] loss 2.3145 (2.2889) acc 12.5000 (13.4375) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [120/281] loss 2.2285 (2.2883) acc 21.8750 (13.5547) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [125/281] loss 2.2773 (2.2886) acc 15.6250 (13.5625) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [130/281] loss 2.2891 (2.2886) acc 6.2500 (13.4856) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [135/281] loss 2.3125 (2.2880) acc 12.5000 (13.6690) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [140/281] loss 2.2539 (2.2878) acc 20.3125 (13.8058) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [145/281] loss 2.2852 (2.2877) acc 17.1875 (13.8470) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [150/281] loss 2.2676 (2.2874) acc 20.3125 (13.9375) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [155/281] loss 2.2793 (2.2875) acc 12.5000 (13.9819) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [160/281] loss 2.3184 (2.2873) acc 6.2500 (13.9453) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [165/281] loss 2.2832 (2.2870) acc 17.1875 (13.9962) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [170/281] loss 2.2402 (2.2867) acc 15.6250 (13.9522) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [175/281] loss 2.3184 (2.2872) acc 6.2500 (13.8571) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [180/281] loss 2.2598 (2.2869) acc 14.0625 (13.8802) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [185/281] loss 2.2754 (2.2867) acc 18.7500 (13.9105) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [190/281] loss 2.3281 (2.2871) acc 6.2500 (13.8569) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [195/281] loss 2.2969 (2.2872) acc 6.2500 (13.7340) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [200/281] loss 2.2891 (2.2869) acc 14.0625 (13.7812) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [205/281] loss 2.2637 (2.2866) acc 17.1875 (13.8415) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [210/281] loss 2.2520 (2.2863) acc 25.0000 (13.8988) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [215/281] loss 2.3008 (2.2863) acc 14.0625 (13.9317) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [220/281] loss 2.2930 (2.2865) acc 15.6250 (13.9062) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [225/281] loss 2.2734 (2.2865) acc 18.7500 (13.9306) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [230/281] loss 2.2773 (2.2866) acc 14.0625 (13.9062) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [235/281] loss 2.2812 (2.2867) acc 17.1875 (13.9362) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [240/281] loss 2.2773 (2.2865) acc 15.6250 (13.9583) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [245/281] loss 2.3047 (2.2866) acc 12.5000 (13.9668) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [250/281] loss 2.2832 (2.2869) acc 17.1875 (14.0000) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [255/281] loss 2.2930 (2.2869) acc 12.5000 (14.0502) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [260/281] loss 2.2695 (2.2867) acc 12.5000 (14.0144) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [265/281] loss 2.2910 (2.2867) acc 6.2500 (13.9976) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [270/281] loss 2.2891 (2.2864) acc 7.8125 (14.0336) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [275/281] loss 2.2988 (2.2865) acc 14.0625 (14.0114) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [280/281] loss 2.2949 (2.2864) acc 12.5000 (14.0179) lr 1.3090e-03 eta 0:00:06
+epoch [5/5] batch [5/281] loss 2.3027 (2.2887) acc 14.0625 (10.0000) lr 6.9098e-04 eta 0:00:38
+epoch [5/5] batch [10/281] loss 2.2891 (2.2760) acc 10.9375 (13.2812) lr 6.9098e-04 eta 0:00:21
+epoch [5/5] batch [15/281] loss 2.2969 (2.2824) acc 14.0625 (13.8542) lr 6.9098e-04 eta 0:00:16
+epoch [5/5] batch [20/281] loss 2.2949 (2.2820) acc 14.0625 (14.4531) lr 6.9098e-04 eta 0:00:13
+epoch [5/5] batch [25/281] loss 2.2773 (2.2812) acc 15.6250 (14.2500) lr 6.9098e-04 eta 0:00:11
+epoch [5/5] batch [30/281] loss 2.2383 (2.2794) acc 18.7500 (14.3750) lr 6.9098e-04 eta 0:00:10
+epoch [5/5] batch [35/281] loss 2.3008 (2.2815) acc 12.5000 (13.9732) lr 6.9098e-04 eta 0:00:09
+epoch [5/5] batch [40/281] loss 2.2773 (2.2818) acc 21.8750 (14.1016) lr 6.9098e-04 eta 0:00:08
+epoch [5/5] batch [45/281] loss 2.2773 (2.2807) acc 10.9375 (14.0278) lr 6.9098e-04 eta 0:00:08
+epoch [5/5] batch [50/281] loss 2.3184 (2.2823) acc 15.6250 (14.2812) lr 6.9098e-04 eta 0:00:07
+epoch [5/5] batch [55/281] loss 2.2793 (2.2815) acc 7.8125 (14.3466) lr 6.9098e-04 eta 0:00:07
+epoch [5/5] batch [60/281] loss 2.3047 (2.2822) acc 10.9375 (14.3490) lr 6.9098e-04 eta 0:00:07
+epoch [5/5] batch [65/281] loss 2.3105 (2.2826) acc 9.3750 (14.3510) lr 6.9098e-04 eta 0:00:06
+epoch [5/5] batch [70/281] loss 2.3047 (2.2838) acc 20.3125 (14.5312) lr 6.9098e-04 eta 0:00:06
+epoch [5/5] batch [75/281] loss 2.2910 (2.2833) acc 21.8750 (14.6875) lr 6.9098e-04 eta 0:00:06
+epoch [5/5] batch [80/281] loss 2.2539 (2.2830) acc 25.0000 (14.8047) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [85/281] loss 2.2578 (2.2830) acc 10.9375 (14.8162) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [90/281] loss 2.2617 (2.2826) acc 14.0625 (14.6875) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [95/281] loss 2.2754 (2.2831) acc 17.1875 (14.5724) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [100/281] loss 2.2656 (2.2828) acc 9.3750 (14.4844) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [105/281] loss 2.3164 (2.2829) acc 10.9375 (14.4940) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [110/281] loss 2.2500 (2.2827) acc 17.1875 (14.5739) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [115/281] loss 2.2598 (2.2826) acc 25.0000 (14.7418) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [120/281] loss 2.2539 (2.2826) acc 23.4375 (14.7526) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [125/281] loss 2.2832 (2.2827) acc 7.8125 (14.6125) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [130/281] loss 2.2559 (2.2825) acc 20.3125 (14.7596) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [135/281] loss 2.2773 (2.2822) acc 17.1875 (14.7106) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [140/281] loss 2.2871 (2.2818) acc 15.6250 (14.7210) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [145/281] loss 2.3125 (2.2821) acc 17.1875 (14.6875) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [150/281] loss 2.2539 (2.2818) acc 21.8750 (14.7396) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [155/281] loss 2.3145 (2.2818) acc 14.0625 (14.7681) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [160/281] loss 2.2852 (2.2819) acc 9.3750 (14.7461) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [165/281] loss 2.2969 (2.2829) acc 12.5000 (14.6023) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [170/281] loss 2.2891 (2.2833) acc 10.9375 (14.6415) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [175/281] loss 2.2871 (2.2832) acc 15.6250 (14.6964) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [180/281] loss 2.3184 (2.2838) acc 9.3750 (14.6007) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [185/281] loss 2.2969 (2.2844) acc 10.9375 (14.5186) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [190/281] loss 2.2910 (2.2844) acc 15.6250 (14.5395) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [195/281] loss 2.2871 (2.2845) acc 10.9375 (14.4792) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [200/281] loss 2.2930 (2.2847) acc 17.1875 (14.4844) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [205/281] loss 2.2559 (2.2845) acc 12.5000 (14.4284) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [210/281] loss 2.2656 (2.2846) acc 14.0625 (14.3601) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [215/281] loss 2.3379 (2.2850) acc 7.8125 (14.3387) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [220/281] loss 2.3027 (2.2851) acc 14.0625 (14.3253) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [225/281] loss 2.3047 (2.2854) acc 10.9375 (14.2917) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [230/281] loss 2.3145 (2.2854) acc 15.6250 (14.2867) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [235/281] loss 2.2715 (2.2851) acc 20.3125 (14.3085) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [240/281] loss 2.2637 (2.2851) acc 14.0625 (14.2773) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [245/281] loss 2.2793 (2.2850) acc 17.1875 (14.2857) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [250/281] loss 2.3262 (2.2852) acc 10.9375 (14.2750) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [255/281] loss 2.3438 (2.2852) acc 6.2500 (14.2647) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [260/281] loss 2.2695 (2.2854) acc 23.4375 (14.2728) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [265/281] loss 2.2539 (2.2853) acc 21.8750 (14.2630) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [270/281] loss 2.2734 (2.2850) acc 17.1875 (14.3345) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [275/281] loss 2.2793 (2.2850) acc 20.3125 (14.3523) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [280/281] loss 2.3047 (2.2848) acc 12.5000 (14.3917) lr 6.9098e-04 eta 0:00:00
+Model Saved to: output/CLIPAdapter-ViTB32-Digits-mnist/model.pth.tar-5
+Finish Training
+Evaluate on the Test Set
+----------  ------
+Total #     6,000
+Correct #   1,216
+Accuracy    20.27%
+Error Rate  79.73%
+Macro_F1    15.94%
+----------  ------
