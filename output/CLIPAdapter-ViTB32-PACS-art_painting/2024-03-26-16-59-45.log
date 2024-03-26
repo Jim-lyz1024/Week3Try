@@ -1,0 +1,251 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: PACS
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-PACS-art_painting
+root: ./data/
+seed: 134
+source_domains: ['cartoon', 'photo', 'sketch']
+target_domains: ['art_painting']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: PACS
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['cartoon', 'photo', 'sketch']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['art_painting']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 5
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-PACS-art_painting
+SEED: 134
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: PACS
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ------------------------------
+Dataset         PACS
+Source Domains  ['cartoon', 'photo', 'sketch']
+Target Domains  ['art_painting']
+# Classes       7
+# Train Data    7,942
+# Val Data      806
+# Test Data     2,048
+--------------  ------------------------------
+Loading CLIP Backbone: ViT-B/32
+Building Custom CLIP
+Class:  ['dog', 'elephant', 'giraffe', 'guitar', 'horse', 'house', 'person']
+Domains:  ['art_painting', 'cartoon', 'photo', 'sketch']
+Prompts: ['a picture of a art painting dog.', 'a picture of a art painting elephant.', 'a picture of a art painting giraffe.', 'a picture of a art painting guitar.', 'a picture of a art painting horse.', 'a picture of a art painting house.', 'a picture of a art painting person.', 'a picture of a cartoon dog.', 'a picture of a cartoon elephant.', 'a picture of a cartoon giraffe.', 'a picture of a cartoon guitar.', 'a picture of a cartoon horse.', 'a picture of a cartoon house.', 'a picture of a cartoon person.', 'a picture of a photo dog.', 'a picture of a photo elephant.', 'a picture of a photo giraffe.', 'a picture of a photo guitar.', 'a picture of a photo horse.', 'a picture of a photo house.', 'a picture of a photo person.', 'a picture of a sketch dog.', 'a picture of a sketch elephant.', 'a picture of a sketch giraffe.', 'a picture of a sketch guitar.', 'a picture of a sketch horse.', 'a picture of a sketch house.', 'a picture of a sketch person.']
+Text features: tensor([[ 0.0347, -0.0056, -0.0272,  ..., -0.0314, -0.0006, -0.0018],
+        [ 0.0241, -0.0111, -0.0081,  ...,  0.0005,  0.0161,  0.0137],
+        [ 0.0443, -0.0284, -0.0266,  ..., -0.0100, -0.0107, -0.0368],
+        ...,
+        [ 0.0087, -0.0015, -0.0202,  ..., -0.0215, -0.0091, -0.0145],
+        [ 0.0086,  0.0012, -0.0129,  ..., -0.0446, -0.0225, -0.0295],
+        [ 0.0069, -0.0049, -0.0188,  ..., -0.0632, -0.0164, -0.0311]],
+       device='cuda:0', dtype=torch.float16)
+Text features shape: torch.Size([28, 512])
+Turning Off Gradients in Image and Text Encoder
+Parameters to be updated: {'adapter.fc.0.weight', 'adapter.fc.2.weight'}
+Build Evaluator: Classification
+epoch [1/5] batch [5/124] loss 3.9531 (3.8109) acc 1.5625 (3.1250) lr 1.0000e-05 eta 0:03:58
+epoch [1/5] batch [10/124] loss 3.7402 (3.8197) acc 1.5625 (3.1250) lr 1.0000e-05 eta 0:02:05
+epoch [1/5] batch [15/124] loss 3.9609 (3.7814) acc 6.2500 (3.5417) lr 1.0000e-05 eta 0:01:27
+epoch [1/5] batch [20/124] loss 3.3496 (3.7585) acc 4.6875 (3.9062) lr 1.0000e-05 eta 0:01:08
+epoch [1/5] batch [25/124] loss 3.7324 (3.7445) acc 0.0000 (3.5000) lr 1.0000e-05 eta 0:00:56
+epoch [1/5] batch [30/124] loss 3.5059 (3.7473) acc 12.5000 (3.9583) lr 1.0000e-05 eta 0:00:48
+epoch [1/5] batch [35/124] loss 3.5723 (3.7427) acc 3.1250 (3.8839) lr 1.0000e-05 eta 0:00:43
+epoch [1/5] batch [40/124] loss 3.7578 (3.7319) acc 3.1250 (4.0234) lr 1.0000e-05 eta 0:00:40
+epoch [1/5] batch [45/124] loss 3.5996 (3.7301) acc 4.6875 (4.1319) lr 1.0000e-05 eta 0:00:36
+epoch [1/5] batch [50/124] loss 3.4316 (3.7296) acc 6.2500 (4.0938) lr 1.0000e-05 eta 0:00:34
+epoch [1/5] batch [55/124] loss 3.4004 (3.7311) acc 6.2500 (4.1477) lr 1.0000e-05 eta 0:00:32
+epoch [1/5] batch [60/124] loss 3.2949 (3.7218) acc 12.5000 (4.2708) lr 1.0000e-05 eta 0:00:30
+epoch [1/5] batch [65/124] loss 3.6152 (3.7286) acc 1.5625 (4.2788) lr 1.0000e-05 eta 0:00:29
+epoch [1/5] batch [70/124] loss 3.7695 (3.7396) acc 3.1250 (4.1964) lr 1.0000e-05 eta 0:00:28
+epoch [1/5] batch [75/124] loss 3.6035 (3.7408) acc 0.0000 (4.1042) lr 1.0000e-05 eta 0:00:27
+epoch [1/5] batch [80/124] loss 3.7266 (3.7413) acc 6.2500 (4.0820) lr 1.0000e-05 eta 0:00:26
+epoch [1/5] batch [85/124] loss 3.6836 (3.7375) acc 1.5625 (4.0074) lr 1.0000e-05 eta 0:00:25
+epoch [1/5] batch [90/124] loss 3.4551 (3.7383) acc 6.2500 (3.9583) lr 1.0000e-05 eta 0:00:24
+epoch [1/5] batch [95/124] loss 3.4141 (3.7361) acc 6.2500 (4.0954) lr 1.0000e-05 eta 0:00:23
+epoch [1/5] batch [100/124] loss 3.5820 (3.7279) acc 4.6875 (4.0938) lr 1.0000e-05 eta 0:00:23
+epoch [1/5] batch [105/124] loss 3.4473 (3.7239) acc 10.9375 (4.1667) lr 1.0000e-05 eta 0:00:22
+epoch [1/5] batch [110/124] loss 3.8457 (3.7288) acc 4.6875 (4.1619) lr 1.0000e-05 eta 0:00:21
+epoch [1/5] batch [115/124] loss 3.7539 (3.7284) acc 6.2500 (4.1440) lr 1.0000e-05 eta 0:00:21
+epoch [1/5] batch [120/124] loss 3.8223 (3.7236) acc 6.2500 (4.1797) lr 1.0000e-05 eta 0:00:20
+epoch [2/5] batch [5/124] loss 3.4219 (3.6582) acc 4.6875 (4.3750) lr 2.0000e-03 eta 0:01:15
+epoch [2/5] batch [10/124] loss 3.7754 (3.5613) acc 4.6875 (4.2188) lr 2.0000e-03 eta 0:00:44
+epoch [2/5] batch [15/124] loss 2.9531 (3.3602) acc 10.9375 (5.2083) lr 2.0000e-03 eta 0:00:32
+epoch [2/5] batch [20/124] loss 2.2832 (3.1712) acc 14.0625 (7.0312) lr 2.0000e-03 eta 0:00:27
+epoch [2/5] batch [25/124] loss 1.4482 (2.8771) acc 45.3125 (12.6250) lr 2.0000e-03 eta 0:00:24
+epoch [2/5] batch [30/124] loss 0.9482 (2.6040) acc 71.8750 (20.4167) lr 2.0000e-03 eta 0:00:22
+epoch [2/5] batch [35/124] loss 0.9038 (2.3427) acc 70.3125 (28.0804) lr 2.0000e-03 eta 0:00:20
+epoch [2/5] batch [40/124] loss 0.5112 (2.1187) acc 81.2500 (34.9609) lr 2.0000e-03 eta 0:00:19
+epoch [2/5] batch [45/124] loss 0.4697 (1.9458) acc 82.8125 (39.9653) lr 2.0000e-03 eta 0:00:18
+epoch [2/5] batch [50/124] loss 0.4763 (1.8133) acc 82.8125 (43.8438) lr 2.0000e-03 eta 0:00:17
+epoch [2/5] batch [55/124] loss 0.5532 (1.6944) acc 82.8125 (47.4148) lr 2.0000e-03 eta 0:00:17
+epoch [2/5] batch [60/124] loss 0.5786 (1.5986) acc 78.1250 (50.0260) lr 2.0000e-03 eta 0:00:16
+epoch [2/5] batch [65/124] loss 0.3860 (1.5159) acc 87.5000 (52.4038) lr 2.0000e-03 eta 0:00:16
+epoch [2/5] batch [70/124] loss 0.6445 (1.4475) acc 82.8125 (54.4420) lr 2.0000e-03 eta 0:00:15
+epoch [2/5] batch [75/124] loss 0.6279 (1.3851) acc 73.4375 (56.2500) lr 2.0000e-03 eta 0:00:15
+epoch [2/5] batch [80/124] loss 0.4658 (1.3327) acc 85.9375 (57.8516) lr 2.0000e-03 eta 0:00:14
+epoch [2/5] batch [85/124] loss 0.5840 (1.2860) acc 79.6875 (59.2463) lr 2.0000e-03 eta 0:00:14
+epoch [2/5] batch [90/124] loss 0.2920 (1.2378) acc 90.6250 (60.7292) lr 2.0000e-03 eta 0:00:14
+epoch [2/5] batch [95/124] loss 0.4214 (1.2000) acc 84.3750 (61.8092) lr 2.0000e-03 eta 0:00:13
+epoch [2/5] batch [100/124] loss 0.3433 (1.1653) acc 89.0625 (62.8281) lr 2.0000e-03 eta 0:00:13
+epoch [2/5] batch [105/124] loss 0.5015 (1.1338) acc 82.8125 (63.7054) lr 2.0000e-03 eta 0:00:13
+epoch [2/5] batch [110/124] loss 0.3428 (1.1019) acc 87.5000 (64.6875) lr 2.0000e-03 eta 0:00:13
+epoch [2/5] batch [115/124] loss 0.5225 (1.0752) acc 84.3750 (65.4891) lr 2.0000e-03 eta 0:00:12
+epoch [2/5] batch [120/124] loss 0.5078 (1.0519) acc 82.8125 (66.1719) lr 2.0000e-03 eta 0:00:12
+epoch [3/5] batch [5/124] loss 0.2920 (0.5440) acc 90.6250 (81.5625) lr 1.8090e-03 eta 0:00:57
+epoch [3/5] batch [10/124] loss 0.3862 (0.4869) acc 89.0625 (82.9688) lr 1.8090e-03 eta 0:00:33
+epoch [3/5] batch [15/124] loss 0.5376 (0.4841) acc 82.8125 (82.5000) lr 1.8090e-03 eta 0:00:24
+epoch [3/5] batch [20/124] loss 0.4524 (0.4696) acc 82.8125 (83.4375) lr 1.8090e-03 eta 0:00:20
+epoch [3/5] batch [25/124] loss 0.4797 (0.4865) acc 85.9375 (82.7500) lr 1.8090e-03 eta 0:00:17
+epoch [3/5] batch [30/124] loss 0.3784 (0.4763) acc 89.0625 (83.2292) lr 1.8090e-03 eta 0:00:15
+epoch [3/5] batch [35/124] loss 0.6084 (0.4848) acc 79.6875 (82.9018) lr 1.8090e-03 eta 0:00:14
+epoch [3/5] batch [40/124] loss 0.5112 (0.4817) acc 79.6875 (83.0859) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [45/124] loss 0.5234 (0.4839) acc 79.6875 (83.0556) lr 1.8090e-03 eta 0:00:13
+epoch [3/5] batch [50/124] loss 0.3997 (0.4871) acc 84.3750 (83.0000) lr 1.8090e-03 eta 0:00:12
+epoch [3/5] batch [55/124] loss 0.7188 (0.4911) acc 71.8750 (82.8125) lr 1.8090e-03 eta 0:00:12
+epoch [3/5] batch [60/124] loss 0.4946 (0.4895) acc 84.3750 (82.8906) lr 1.8090e-03 eta 0:00:11
+epoch [3/5] batch [65/124] loss 0.3953 (0.4905) acc 84.3750 (82.9087) lr 1.8090e-03 eta 0:00:11
+epoch [3/5] batch [70/124] loss 0.3938 (0.4873) acc 85.9375 (83.0804) lr 1.8090e-03 eta 0:00:10
+epoch [3/5] batch [75/124] loss 0.4241 (0.4829) acc 85.9375 (83.1875) lr 1.8090e-03 eta 0:00:10
+epoch [3/5] batch [80/124] loss 0.6758 (0.4829) acc 78.1250 (83.2031) lr 1.8090e-03 eta 0:00:10
+epoch [3/5] batch [85/124] loss 0.4878 (0.4865) acc 81.2500 (83.1066) lr 1.8090e-03 eta 0:00:10
+epoch [3/5] batch [90/124] loss 0.5034 (0.4829) acc 75.0000 (83.1944) lr 1.8090e-03 eta 0:00:09
+epoch [3/5] batch [95/124] loss 0.4448 (0.4823) acc 78.1250 (83.0592) lr 1.8090e-03 eta 0:00:09
+epoch [3/5] batch [100/124] loss 0.3237 (0.4813) acc 89.0625 (83.1094) lr 1.8090e-03 eta 0:00:09
+epoch [3/5] batch [105/124] loss 0.4607 (0.4838) acc 82.8125 (82.9315) lr 1.8090e-03 eta 0:00:09
+epoch [3/5] batch [110/124] loss 0.6802 (0.4871) acc 78.1250 (82.7983) lr 1.8090e-03 eta 0:00:08
+epoch [3/5] batch [115/124] loss 0.4849 (0.4879) acc 85.9375 (82.7310) lr 1.8090e-03 eta 0:00:08
+epoch [3/5] batch [120/124] loss 0.4707 (0.4879) acc 82.8125 (82.7344) lr 1.8090e-03 eta 0:00:08
+epoch [4/5] batch [5/124] loss 0.5068 (0.5530) acc 79.6875 (81.2500) lr 1.3090e-03 eta 0:00:36
+epoch [4/5] batch [10/124] loss 0.4104 (0.4957) acc 90.6250 (82.8125) lr 1.3090e-03 eta 0:00:21
+epoch [4/5] batch [15/124] loss 0.5049 (0.4830) acc 78.1250 (83.5417) lr 1.3090e-03 eta 0:00:15
+epoch [4/5] batch [20/124] loss 0.5703 (0.4969) acc 76.5625 (82.7344) lr 1.3090e-03 eta 0:00:12
+epoch [4/5] batch [25/124] loss 0.3926 (0.4923) acc 85.9375 (82.6250) lr 1.3090e-03 eta 0:00:11
+epoch [4/5] batch [30/124] loss 0.4280 (0.4911) acc 79.6875 (82.6562) lr 1.3090e-03 eta 0:00:10
+epoch [4/5] batch [35/124] loss 0.5371 (0.4858) acc 78.1250 (82.8571) lr 1.3090e-03 eta 0:00:09
+epoch [4/5] batch [40/124] loss 0.5005 (0.4965) acc 81.2500 (82.3438) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [45/124] loss 0.5161 (0.5028) acc 78.1250 (81.9444) lr 1.3090e-03 eta 0:00:08
+epoch [4/5] batch [50/124] loss 0.5215 (0.4995) acc 84.3750 (82.0938) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [55/124] loss 0.6006 (0.5023) acc 81.2500 (81.9602) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [60/124] loss 0.7476 (0.5026) acc 70.3125 (81.9271) lr 1.3090e-03 eta 0:00:07
+epoch [4/5] batch [65/124] loss 0.5386 (0.5081) acc 82.8125 (81.8269) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [70/124] loss 0.4692 (0.5028) acc 82.8125 (82.0312) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [75/124] loss 0.4922 (0.5031) acc 81.2500 (81.9583) lr 1.3090e-03 eta 0:00:06
+epoch [4/5] batch [80/124] loss 0.5352 (0.5011) acc 76.5625 (81.9531) lr 1.3090e-03 eta 0:00:05
+epoch [4/5] batch [85/124] loss 0.5728 (0.5038) acc 78.1250 (81.8015) lr 1.3090e-03 eta 0:00:05
+epoch [4/5] batch [90/124] loss 0.6406 (0.5032) acc 73.4375 (81.7361) lr 1.3090e-03 eta 0:00:05
+epoch [4/5] batch [95/124] loss 0.3826 (0.5026) acc 90.6250 (81.8586) lr 1.3090e-03 eta 0:00:05
+epoch [4/5] batch [100/124] loss 0.4270 (0.4990) acc 79.6875 (81.9844) lr 1.3090e-03 eta 0:00:05
+epoch [4/5] batch [105/124] loss 0.5537 (0.5022) acc 82.8125 (81.9345) lr 1.3090e-03 eta 0:00:04
+epoch [4/5] batch [110/124] loss 0.5244 (0.5034) acc 84.3750 (81.8608) lr 1.3090e-03 eta 0:00:04
+epoch [4/5] batch [115/124] loss 0.5195 (0.5036) acc 79.6875 (81.8478) lr 1.3090e-03 eta 0:00:04
+epoch [4/5] batch [120/124] loss 0.5171 (0.5011) acc 81.2500 (82.0443) lr 1.3090e-03 eta 0:00:04
+epoch [5/5] batch [5/124] loss 0.5278 (0.5533) acc 79.6875 (79.0625) lr 6.9098e-04 eta 0:00:16
+epoch [5/5] batch [10/124] loss 0.4409 (0.5232) acc 85.9375 (81.5625) lr 6.9098e-04 eta 0:00:09
+epoch [5/5] batch [15/124] loss 0.6016 (0.5323) acc 75.0000 (81.2500) lr 6.9098e-04 eta 0:00:07
+epoch [5/5] batch [20/124] loss 0.4785 (0.5208) acc 87.5000 (81.7188) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [25/124] loss 0.4709 (0.5304) acc 82.8125 (81.0000) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [30/124] loss 0.5112 (0.5246) acc 81.2500 (81.0938) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [35/124] loss 0.4443 (0.5129) acc 84.3750 (81.4732) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [40/124] loss 0.4849 (0.5145) acc 84.3750 (81.3672) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [45/124] loss 0.7437 (0.5211) acc 70.3125 (80.9375) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [50/124] loss 0.2637 (0.5106) acc 92.1875 (81.3750) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [55/124] loss 0.4426 (0.5100) acc 87.5000 (81.5341) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [60/124] loss 0.5605 (0.5030) acc 78.1250 (81.7969) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [65/124] loss 0.3518 (0.4992) acc 85.9375 (81.8990) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [70/124] loss 0.3347 (0.4940) acc 92.1875 (82.2098) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [75/124] loss 0.4277 (0.4919) acc 87.5000 (82.3542) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [80/124] loss 0.6040 (0.4932) acc 78.1250 (82.2656) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [85/124] loss 0.3096 (0.4880) acc 92.1875 (82.5000) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [90/124] loss 0.4680 (0.4887) acc 81.2500 (82.4132) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [95/124] loss 0.4705 (0.4862) acc 81.2500 (82.5493) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [100/124] loss 0.3872 (0.4833) acc 85.9375 (82.5938) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [105/124] loss 0.5659 (0.4835) acc 81.2500 (82.7232) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [110/124] loss 0.4922 (0.4857) acc 79.6875 (82.6705) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [115/124] loss 0.5322 (0.4850) acc 79.6875 (82.6766) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [120/124] loss 0.6797 (0.4868) acc 73.4375 (82.6432) lr 6.9098e-04 eta 0:00:00
+Model Saved to: output/CLIPAdapter-ViTB32-PACS-art_painting/model.pth.tar-5
+Finish Training
+Evaluate on the Test Set
+----------  ------
+Total #     2,048
+Correct #   1,893
+Accuracy    92.43%
+Error Rate  7.57%
+Macro_F1    92.45%
+----------  ------

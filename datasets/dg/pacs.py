@@ -35,7 +35,7 @@ class PACS(DatasetBase):
         train_data = self.read_data(cfg.DATASET.SOURCE_DOMAINS, "all")
         val_data = self.read_data(cfg.DATASET.SOURCE_DOMAINS, "crossval")
         test_data = self.read_data(cfg.DATASET.TARGET_DOMAINS, "all")
-
+        
         super().__init__(
             dataset_dir=self._dataset_dir,
             domains=self._domains,

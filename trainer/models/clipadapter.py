@@ -27,7 +27,7 @@ class Adapter(nn.Module):
 
 
 class CustomCLIP(nn.Module):
-    def __init__(self, cfg, class_names, clip_model, domain_names):
+    def __init__(self, cfg, class_names, clip_model):
         super().__init__()
         self.image_encoder = clip_model.visual
         self.logit_scale = clip_model.logit_scale
@@ -37,6 +37,7 @@ class CustomCLIP(nn.Module):
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
         self.adapter = Adapter(512, 4).to(clip_model.dtype)
         self.dtype = clip_model.dtype
+        domain_names = cfg.DATASET.SOURCE_DOMAINS
         
         print("Class: ", class_names)
         print("Domains: ", domain_names)
@@ -49,13 +50,19 @@ class CustomCLIP(nn.Module):
             for class_name in class_names
         ] """
         
+        """ prompts = [
+            prompt_template.format(domain_name.replace("_", " ") + ' ' + class_name.replace("_", " "))
+            for domain_name in domain_names for class_name in class_names
+        ] """
+        
         prompts = [
             prompt_template.format(domain_name.replace("_", " ") + ' ' + class_name.replace("_", " "))
             for domain_name in domain_names for class_name in class_names
         ]
         
-        print("Prompts:", prompts)
-        # print("Class name: ", class_names)
+        print(prompts)
+        print(len(prompts))
+        exit()
         
         prompts = torch.cat([clip.tokenize(prompt) for prompt in prompts])
         prompts = prompts.to(torch.cuda.current_device())
@@ -67,6 +74,7 @@ class CustomCLIP(nn.Module):
             )
         
         # print("Text features:", self.text_features)
+        print("Text features shape:", self.text_features.shape) # Text features shape: torch.Size([28, 512])
 
     def forward(self, image):
         adapter_ratio = 0.2
@@ -81,12 +89,21 @@ class CustomCLIP(nn.Module):
         image_features = (
             adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features
         )
-        # 正则化，避免gradient更新过快 将数据10 20 30变为1 2 3的过程
+        # regularization, avoid updating gradient too fast
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+        
+        # Image features shape: torch.Size([64, 512])
+        # print("Image features shape:", image_features.shape) 
 
         # Calculate similarity
         logit_scale = self.logit_scale.exp()
         logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
+        
+        # print("Logits: ", logits.shape) # Logits:  torch.Size([64, 28])
+        topk_values, topk_indices = torch.topk(logits, k=4, dim=1)
+
+        # print("Top 4 scores for each image:", topk_values)
+        # print("Top 4 class indices for each image:", topk_indices)
 
         return logits
 
@@ -112,7 +129,7 @@ class CLIPAdapter(Trainer):
 
         print("Building Custom CLIP")
         self.model = CustomCLIP(
-            self.cfg, self.data_manager.dataset.class_names, clip_model, self.data_manager.dataset.domains
+            self.cfg, self.data_manager.dataset.class_names, clip_model
         )
 
         print("Turning Off Gradients in Image and Text Encoder")
