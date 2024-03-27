@@ -115,7 +115,9 @@ class RISE(Trainer):
 
         # --- Classification Loss
         classification_loss = F.cross_entropy(student_logits, class_label)
-
+        """ print("Class label: ", class_label)
+        exit() """
+        
         # --- Distillation Loss
         distillation_loss = (
             F.kl_div(

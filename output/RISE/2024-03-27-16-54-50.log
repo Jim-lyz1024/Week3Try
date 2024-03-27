@@ -1,0 +1,122 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: PACS
+gpu: 0
+model: RISE
+model_config_file: config/rise.yaml
+output_dir: output/RISE
+root: ./data/
+seed: 42
+source_domains: ['cartoon', 'photo', 'sketch']
+target_domains: ['art_painting']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 128
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: PACS
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['cartoon', 'photo', 'sketch']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['art_painting']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  NAME: RISE
+  RISE:
+    BACKBONE: ViT-B/32
+    LOSS_WEIGHT:
+      CLASSIFICATION: 0.1
+      DISTANCE: 0.5
+      DISTILLATION: 0.9
+    STUDENT_NETWORK: resnet18
+    TEMPERATURE: 3.0
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.001
+  LR_SCHEDULER: StepLR
+  MAX_EPOCH: 50
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: 16
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: -1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: none
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/RISE
+SEED: 42
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: RISE
+Build Dataset: PACS
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ------------------------------
+Dataset         PACS
+Source Domains  ['cartoon', 'photo', 'sketch']
+Target Domains  ['art_painting']
+# Classes       7
+# Train Data    7,942
+# Val Data      806
+# Test Data     2,048
+--------------  ------------------------------
+Loading CLIP Backbone: ViT-B/32
+Distillation_Loss_Weight: 0.9
+Classification_Loss_Weight: 0.1
+Distance Loss Weight: 0.5
+Temperature: 3.0
+Build Evaluator: Classification
+Class label:  tensor([6, 5, 0, 2, 1, 2, 5, 3, 4, 4, 3, 6, 4, 5, 6, 6, 4, 1, 0, 1, 2, 0, 2, 4,
+        0, 5, 3, 1, 2, 2, 6, 1, 5, 0, 6, 4, 0, 4, 3, 1, 3, 3, 6, 4, 2, 4, 5, 4,
+        4, 2, 1, 2, 0, 4, 2, 4, 2, 3, 5, 4, 1, 6, 5, 2, 0, 0, 0, 3, 0, 2, 6, 2,
+        0, 1, 4, 4, 1, 0, 0, 0, 4, 2, 6, 3, 2, 0, 4, 1, 1, 0, 4, 1, 6, 0, 6, 1,
+        3, 0, 2, 6, 3, 2, 0, 4, 6, 0, 0, 4, 5, 4, 3, 1, 4, 0, 6, 2, 1, 4, 0, 4,
+        4, 3, 1, 4, 2, 0, 4, 3], device='cuda:0')
