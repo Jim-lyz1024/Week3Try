@@ -50,26 +50,49 @@ class CustomCLIP(nn.Module):
             for class_name in class_names
         ] """
         
-        prompts = [
+        """ prompts = [
             prompt_template.format(domain_name.replace("_", " ") + ' ' + class_name.replace("_", " "))
             for domain_name in domain_names for class_name in class_names
         ]
         
-        print(prompts)
-        print("Number of prompts:", len(prompts))
-        exit()
+        print("Prompts:", prompts)
+        exit() """
         
-        prompts = torch.cat([clip.tokenize(prompt) for prompt in prompts])
+        # Generate prompts for each domain
+        prompts_domain = {}
+        for domain in domain_names:
+            prompts_domain[domain] = [
+            prompt_template.format(domain.replace("_", " ") + ' ' + class_name.replace("_", " "))
+            for class_name in class_names
+        ]
+        
+        print(prompts_domain)
+        # exit()
+        
+        """ prompts = torch.cat([clip.tokenize(prompt) for prompt in prompts])
         prompts = prompts.to(torch.cuda.current_device())
 
         with torch.no_grad():
             self.text_features = clip_model.encode_text(prompts)
             self.text_features = self.text_features / self.text_features.norm(
                 dim=-1, keepdim=True
-            )
+            ) """
+        
+        encoded_prompts = {}
+        for domain, prompts in prompts_domain.items():
+            tokenized_prompts = [clip.tokenize(prompt) for prompt in prompts]
+            # Flatten the list of tokenized prompts
+            tokenized_prompts = torch.cat(tokenized_prompts).to(torch.cuda.current_device())
+            
+            # Obtain text features for each domain's prompts
+            with torch.no_grad():
+                encoded_prompts[domain] = clip_model.encode_text(tokenized_prompts)
+                encoded_prompts[domain] = encoded_prompts[domain] / encoded_prompts[domain].norm(dim=-1, keepdim=True)
+
         
         # print("Text features:", self.text_features)
-        print("Text features shape:", self.text_features.shape) # Text features shape: torch.Size([28, 512])
+        # print("Text features shape:", self.text_features.shape) # Text features shape: torch.Size([28, 512])
+        print("Encoded prompts (cartoon):", encoded_prompts['sketch'].shape) # torch.Size([7, 512]
         exit()
 
     def forward(self, image):
@@ -96,7 +119,7 @@ class CustomCLIP(nn.Module):
         logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
         
         # print("Logits: ", logits.shape) # Logits:  torch.Size([64, 28])
-        topk_values, topk_indices = torch.topk(logits, k=4, dim=1)
+        # topk_values, topk_indices = torch.topk(logits, k=4, dim=1)
 
         # print("Top 4 scores for each image:", topk_values)
         # print("Top 4 class indices for each image:", topk_indices)
