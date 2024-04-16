@@ -27,3 +27,11 @@ print("3D Tensor:\n", tensor_3d)
 names = ["alice", "bob", "charlie"]
 upper_names = [name.upper() for name in names]
 print(upper_names)  # Output: ['ALICE', 'BOB', 'CHARLIE']
+
+def is_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, n):
+        if n % i == 0:
+            return False
+    return True

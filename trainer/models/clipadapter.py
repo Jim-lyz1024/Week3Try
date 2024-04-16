@@ -50,16 +50,12 @@ class CustomCLIP(nn.Module):
             for class_name in class_names
         ] """
         
-        """ prompts = [
-            prompt_template.format(domain_name.replace("_", " ") + ' ' + class_name.replace("_", " "))
-            for domain_name in domain_names for class_name in class_names
-        ]
-        
-        print("Prompts:", prompts)
-        exit() """
-        
         # Generate prompts for each domain
         prompts_domain = {}
+        
+        prompts_original = [prompt_template.format(class_name.replace("_", " ")) for class_name in class_names]
+        prompts_domain['original'] = prompts_original
+        
         for domain in domain_names:
             prompts_domain[domain] = [
             prompt_template.format(domain.replace("_", " ") + ' ' + class_name.replace("_", " "))
@@ -78,7 +74,7 @@ class CustomCLIP(nn.Module):
                 dim=-1, keepdim=True
             ) """
         
-        encoded_prompts = {}
+        self.text_features = {}
         for domain, prompts in prompts_domain.items():
             tokenized_prompts = [clip.tokenize(prompt) for prompt in prompts]
             # Flatten the list of tokenized prompts
@@ -86,14 +82,13 @@ class CustomCLIP(nn.Module):
             
             # Obtain text features for each domain's prompts
             with torch.no_grad():
-                encoded_prompts[domain] = clip_model.encode_text(tokenized_prompts)
-                encoded_prompts[domain] = encoded_prompts[domain] / encoded_prompts[domain].norm(dim=-1, keepdim=True)
+                self.text_features[domain] = clip_model.encode_text(tokenized_prompts)
+                self.text_features[domain] = self.text_features[domain] / self.text_features[domain].norm(dim=-1, keepdim=True)
 
-        
         # print("Text features:", self.text_features)
         # print("Text features shape:", self.text_features.shape) # Text features shape: torch.Size([28, 512])
-        print("Encoded prompts (cartoon):", encoded_prompts['sketch'].shape) # torch.Size([7, 512]
-        exit()
+        print("Encoded prompts (cartoon):", self.text_features['cartoon'].shape) # torch.Size([7, 512]
+        # exit()
 
     def forward(self, image):
         adapter_ratio = 0.2
@@ -113,20 +108,22 @@ class CustomCLIP(nn.Module):
         
         # Image features shape: torch.Size([64, 512])
         # print("Image features shape:", image_features.shape) 
-
+        
         # Calculate similarity
         logit_scale = self.logit_scale.exp()
-        logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
         
-        # print("Logits: ", logits.shape) # Logits:  torch.Size([64, 28])
-        # topk_values, topk_indices = torch.topk(logits, k=4, dim=1)
+        # Calculate logits for each domain
+        # logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
+        logits_domain = {}
+        for domain, text_feature in self.text_features.items():
+            logits_domain[domain] = logit_scale * image_features @ text_feature.t()
+        
+        # print(f"Logits domain (cartoon): {logits_domain['cartoon'].shape}")
+        # exit()
 
-        # print("Top 4 scores for each image:", topk_values)
-        # print("Top 4 class indices for each image:", topk_indices)
+        return logits_domain
 
-        return logits
-
-
+ 
 @MODEL_REGISTRY.register()
 class CLIPAdapter(Trainer):
     """CLIP-Adapter
@@ -179,8 +176,23 @@ class CLIPAdapter(Trainer):
 
     def forward_backward(self, batch_data):
         image, class_label = self.parse_batch_train(batch_data)
-        output = self.model(image)
-        loss = F.cross_entropy(output, class_label)
+        logits_domain = self.model(image)
+        
+        # print("Logits domain:", logits_domain)
+        
+        # Initialize a dictionary to store loss for each domain
+        losses_domain = {}
+        total_loss = 0
+        
+        for domain_name, output in logits_domain.items():
+            loss_by_domain = F.cross_entropy(output, class_label)
+            losses_domain[domain_name] = loss_by_domain
+            total_loss += loss_by_domain
+        loss = total_loss / len(losses_domain)
+        
+        print("Losses domain:", losses_domain)
+        print("Loss:", loss)
+        exit()
 
         self.model_backward_and_update(loss)
 
