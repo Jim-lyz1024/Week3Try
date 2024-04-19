@@ -3,6 +3,7 @@ from collections import OrderedDict
 import numpy as np
 from sklearn.metrics import f1_score
 from tabulate import tabulate
+import torch
 
 from .build_evaluator import EVALUATOR_REGISTRY
 
@@ -22,7 +23,10 @@ class Classification:
         self._y_pred = []
 
     def process(self, model_output, ground_truth):
-        pred = model_output.max(1)[1]
+        all_domains = torch.cat(list(model_output.values()), dim=1) # Concatenate all domain tensors along the second dimension
+        # All Domains: torch.Size([64, 28])
+        pred = all_domains.max(1)[1] % 7
+        # pred = model_output.max(1)[1]
         matches = pred.eq(ground_truth).float()
         self._correct += int(matches.sum().item())
         self._total += ground_truth.shape[0]
@@ -35,6 +39,7 @@ class Classification:
         error_rate = 100.0 - accuracy
         macro_f1 = 100.0 * f1_score(
             self._y_true, self._y_pred, average="macro", labels=np.unique(self._y_true)
+            
         )
 
         results["accuracy"] = accuracy
