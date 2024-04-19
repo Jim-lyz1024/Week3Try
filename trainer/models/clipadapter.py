@@ -37,18 +37,25 @@ class CustomCLIP(nn.Module):
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
         self.adapter = Adapter(512, 4).to(clip_model.dtype)
         self.dtype = clip_model.dtype
+        self.mode = 'train'  # default mode
         
-        domain_names = cfg.DATASET.SOURCE_DOMAINS
+        # domain_names = cfg.DATASET.SOURCE_DOMAINS
+        
+        if self.mode == 'train':
+            domain_names = cfg.DATASET.SOURCE_DOMAINS
+        elif self.mode == 'eval':
+            domain_names = cfg.DATASET.TARGET_DOMAINS
+        else:
+            raise ValueError("Invalid mode. Expected 'train' or 'eval', got {}".format(self.mode))
+        
+        print("Mode:", self.mode)
+
+        
         print("Class:", class_names)
         print("Domains:", domain_names)
 
         # Construct Prompts
         prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
-        
-        """ prompts = [
-            prompt_template.format(class_name.replace("_", " "))
-            for class_name in class_names
-        ] """
         
         # Generate prompts for each domain
         prompts_domain = {}
@@ -190,9 +197,8 @@ class CLIPAdapter(Trainer):
             total_loss += loss_by_domain
         loss = total_loss / len(losses_domain)
         
-        print("Losses domain:", losses_domain)
-        print("Loss:", loss)
-        exit()
+        # print("Losses domain:", losses_domain)
+        # print("Loss:", loss)
 
         self.model_backward_and_update(loss)
 
