@@ -1,0 +1,172 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: PACS
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-PACS-art_painting
+root: ./data/
+seed: 134
+source_domains: ['cartoon', 'photo', 'art_painting']
+target_domains: ['sketch']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: PACS
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['cartoon', 'photo', 'art_painting']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['sketch']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 2
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-PACS-art_painting
+SEED: 134
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: PACS
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ------------------------------------
+Dataset         PACS
+Source Domains  ['cartoon', 'photo', 'art_painting']
+Target Domains  ['sketch']
+# Classes       7
+# Train Data    6,062
+# Val Data      616
+# Test Data     3,928
+--------------  ------------------------------------
+Loading CLIP Backbone: ViT-B/32
+Building Custom CLIP
+{'original': ['a picture of a dog.', 'a picture of a elephant.', 'a picture of a giraffe.', 'a picture of a guitar.', 'a picture of a horse.', 'a picture of a house.', 'a picture of a person.'], 'cartoon': ['a picture of a cartoon dog.', 'a picture of a cartoon elephant.', 'a picture of a cartoon giraffe.', 'a picture of a cartoon guitar.', 'a picture of a cartoon horse.', 'a picture of a cartoon house.', 'a picture of a cartoon person.'], 'photo': ['a picture of a photo dog.', 'a picture of a photo elephant.', 'a picture of a photo giraffe.', 'a picture of a photo guitar.', 'a picture of a photo horse.', 'a picture of a photo house.', 'a picture of a photo person.'], 'art_painting': ['a picture of a art painting dog.', 'a picture of a art painting elephant.', 'a picture of a art painting giraffe.', 'a picture of a art painting guitar.', 'a picture of a art painting horse.', 'a picture of a art painting house.', 'a picture of a art painting person.']}
+Turning Off Gradients in Image and Text Encoder
+Parameters to be updated: {'adapter.fc.2.weight', 'adapter.fc.0.weight'}
+Build Evaluator: Classification
+epoch [1/2] batch [5/94] loss 0.2571 (0.3053) acc 92.1875 (90.6250) lr 1.0000e-05 eta 0:01:26
+epoch [1/2] batch [10/94] loss 0.2715 (0.3135) acc 92.1875 (90.0000) lr 1.0000e-05 eta 0:00:43
+epoch [1/2] batch [15/94] loss 0.3987 (0.3228) acc 87.5000 (89.7917) lr 1.0000e-05 eta 0:00:28
+epoch [1/2] batch [20/94] loss 0.3926 (0.3385) acc 85.9375 (89.2188) lr 1.0000e-05 eta 0:00:21
+epoch [1/2] batch [25/94] loss 0.3577 (0.3362) acc 87.5000 (89.5625) lr 1.0000e-05 eta 0:00:17
+epoch [1/2] batch [30/94] loss 0.4204 (0.3279) acc 89.0625 (89.9479) lr 1.0000e-05 eta 0:00:14
+epoch [1/2] batch [35/94] loss 0.4204 (0.3389) acc 89.0625 (89.6875) lr 1.0000e-05 eta 0:00:12
+epoch [1/2] batch [40/94] loss 0.3423 (0.3334) acc 89.0625 (89.8438) lr 1.0000e-05 eta 0:00:10
+epoch [1/2] batch [45/94] loss 0.2223 (0.3312) acc 92.1875 (89.8611) lr 1.0000e-05 eta 0:00:09
+epoch [1/2] batch [50/94] loss 0.3728 (0.3330) acc 90.6250 (89.8438) lr 1.0000e-05 eta 0:00:08
+epoch [1/2] batch [55/94] loss 0.3572 (0.3294) acc 92.1875 (90.1136) lr 1.0000e-05 eta 0:00:07
+epoch [1/2] batch [60/94] loss 0.2617 (0.3313) acc 92.1875 (90.1562) lr 1.0000e-05 eta 0:00:07
+epoch [1/2] batch [65/94] loss 0.2625 (0.3285) acc 92.1875 (90.2404) lr 1.0000e-05 eta 0:00:06
+epoch [1/2] batch [70/94] loss 0.2830 (0.3257) acc 93.7500 (90.4241) lr 1.0000e-05 eta 0:00:06
+epoch [1/2] batch [75/94] loss 0.3237 (0.3248) acc 90.6250 (90.4792) lr 1.0000e-05 eta 0:00:05
+epoch [1/2] batch [80/94] loss 0.3525 (0.3300) acc 92.1875 (90.3320) lr 1.0000e-05 eta 0:00:05
+epoch [1/2] batch [85/94] loss 0.3428 (0.3258) acc 90.6250 (90.4412) lr 1.0000e-05 eta 0:00:04
+epoch [1/2] batch [90/94] loss 0.3589 (0.3260) acc 87.5000 (90.3646) lr 1.0000e-05 eta 0:00:04
+epoch [2/2] batch [5/94] loss 0.3088 (0.3776) acc 92.1875 (86.2500) lr 2.0000e-03 eta 0:00:18
+epoch [2/2] batch [10/94] loss 0.4893 (0.3510) acc 85.9375 (88.7500) lr 2.0000e-03 eta 0:00:09
+epoch [2/2] batch [15/94] loss 0.4028 (0.3402) acc 85.9375 (89.0625) lr 2.0000e-03 eta 0:00:06
+epoch [2/2] batch [20/94] loss 0.4900 (0.3453) acc 85.9375 (88.9062) lr 2.0000e-03 eta 0:00:05
+epoch [2/2] batch [25/94] loss 0.2544 (0.3398) acc 90.6250 (89.3125) lr 2.0000e-03 eta 0:00:04
+epoch [2/2] batch [30/94] loss 0.3960 (0.3307) acc 87.5000 (89.7396) lr 2.0000e-03 eta 0:00:03
+epoch [2/2] batch [35/94] loss 0.2722 (0.3316) acc 93.7500 (89.8214) lr 2.0000e-03 eta 0:00:02
+epoch [2/2] batch [40/94] loss 0.2756 (0.3286) acc 90.6250 (89.8828) lr 2.0000e-03 eta 0:00:02
+epoch [2/2] batch [45/94] loss 0.2194 (0.3251) acc 96.8750 (90.1042) lr 2.0000e-03 eta 0:00:02
+epoch [2/2] batch [50/94] loss 0.4414 (0.3268) acc 82.8125 (89.7812) lr 2.0000e-03 eta 0:00:01
+epoch [2/2] batch [55/94] loss 0.2676 (0.3247) acc 93.7500 (89.9148) lr 2.0000e-03 eta 0:00:01
+epoch [2/2] batch [60/94] loss 0.3176 (0.3234) acc 92.1875 (89.9479) lr 2.0000e-03 eta 0:00:01
+epoch [2/2] batch [65/94] loss 0.1440 (0.3212) acc 96.8750 (90.0000) lr 2.0000e-03 eta 0:00:01
+epoch [2/2] batch [70/94] loss 0.4424 (0.3234) acc 89.0625 (90.0223) lr 2.0000e-03 eta 0:00:00
+epoch [2/2] batch [75/94] loss 0.5400 (0.3256) acc 84.3750 (89.9375) lr 2.0000e-03 eta 0:00:00
+epoch [2/2] batch [80/94] loss 0.2954 (0.3243) acc 90.6250 (89.9609) lr 2.0000e-03 eta 0:00:00
+epoch [2/2] batch [85/94] loss 0.2075 (0.3225) acc 95.3125 (90.0551) lr 2.0000e-03 eta 0:00:00
+epoch [2/2] batch [90/94] loss 0.1984 (0.3213) acc 92.1875 (90.0521) lr 2.0000e-03 eta 0:00:00
+Model Saved to: output/CLIPAdapter-ViTB32-PACS-art_painting/model.pth.tar-2
+Finish Training
+Evaluate on the Test Set
+{'original': ['a picture of a dog.', 'a picture of a elephant.', 'a picture of a giraffe.', 'a picture of a guitar.', 'a picture of a horse.', 'a picture of a house.', 'a picture of a person.'], 'sketch': ['a picture of a sketch dog.', 'a picture of a sketch elephant.', 'a picture of a sketch giraffe.', 'a picture of a sketch guitar.', 'a picture of a sketch horse.', 'a picture of a sketch house.', 'a picture of a sketch person.']}
+{'original': tensor([[ 0.0130,  0.0088, -0.0393,  ..., -0.0427, -0.0132,  0.0195],
+        [ 0.0052,  0.0047, -0.0052,  ..., -0.0147,  0.0049,  0.0210],
+        [ 0.0317, -0.0136, -0.0396,  ..., -0.0195, -0.0196, -0.0251],
+        ...,
+        [ 0.0157, -0.0074, -0.0182,  ..., -0.0357, -0.0072,  0.0031],
+        [ 0.0065,  0.0099, -0.0113,  ..., -0.0518, -0.0119, -0.0191],
+        [ 0.0049,  0.0079, -0.0011,  ..., -0.0593, -0.0150, -0.0024]],
+       device='cuda:0', dtype=torch.float16), 'sketch': tensor([[ 0.0045,  0.0013, -0.0389,  ..., -0.0442, -0.0241, -0.0079],
+        [ 0.0118, -0.0171, -0.0183,  ..., -0.0056,  0.0075,  0.0037],
+        [ 0.0257, -0.0294, -0.0492,  ..., -0.0205, -0.0292, -0.0389],
+        ...,
+        [ 0.0087, -0.0015, -0.0203,  ..., -0.0215, -0.0091, -0.0145],
+        [ 0.0086,  0.0012, -0.0129,  ..., -0.0446, -0.0225, -0.0295],
+        [ 0.0069, -0.0049, -0.0189,  ..., -0.0632, -0.0164, -0.0311]],
+       device='cuda:0', dtype=torch.float16)}
+----------  ------
+Total #     3,928
+Correct #   3,492
+Accuracy    88.90%
+Error Rate  11.10%
+Macro_F1    90.85%
+----------  ------
