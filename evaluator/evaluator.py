@@ -25,8 +25,9 @@ class Classification:
     def process(self, model_output, ground_truth):
         all_domains = torch.cat(list(model_output.values()), dim=1) # Concatenate all domain tensors along the second dimension
         # All Domains: torch.Size([64, 28])
-        pred = all_domains.max(1)[1] % 7
         # pred = model_output.max(1)[1]
+        # pred = all_domains.max(1)[1] % 7
+        pred = all_domains.max(1)[1] % 10
         matches = pred.eq(ground_truth).float()
         self._correct += int(matches.sum().item())
         self._total += ground_truth.shape[0]

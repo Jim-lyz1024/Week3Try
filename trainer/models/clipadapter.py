@@ -37,7 +37,10 @@ class CustomCLIP(nn.Module):
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
         self.adapter = Adapter(512, 4).to(clip_model.dtype)
         self.dtype = clip_model.dtype
-        self.mode = 'train'  # default mode
+        # self.mode = 'train'  # default mode
+        self.cfg = cfg
+        self.class_names = class_names
+        self.clip_model = clip_model
         
         # domain_names = cfg.DATASET.SOURCE_DOMAINS
         
@@ -94,10 +97,15 @@ class CustomCLIP(nn.Module):
 
         # print("Text features:", self.text_features)
         # print("Text features shape:", self.text_features.shape) # Text features shape: torch.Size([28, 512])
-        print("Encoded prompts (cartoon):", self.text_features['cartoon'].shape) # torch.Size([7, 512]
+        # print("Encoded prompts (cartoon):", self.text_features['cartoon'].shape) # torch.Size([7, 512]
         # exit()
 
     def forward(self, image):
+        if self.mode == 'eval':
+            self.update_text_features(self.cfg)
+            print(self.text_features)
+        
+
         adapter_ratio = 0.2
         # computes the image features using the CLIP image encoder
         image_features = self.image_encoder(image.type(self.dtype))
@@ -129,6 +137,36 @@ class CustomCLIP(nn.Module):
         # exit()
 
         return logits_domain
+
+    def update_text_features(self, cfg):
+        domain_names = cfg.DATASET.SOURCE_DOMAINS if self.mode == 'train' else cfg.DATASET.TARGET_DOMAINS
+        prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
+        
+        # Generate prompts for each domain
+        prompts_domain = {}
+        
+        prompts_original = [prompt_template.format(class_name.replace("_", " ")) for class_name in self.class_names]
+        prompts_domain['original'] = prompts_original
+        
+        for domain in domain_names:
+            prompts_domain[domain] = [
+            prompt_template.format(domain.replace("_", " ") + ' ' + class_name.replace("_", " "))
+            for class_name in self.class_names
+        ]
+        
+        print(prompts_domain)
+        # exit()
+        
+        self.text_features = {}
+        for domain, prompts in prompts_domain.items():
+            tokenized_prompts = [clip.tokenize(prompt) for prompt in prompts]
+            # Flatten the list of tokenized prompts
+            tokenized_prompts = torch.cat(tokenized_prompts).to(torch.cuda.current_device())
+            
+            # Obtain text features for each domain's prompts
+            with torch.no_grad():
+                self.text_features[domain] = self.clip_model.encode_text(tokenized_prompts)
+                self.text_features[domain] = self.text_features[domain] / self.text_features[domain].norm(dim=-1, keepdim=True)
 
  
 @MODEL_REGISTRY.register()

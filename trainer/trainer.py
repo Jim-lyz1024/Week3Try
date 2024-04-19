@@ -47,7 +47,7 @@ class Trainer:
         raise NotImplementedError
 
     def set_model_mode(self, mode="train", model_names=None):
-        assert mode in ['train', 'eval'], "Invalid mode. Expected 'train' or 'eval', got {}".format(mode)
+        # assert mode in ['train', 'eval'], "Invalid mode. Expected 'train' or 'eval', got {}".format(mode)
         self.model.mode = mode
         
         model_names = self.get_model_names(model_names)
