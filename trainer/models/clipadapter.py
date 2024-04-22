@@ -79,15 +79,12 @@ class CustomCLIP(nn.Module):
             self.update_text_features(self.cfg)
             self.eval_mode_set = True  # Set a flag to avoid re-updating text features unnecessarily
             print(self.text_features)
-        print(f"mode:{self.mode}")
+
         adapter_ratio = 0.2
         # computes the image features using the CLIP image encoder
         image_features = self.image_encoder(image.type(self.dtype))
         # obtain adapted features
         adapter_features = self.adapter(image_features)
-        
-        # print("Image features:", image_features)
-        # print("Adapter features:", adapter_features)
     
         image_features = (
             adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features
@@ -96,7 +93,6 @@ class CustomCLIP(nn.Module):
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
         
         # Image features shape: torch.Size([64, 512])
-        # print("Image features shape:", image_features.shape) 
         
         # Calculate similarity
         logit_scale = self.logit_scale.exp()
@@ -108,7 +104,7 @@ class CustomCLIP(nn.Module):
             logits_domain[domain] = logit_scale * image_features @ text_feature.t()
         
         all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
-        
+
         return all_domains # logits_domain 
     
  
@@ -164,9 +160,24 @@ class CLIPAdapter(Trainer):
 
     def forward_backward(self, batch_data):
         image, class_label = self.parse_batch_train(batch_data)
-                
-        output = self.model(image)
-        loss = F.cross_entropy(output, class_label)
+        all_domains = self.model(image)
+
+        domains_outputs = torch.split(all_domains, self.num_classes, dim=1)  # Split into 4 chunks of [batch size, 7]
+        # print("Domains Outputs:", domains_outputs)
+
+        total_loss = 0
+        losses = []
+
+        # Compute the loss for each domain
+        for domain_output in domains_outputs:
+            loss_by_domain = F.cross_entropy(domain_output, class_label)
+            losses.append(loss_by_domain)
+            total_loss += loss_by_domain 
+        
+        loss = total_loss / len(domains_outputs)                                                      
+            
+        # output = self.model(image)
+        # loss = F.cross_entropy(output, class_label)
         
         """ logits_domain = self.model(image)
         
@@ -182,15 +193,12 @@ class CLIPAdapter(Trainer):
             losses_domain[domain_name] = loss_by_domain
             total_loss += loss_by_domain
         loss = total_loss / len(losses_domain) """
-        
-        # print("Losses domain:", losses_domain)
-        # print("Loss:", loss)
 
         self.model_backward_and_update(loss)
 
         loss_summary = {
             "loss": loss.item(),
-            "acc": compute_accuracy(output, class_label)[0].item(),
+            "acc": compute_accuracy(all_domains, class_label)[0].item(),
         }
 
         if (self.batch_idx + 1) == self.num_batches:

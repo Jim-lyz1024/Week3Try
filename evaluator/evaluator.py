@@ -7,7 +7,6 @@ import torch
 
 from .build_evaluator import EVALUATOR_REGISTRY
 
-
 @EVALUATOR_REGISTRY.register()
 class Classification:
     def __init__(self, cfg, class_label_name_mapping=None):
@@ -26,7 +25,7 @@ class Classification:
         # pred = model_output.max(1)[1]
         """ all_domains = torch.cat(list(model_output.values()), dim=1)
         pred = all_domains.max(1)[1] % 7 """
-        pred = model_output.max(1)[1] % 10
+        pred = model_output.max(1)[1] % 7
 
         matches = pred.eq(ground_truth).float()
         self._correct += int(matches.sum().item())
