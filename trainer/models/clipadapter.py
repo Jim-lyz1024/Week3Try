@@ -79,7 +79,7 @@ class CustomCLIP(nn.Module):
             self.update_text_features(self.cfg)
             self.eval_mode_set = True  # Set a flag to avoid re-updating text features unnecessarily
             print(self.text_features)
-        
+        print(f"mode:{self.mode}")
         adapter_ratio = 0.2
         # computes the image features using the CLIP image encoder
         image_features = self.image_encoder(image.type(self.dtype))
@@ -107,10 +107,9 @@ class CustomCLIP(nn.Module):
         for domain, text_feature in self.text_features.items():
             logits_domain[domain] = logit_scale * image_features @ text_feature.t()
         
-        # print(f"Logits domain (cartoon): {logits_domain['cartoon'].shape}")
-        # exit()
-
-        return logits_domain
+        all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
+        
+        return all_domains # logits_domain 
     
  
 @MODEL_REGISTRY.register()
@@ -165,19 +164,24 @@ class CLIPAdapter(Trainer):
 
     def forward_backward(self, batch_data):
         image, class_label = self.parse_batch_train(batch_data)
-        logits_domain = self.model(image)
+                
+        output = self.model(image)
+        loss = F.cross_entropy(output, class_label)
         
-        # print("Logits domain:", logits_domain)
+        """ logits_domain = self.model(image)
+        
+        print("Logits domain:", logits_domain)
         
         # Initialize a dictionary to store loss for each domain
         losses_domain = {}
         total_loss = 0
         
         for domain_name, output in logits_domain.items():
+            # print(f"Domain: {domain_name}, Output: {output}")
             loss_by_domain = F.cross_entropy(output, class_label)
             losses_domain[domain_name] = loss_by_domain
             total_loss += loss_by_domain
-        loss = total_loss / len(losses_domain)
+        loss = total_loss / len(losses_domain) """
         
         # print("Losses domain:", losses_domain)
         # print("Loss:", loss)

@@ -1,7 +1,7 @@
 import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
-program_directory = "/home/yil708/data/yil708/Week3Try/"
+program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
 """ current_working_directory = os.getcwd()
@@ -13,17 +13,17 @@ gpu = 0
 source_domains = "mnist_m svhn syn"
 target_domains = "mnist" """
 
-dataset = "PACS"
+""" dataset = "PACS"
 source_domains = "cartoon photo sketch"
-target_domains = "art_painting"
+target_domains = "art_painting" """
 
 """ dataset = "OfficeHome"
 source_domains = "clipart product real_world"
 target_domains = "art" """
 
-# dataset = "VLCS"
-# source_domains = "labelme pascal sun"
-# target_domains = "caltech"
+dataset = "VLCS"
+source_domains = "caltech pascal sun"
+target_domains = "labelme"
 
 # dataset = "TerraInc"
 # source_domains = "location_43 location_46 location_100"

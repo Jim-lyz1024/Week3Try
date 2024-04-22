@@ -1,0 +1,105 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: Digits
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-Digits-mnist
+root: ./data/
+seed: 134
+source_domains: ['mnist_m', 'svhn', 'syn']
+target_domains: ['mnist']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: Digits
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['mnist_m', 'svhn', 'syn']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['mnist']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 50
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-Digits-mnist
+SEED: 134
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: Digits
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  --------------------------
+Dataset         Digits
+Source Domains  ['mnist_m', 'svhn', 'syn']
+Target Domains  ['mnist']
+# Classes       10
+# Train Data    18,000
+# Val Data      3,600
+# Test Data     6,000
+--------------  --------------------------
+Loading CLIP Backbone: ViT-B/32

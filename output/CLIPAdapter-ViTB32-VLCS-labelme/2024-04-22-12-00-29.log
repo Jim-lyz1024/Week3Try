@@ -1,0 +1,121 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: VLCS
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-VLCS-labelme
+root: ./data/
+seed: 134
+source_domains: ['caltech', 'pascal', 'sun']
+target_domains: ['labelme']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: VLCS
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['caltech', 'pascal', 'sun']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['labelme']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 2
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-VLCS-labelme
+SEED: 134
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: VLCS
+File Extracted to /data/yil708/Code-VIGIL/Week3Try/data
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ----------------------------
+Dataset         VLCS
+Source Domains  ['caltech', 'pascal', 'sun']
+Target Domains  ['labelme']
+# Classes       5
+# Train Data    5,085
+# Val Data      566
+# Test Data     797
+--------------  ----------------------------
+Loading CLIP Backbone: ViT-B/32
+Building Custom CLIP
+{'original': ['a picture of a bird.', 'a picture of a car.', 'a picture of a chair.', 'a picture of a dog.', 'a picture of a person.'], 'caltech': ['a picture of a caltech bird.', 'a picture of a caltech car.', 'a picture of a caltech chair.', 'a picture of a caltech dog.', 'a picture of a caltech person.'], 'pascal': ['a picture of a pascal bird.', 'a picture of a pascal car.', 'a picture of a pascal chair.', 'a picture of a pascal dog.', 'a picture of a pascal person.'], 'sun': ['a picture of a sun bird.', 'a picture of a sun car.', 'a picture of a sun chair.', 'a picture of a sun dog.', 'a picture of a sun person.']}
+Turning Off Gradients in Image and Text Encoder
+Parameters to be updated: {'adapter.fc.0.weight', 'adapter.fc.2.weight'}
+Build Evaluator: Classification
+epoch [1/2] batch [5/79] loss 2.0645 (2.1344) acc 25.0000 (23.1250) lr 1.0000e-05 eta 0:01:17
+epoch [1/2] batch [10/79] loss 2.0742 (2.1531) acc 20.3125 (22.5000) lr 1.0000e-05 eta 0:00:38
+epoch [1/2] batch [15/79] loss 2.0879 (2.1273) acc 26.5625 (23.1250) lr 1.0000e-05 eta 0:00:25
+epoch [1/2] batch [20/79] loss 2.1992 (2.1336) acc 25.0000 (22.8906) lr 1.0000e-05 eta 0:00:18
+epoch [1/2] batch [25/79] loss 1.9209 (2.1272) acc 35.9375 (23.3750) lr 1.0000e-05 eta 0:00:14
+epoch [1/2] batch [30/79] loss 2.1934 (2.1423) acc 25.0000 (23.2292) lr 1.0000e-05 eta 0:00:12
+epoch [1/2] batch [35/79] loss 2.2324 (2.1555) acc 18.7500 (22.8571) lr 1.0000e-05 eta 0:00:10
+epoch [1/2] batch [40/79] loss 1.9541 (2.1492) acc 29.6875 (22.7344) lr 1.0000e-05 eta 0:00:09
+epoch [1/2] batch [45/79] loss 2.0586 (2.1429) acc 23.4375 (22.7778) lr 1.0000e-05 eta 0:00:08
+epoch [1/2] batch [50/79] loss 1.9854 (2.1342) acc 18.7500 (23.0000) lr 1.0000e-05 eta 0:00:07
