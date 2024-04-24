@@ -27,3 +27,23 @@ print("3D Tensor:\n", tensor_3d)
 names = ["alice", "bob", "charlie"]
 upper_names = [name.upper() for name in names]
 print(upper_names)  # Output: ['ALICE', 'BOB', 'CHARLIE']
+
+
+class Solution(object):
+    def twoSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[int]
+        """
+        hashmap = {}
+        
+        for i in range(len(nums)):
+            complement = target - nums[i]
+            if complement in hashmap:
+                return [hashmap[complement], i]
+            hashmap[nums[i]] = i
+
+# Example usage
+sol = Solution()
+print(sol.twoSum([2, 7, 11, 15], 9))  # Output: [0, 1]

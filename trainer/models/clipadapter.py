@@ -78,7 +78,6 @@ class CustomCLIP(nn.Module):
         if self.mode == 'eval' and not hasattr(self, 'eval_mode_set'):
             self.update_text_features(self.cfg)
             self.eval_mode_set = True  # Set a flag to avoid re-updating text features unnecessarily
-            print(self.text_features)
 
         adapter_ratio = 0.2
         # computes the image features using the CLIP image encoder
@@ -102,10 +101,18 @@ class CustomCLIP(nn.Module):
         logits_domain = {}
         for domain, text_feature in self.text_features.items():
             logits_domain[domain] = logit_scale * image_features @ text_feature.t()
-        
-        all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
 
-        return all_domains # logits_domain 
+        if self.mode == 'eval':
+            all_domains = torch.stack(list(logits_domain.values()), dim=0)
+            mean_logits = torch.mean(all_domains, dim=0)
+            return mean_logits
+        else:
+            all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
+            return all_domains
+        
+        # all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
+        
+        # return all_domains # logits_domain
     
  
 @MODEL_REGISTRY.register()
@@ -159,40 +166,50 @@ class CLIPAdapter(Trainer):
         )
 
     def forward_backward(self, batch_data):
-        image, class_label = self.parse_batch_train(batch_data)
+        # image, class_label = self.parse_batch_train(batch_data)
+        image, class_label, domain_label = self.parse_batch_train(batch_data)
         all_domains = self.model(image)
+        # print(self.cfg.DATASET.SOURCE_DOMAINS)
 
         domains_outputs = torch.split(all_domains, self.num_classes, dim=1)  # Split into 4 chunks of [batch size, 7]
-        # print("Domains Outputs:", domains_outputs)
-
-        total_loss = 0
-        losses = []
-
-        # Compute the loss for each domain
-        for domain_output in domains_outputs:
-            loss_by_domain = F.cross_entropy(domain_output, class_label)
-            losses.append(loss_by_domain)
-            total_loss += loss_by_domain 
+        """ print("Domains Outputs:", domains_outputs)
+        print("Domains Outputs[0]:", domains_outputs[0])
+        print("Domains Outputs[0][0:1]:", domains_outputs[0][0:1])
+        print("Class label:", class_label[0])
+        print("Class label[0:1]:", class_label[0:1]) """
         
-        loss = total_loss / len(domains_outputs)                                                      
+        total_loss = 0
+        num_domains = len(domains_outputs) - 1  # excluding 'original'
+        # losses = []
+        batch_size = domains_outputs[0].shape[0]
+
+        # Iterate over each example in the batch
+        for i in range(batch_size):
+            current_domain_label = domain_label[i].item()
+            # Minimize loss for the current domain and 'original'
+            loss = F.cross_entropy(domains_outputs[0][i:i+1], class_label[i:i+1])  # loss for 'original'
+            loss += F.cross_entropy(domains_outputs[current_domain_label + 1][i:i+1], class_label[i:i+1])  # current domain
+            
+            # Maximize loss for other source domains
+            for j in range(1, num_domains + 1):
+                if j != current_domain_label + 1:  # +1 to skip 'original'
+                    loss -= F.cross_entropy(domains_outputs[j][i:i+1], class_label[i:i+1])
+            
+            total_loss += loss
+
+        loss = total_loss / batch_size                                                      
             
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
         
-        """ logits_domain = self.model(image)
+        # Compute the loss for each domain
+        """ for domain_output in domains_outputs:
+            loss_by_domain = F.cross_entropy(domain_output, class_label)
+            print("Loss by Domain:", loss_by_domain)
+            losses.append(loss_by_domain)
+            total_loss += loss_by_domain 
         
-        print("Logits domain:", logits_domain)
-        
-        # Initialize a dictionary to store loss for each domain
-        losses_domain = {}
-        total_loss = 0
-        
-        for domain_name, output in logits_domain.items():
-            # print(f"Domain: {domain_name}, Output: {output}")
-            loss_by_domain = F.cross_entropy(output, class_label)
-            losses_domain[domain_name] = loss_by_domain
-            total_loss += loss_by_domain
-        loss = total_loss / len(losses_domain) """
+        loss = total_loss / len(domains_outputs) """
 
         self.model_backward_and_update(loss)
 
