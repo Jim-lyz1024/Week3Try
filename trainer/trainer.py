@@ -195,9 +195,10 @@ class Trainer:
         image = batch_data["img"].to(self.device)
         class_label = batch_data["class_label"].to(self.device)
         
-        domain_label = batch_data["domain_label"].to(self.device)
+        # domain_label = batch_data["domain_label"].to(self.device)
 
-        return image, class_label, domain_label
+        # return image, class_label, domain_label
+        return image, class_label
 
     def parse_batch_test(self, batch_data):
         input_data = batch_data["img"].to(self.device)

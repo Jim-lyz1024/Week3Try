@@ -45,15 +45,15 @@ class CustomCLIP(nn.Module):
         # Construct Prompts
         prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
         
-        """ prompts = [
+        prompts = [
             prompt_template.format(class_name.replace("_", " "))
             for class_name in class_names
-        ] """
-        
-        prompts = [
-            prompt_template.format(domain_name.replace("_", " ") + ' ' + class_name.replace("_", " "))
-            for domain_name in domain_names for class_name in class_names
         ]
+        
+        # prompts = [
+        #     prompt_template.format(domain_name.replace("_", " ") + ' ' + class_name.replace("_", " "))
+        #     for domain_name in domain_names for class_name in class_names
+        # ]
         
         print(prompts)
         print("Number of prompts:", len(prompts))

@@ -1,0 +1,241 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: PACS
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-PACS-art_painting
+root: ./data/
+seed: 134
+source_domains: ['cartoon', 'photo', 'sketch']
+target_domains: ['art_painting']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: PACS
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['cartoon', 'photo', 'sketch']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['art_painting']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 5
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-PACS-art_painting
+SEED: 134
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: PACS
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ------------------------------
+Dataset         PACS
+Source Domains  ['cartoon', 'photo', 'sketch']
+Target Domains  ['art_painting']
+# Classes       7
+# Train Data    7,942
+# Val Data      806
+# Test Data     2,048
+--------------  ------------------------------
+Loading CLIP Backbone: ViT-B/32
+Building Custom CLIP
+{'original': ['a picture of a dog.', 'a picture of a elephant.', 'a picture of a giraffe.', 'a picture of a guitar.', 'a picture of a horse.', 'a picture of a house.', 'a picture of a person.'], 'cartoon': ['a picture of a cartoon dog.', 'a picture of a cartoon elephant.', 'a picture of a cartoon giraffe.', 'a picture of a cartoon guitar.', 'a picture of a cartoon horse.', 'a picture of a cartoon house.', 'a picture of a cartoon person.'], 'photo': ['a picture of a photo dog.', 'a picture of a photo elephant.', 'a picture of a photo giraffe.', 'a picture of a photo guitar.', 'a picture of a photo horse.', 'a picture of a photo house.', 'a picture of a photo person.'], 'sketch': ['a picture of a sketch dog.', 'a picture of a sketch elephant.', 'a picture of a sketch giraffe.', 'a picture of a sketch guitar.', 'a picture of a sketch horse.', 'a picture of a sketch house.', 'a picture of a sketch person.']}
+Turning Off Gradients in Image and Text Encoder
+Parameters to be updated: {'adapter.fc.0.weight', 'adapter.fc.2.weight'}
+Build Evaluator: Classification
+epoch [1/5] batch [5/124] loss -0.0477 (-0.1428) acc 6.2500 (16.2500) lr 1.0000e-05 eta 0:03:19
+epoch [1/5] batch [10/124] loss -0.1109 (-0.1300) acc 14.0625 (14.3750) lr 1.0000e-05 eta 0:02:03
+epoch [1/5] batch [15/124] loss -0.1077 (-0.1401) acc 14.0625 (14.8958) lr 1.0000e-05 eta 0:01:39
+epoch [1/5] batch [20/124] loss -0.2042 (-0.1388) acc 20.3125 (16.0938) lr 1.0000e-05 eta 0:01:27
+epoch [1/5] batch [25/124] loss -0.2832 (-0.1571) acc 21.8750 (17.1250) lr 1.0000e-05 eta 0:01:20
+epoch [1/5] batch [30/124] loss -0.2144 (-0.1506) acc 25.0000 (17.1875) lr 1.0000e-05 eta 0:01:15
+epoch [1/5] batch [35/124] loss -0.0903 (-0.1516) acc 21.8750 (17.6339) lr 1.0000e-05 eta 0:01:11
+epoch [1/5] batch [40/124] loss -0.3745 (-0.1593) acc 15.6250 (17.5391) lr 1.0000e-05 eta 0:01:08
+epoch [1/5] batch [45/124] loss -0.1255 (-0.1594) acc 18.7500 (17.3611) lr 1.0000e-05 eta 0:01:06
+epoch [1/5] batch [50/124] loss -0.1151 (-0.1601) acc 18.7500 (17.2812) lr 1.0000e-05 eta 0:01:04
+epoch [1/5] batch [55/124] loss -0.0974 (-0.1627) acc 23.4375 (17.0739) lr 1.0000e-05 eta 0:01:02
+epoch [1/5] batch [60/124] loss -0.1484 (-0.1645) acc 23.4375 (17.3698) lr 1.0000e-05 eta 0:01:01
+epoch [1/5] batch [65/124] loss -0.1091 (-0.1668) acc 12.5000 (17.1875) lr 1.0000e-05 eta 0:00:59
+epoch [1/5] batch [70/124] loss -0.2036 (-0.1700) acc 20.3125 (17.1875) lr 1.0000e-05 eta 0:00:58
+epoch [1/5] batch [75/124] loss -0.1884 (-0.1721) acc 21.8750 (17.2083) lr 1.0000e-05 eta 0:00:57
+epoch [1/5] batch [80/124] loss -0.1996 (-0.1703) acc 14.0625 (17.0898) lr 1.0000e-05 eta 0:00:56
+epoch [1/5] batch [85/124] loss -0.0939 (-0.1695) acc 23.4375 (17.2059) lr 1.0000e-05 eta 0:00:55
+epoch [1/5] batch [90/124] loss -0.2133 (-0.1662) acc 23.4375 (17.1528) lr 1.0000e-05 eta 0:00:54
+epoch [1/5] batch [95/124] loss -0.1550 (-0.1643) acc 20.3125 (17.2204) lr 1.0000e-05 eta 0:00:53
+epoch [1/5] batch [100/124] loss -0.2227 (-0.1624) acc 10.9375 (17.3281) lr 1.0000e-05 eta 0:00:53
+epoch [1/5] batch [105/124] loss -0.1807 (-0.1610) acc 18.7500 (17.3214) lr 1.0000e-05 eta 0:00:52
+epoch [1/5] batch [110/124] loss -0.0515 (-0.1585) acc 18.7500 (17.2869) lr 1.0000e-05 eta 0:00:51
+epoch [1/5] batch [115/124] loss -0.1209 (-0.1581) acc 14.0625 (17.3098) lr 1.0000e-05 eta 0:00:50
+epoch [1/5] batch [120/124] loss -0.3535 (-0.1580) acc 21.8750 (17.4089) lr 1.0000e-05 eta 0:00:49
+epoch [2/5] batch [5/124] loss -0.1768 (-0.2367) acc 18.7500 (15.3125) lr 2.0000e-03 eta 0:01:33
+epoch [2/5] batch [10/124] loss -0.2595 (-0.1893) acc 7.8125 (15.1562) lr 2.0000e-03 eta 0:01:08
+epoch [2/5] batch [15/124] loss -0.1582 (-0.1662) acc 15.6250 (15.9375) lr 2.0000e-03 eta 0:00:59
+epoch [2/5] batch [20/124] loss -0.1759 (-0.1831) acc 6.2500 (16.2500) lr 2.0000e-03 eta 0:00:54
+epoch [2/5] batch [25/124] loss -0.2263 (-0.1793) acc 12.5000 (16.4375) lr 2.0000e-03 eta 0:00:51
+epoch [2/5] batch [30/124] loss -0.3184 (-0.1841) acc 20.3125 (16.6667) lr 2.0000e-03 eta 0:00:49
+epoch [2/5] batch [35/124] loss -0.2393 (-0.1836) acc 18.7500 (17.0089) lr 2.0000e-03 eta 0:00:47
+epoch [2/5] batch [40/124] loss -0.1074 (-0.1838) acc 20.3125 (16.7188) lr 2.0000e-03 eta 0:00:46
+epoch [2/5] batch [45/124] loss -0.2006 (-0.1878) acc 10.9375 (16.6319) lr 2.0000e-03 eta 0:00:45
+epoch [2/5] batch [50/124] loss -0.1259 (-0.1899) acc 17.1875 (16.5625) lr 2.0000e-03 eta 0:00:45
+epoch [2/5] batch [55/124] loss -0.1333 (-0.1911) acc 17.1875 (16.7898) lr 2.0000e-03 eta 0:00:44
+epoch [2/5] batch [60/124] loss -0.2710 (-0.1989) acc 12.5000 (16.8229) lr 2.0000e-03 eta 0:00:43
+epoch [2/5] batch [65/124] loss -0.2500 (-0.2025) acc 17.1875 (16.8510) lr 2.0000e-03 eta 0:00:43
+epoch [2/5] batch [70/124] loss -0.2103 (-0.2070) acc 7.8125 (16.7857) lr 2.0000e-03 eta 0:00:42
+epoch [2/5] batch [75/124] loss -0.2256 (-0.2048) acc 18.7500 (16.8125) lr 2.0000e-03 eta 0:00:42
+epoch [2/5] batch [80/124] loss -0.1443 (-0.2051) acc 25.0000 (16.9141) lr 2.0000e-03 eta 0:00:41
+epoch [2/5] batch [85/124] loss -0.2620 (-0.2102) acc 17.1875 (16.8566) lr 2.0000e-03 eta 0:00:40
+epoch [2/5] batch [90/124] loss -0.1292 (-0.2104) acc 12.5000 (17.0660) lr 2.0000e-03 eta 0:00:40
+epoch [2/5] batch [95/124] loss -0.2773 (-0.2102) acc 10.9375 (17.1053) lr 2.0000e-03 eta 0:00:39
+epoch [2/5] batch [100/124] loss -0.2474 (-0.2137) acc 15.6250 (17.1562) lr 2.0000e-03 eta 0:00:38
+epoch [2/5] batch [105/124] loss -0.2954 (-0.2179) acc 18.7500 (17.2768) lr 2.0000e-03 eta 0:00:38
+epoch [2/5] batch [110/124] loss -0.2382 (-0.2215) acc 17.1875 (17.3580) lr 2.0000e-03 eta 0:00:37
+epoch [2/5] batch [115/124] loss -0.2654 (-0.2250) acc 12.5000 (17.4185) lr 2.0000e-03 eta 0:00:36
+epoch [2/5] batch [120/124] loss -0.3508 (-0.2294) acc 12.5000 (17.3958) lr 2.0000e-03 eta 0:00:36
+epoch [3/5] batch [5/124] loss -0.4121 (-0.3271) acc 18.7500 (16.5625) lr 1.8090e-03 eta 0:01:14
+epoch [3/5] batch [10/124] loss -0.4395 (-0.3466) acc 20.3125 (17.1875) lr 1.8090e-03 eta 0:00:54
+epoch [3/5] batch [15/124] loss -0.2083 (-0.3376) acc 26.5625 (19.2708) lr 1.8090e-03 eta 0:00:47
+epoch [3/5] batch [20/124] loss -0.5161 (-0.3563) acc 21.8750 (18.9844) lr 1.8090e-03 eta 0:00:44
+epoch [3/5] batch [25/124] loss -0.6104 (-0.3687) acc 18.7500 (17.8750) lr 1.8090e-03 eta 0:00:41
+epoch [3/5] batch [30/124] loss -0.6211 (-0.3946) acc 25.0000 (18.1250) lr 1.8090e-03 eta 0:00:39
+epoch [3/5] batch [35/124] loss -0.7754 (-0.4154) acc 17.1875 (18.1250) lr 1.8090e-03 eta 0:00:38
+epoch [3/5] batch [40/124] loss -0.4587 (-0.4278) acc 17.1875 (17.8906) lr 1.8090e-03 eta 0:00:37
+epoch [3/5] batch [45/124] loss -0.6919 (-0.4585) acc 15.6250 (18.1597) lr 1.8090e-03 eta 0:00:36
+epoch [3/5] batch [50/124] loss -0.4292 (-0.4796) acc 18.7500 (18.0312) lr 1.8090e-03 eta 0:00:35
+epoch [3/5] batch [55/124] loss -1.2119 (-0.5131) acc 12.5000 (18.2955) lr 1.8090e-03 eta 0:00:34
+epoch [3/5] batch [60/124] loss -0.8970 (-0.5350) acc 23.4375 (18.3854) lr 1.8090e-03 eta 0:00:33
+epoch [3/5] batch [65/124] loss -0.8071 (-0.5634) acc 17.1875 (18.5337) lr 1.8090e-03 eta 0:00:32
+epoch [3/5] batch [70/124] loss -1.1729 (-0.5996) acc 26.5625 (18.6161) lr 1.8090e-03 eta 0:00:31
+epoch [3/5] batch [75/124] loss -1.0078 (-0.6322) acc 28.1250 (19.0417) lr 1.8090e-03 eta 0:00:30
+epoch [3/5] batch [80/124] loss -1.9824 (-0.6869) acc 21.8750 (19.1406) lr 1.8090e-03 eta 0:00:30
+epoch [3/5] batch [85/124] loss -2.1270 (-0.7527) acc 18.7500 (19.1912) lr 1.8090e-03 eta 0:00:29
+epoch [3/5] batch [90/124] loss -2.4512 (-0.8333) acc 25.0000 (19.4792) lr 1.8090e-03 eta 0:00:28
+epoch [3/5] batch [95/124] loss -2.6953 (-0.9066) acc 18.7500 (19.6875) lr 1.8090e-03 eta 0:00:28
+epoch [3/5] batch [100/124] loss -3.2207 (-1.0343) acc 18.7500 (19.5156) lr 1.8090e-03 eta 0:00:27
+epoch [3/5] batch [105/124] loss -4.5352 (-1.1752) acc 18.7500 (19.2857) lr 1.8090e-03 eta 0:00:27
+epoch [3/5] batch [110/124] loss -5.8281 (-1.3548) acc 7.8125 (18.7500) lr 1.8090e-03 eta 0:00:26
+epoch [3/5] batch [115/124] loss -5.2695 (-1.5270) acc 3.1250 (18.1658) lr 1.8090e-03 eta 0:00:26
+epoch [3/5] batch [120/124] loss -6.1875 (-1.7262) acc 0.0000 (17.4349) lr 1.8090e-03 eta 0:00:25
+epoch [4/5] batch [5/124] loss -8.0078 (-7.3469) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:45
+epoch [4/5] batch [10/124] loss -8.8984 (-7.8766) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:33
+epoch [4/5] batch [15/124] loss -9.1172 (-8.0982) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:29
+epoch [4/5] batch [20/124] loss -8.4453 (-8.1041) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:26
+epoch [4/5] batch [25/124] loss -8.5859 (-8.2970) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:25
+epoch [4/5] batch [30/124] loss -11.1250 (-8.5652) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:23
+epoch [4/5] batch [35/124] loss -11.3906 (-8.6983) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:22
+epoch [4/5] batch [40/124] loss -9.5391 (-8.8116) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:22
+epoch [4/5] batch [45/124] loss -10.5391 (-8.9449) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:21
+epoch [4/5] batch [50/124] loss -9.1094 (-9.0015) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:20
+epoch [4/5] batch [55/124] loss -10.3125 (-9.1008) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:19
+epoch [4/5] batch [60/124] loss -11.4688 (-9.1965) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:19
+epoch [4/5] batch [65/124] loss -9.6562 (-9.2889) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:18
+epoch [4/5] batch [70/124] loss -10.0938 (-9.3259) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:17
+epoch [4/5] batch [75/124] loss -10.3672 (-9.4197) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:17
+epoch [4/5] batch [80/124] loss -10.4609 (-9.4905) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:16
+epoch [4/5] batch [85/124] loss -9.2734 (-9.5245) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:16
+epoch [4/5] batch [90/124] loss -13.2812 (-9.5666) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:15
+epoch [4/5] batch [95/124] loss -10.6875 (-9.6134) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:14
+epoch [4/5] batch [100/124] loss -11.4297 (-9.6808) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:14
+epoch [4/5] batch [105/124] loss -10.3203 (-9.7152) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:13
+epoch [4/5] batch [110/124] loss -8.8516 (-9.7609) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:13
+epoch [4/5] batch [115/124] loss -10.0781 (-9.7951) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:12
+epoch [4/5] batch [120/124] loss -9.7812 (-9.7957) acc 0.0000 (0.0000) lr 1.3090e-03 eta 0:00:12
+epoch [5/5] batch [5/124] loss -11.2656 (-11.4359) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:21
+epoch [5/5] batch [10/124] loss -9.1719 (-10.8969) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:15
+epoch [5/5] batch [15/124] loss -11.6719 (-10.7974) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:13
+epoch [5/5] batch [20/124] loss -8.5703 (-10.7246) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:12
+epoch [5/5] batch [25/124] loss -12.2656 (-10.6647) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:11
+epoch [5/5] batch [30/124] loss -11.7891 (-10.7385) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:10
+epoch [5/5] batch [35/124] loss -12.1094 (-10.7246) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:09
+epoch [5/5] batch [40/124] loss -11.9375 (-10.8191) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:08
+epoch [5/5] batch [45/124] loss -10.9297 (-10.8885) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:08
+epoch [5/5] batch [50/124] loss -8.4688 (-10.7980) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:07
+epoch [5/5] batch [55/124] loss -10.9844 (-10.8348) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:07
+epoch [5/5] batch [60/124] loss -10.9219 (-10.8025) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:06
+epoch [5/5] batch [65/124] loss -10.3594 (-10.7645) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [70/124] loss -10.9766 (-10.8152) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:05
+epoch [5/5] batch [75/124] loss -11.4531 (-10.8017) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [80/124] loss -11.9531 (-10.8207) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:04
+epoch [5/5] batch [85/124] loss -10.1250 (-10.8104) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [90/124] loss -11.5469 (-10.8313) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:03
+epoch [5/5] batch [95/124] loss -10.1016 (-10.8227) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [100/124] loss -10.8594 (-10.8022) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:02
+epoch [5/5] batch [105/124] loss -11.7500 (-10.8065) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [110/124] loss -10.2812 (-10.7956) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:01
+epoch [5/5] batch [115/124] loss -10.7812 (-10.7985) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:00
+epoch [5/5] batch [120/124] loss -11.7500 (-10.8272) acc 0.0000 (0.0000) lr 6.9098e-04 eta 0:00:00
+Model Saved to: output/CLIPAdapter-ViTB32-PACS-art_painting/model.pth.tar-5
+Finish Training
+Evaluate on the Test Set
+{'original': ['a picture of a dog.', 'a picture of a elephant.', 'a picture of a giraffe.', 'a picture of a guitar.', 'a picture of a horse.', 'a picture of a house.', 'a picture of a person.'], 'art_painting': ['a picture of a art painting dog.', 'a picture of a art painting elephant.', 'a picture of a art painting giraffe.', 'a picture of a art painting guitar.', 'a picture of a art painting horse.', 'a picture of a art painting house.', 'a picture of a art painting person.']}
+----------  ------
+Total #     2,048
+Correct #   295
+Accuracy    14.40%
+Error Rate  85.60%
+Macro_F1    3.60%
+----------  ------
