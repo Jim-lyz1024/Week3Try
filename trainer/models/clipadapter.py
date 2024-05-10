@@ -106,13 +106,16 @@ class CustomCLIP(nn.Module):
                 self.text_features2[domain] = self.clip_model.encode_text(tokenized_prompts)
                 self.text_features2[domain] = self.text_features2[domain] / self.text_features2[domain].norm(dim=-1,keepdim=True)
         # tar_f = self.text_features2['art_painting']
-        # tar_f = self.text_features2['mnist']
-        tar_f = self.text_features2['clipart']
+        tar_domain = cfg.DATASET.TARGET_DOMAINS[0]  # Assuming 'clipart' is the only target domain
+        tar_f = self.text_features2[tar_domain]
         sim_scores = []
         for key,v in self.text_features.items():
+            print(f"key:{key}")
+            print(f"v:{v}")
             sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
         sim_scores = sim_scores[1:]
         self.index = sim_scores.index(min(sim_scores))
+        
     def forward(self, image,domain_label=None):
         # if self.mode == 'eval' and not hasattr(self, 'eval_mode_set'):
         #     self.update_text_features(self.cfg)
@@ -134,7 +137,6 @@ class CustomCLIP(nn.Module):
 
         image_features = ( adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features)
         # image_featuress = [( adapter_ratio * adapter_featuress[i] + (1 - adapter_ratio) * image_features) for i in range(len(self.adapters))]
-
 
         # regularization, avoid updating gradient too fast
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
@@ -169,9 +171,7 @@ class CustomCLIP(nn.Module):
         #
         # all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
         # all_domainss = [torch.cat(list(logits_domains[i].values()), dim=1) for i in range(len(self.adapters))]
-
-
-
+        
         return all_domains
     
  
@@ -243,7 +243,7 @@ class CLIPAdapter(Trainer):
         #     total_loss += loss_by_domain
 
         for dl in domain_label:
-            for ith,domains_output in enumerate(domains_outputs):
+            for ith, domains_output in enumerate(domains_outputs):
                 if dl==ith:
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
