@@ -15,7 +15,8 @@ INPUT:
 OPTIM:
   NAME: "sgd"
   LR: 0.001
-  MAX_EPOCH: 50
+  # MAX_EPOCH: 50
+  MAX_EPOCH: 1
   LR_SCHEDULER: "StepLR"
   STEP_SIZE: 16
   WARMUP_TYPE: "none"

@@ -1,0 +1,169 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: PACS
+gpu: 0
+model: CLIPAdapter
+model_config_file: config/clipadapter.yaml
+output_dir: output/CLIPAdapter-ViTB32-PACS-art_painting
+root: ./data/
+seed: 134
+source_domains: ['cartoon', 'photo', 'sketch']
+target_domains: ['art_painting']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 64
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: PACS
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['cartoon', 'photo', 'sketch']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['art_painting']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  CLIPAdapter:
+    BACKBONE: ViT-B/32
+  NAME: CLIPAdapter
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.002
+  LR_SCHEDULER: Cosine
+  MAX_EPOCH: 2
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: -1
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: 1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: constant
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/CLIPAdapter-ViTB32-PACS-art_painting
+SEED: 134
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: CLIPAdapter
+Build Dataset: PACS
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ------------------------------
+Dataset         PACS
+Source Domains  ['cartoon', 'photo', 'sketch']
+Target Domains  ['art_painting']
+# Classes       7
+# Train Data    7,942
+# Val Data      806
+# Test Data     2,048
+--------------  ------------------------------
+Loading CLIP Backbone: ViT-B/32
+Building Custom CLIP
+{'original': ['a picture of a dog.', 'a picture of a elephant.', 'a picture of a giraffe.', 'a picture of a guitar.', 'a picture of a horse.', 'a picture of a house.', 'a picture of a person.'], 'cartoon': ['a picture of a cartoon dog.', 'a picture of a cartoon elephant.', 'a picture of a cartoon giraffe.', 'a picture of a cartoon guitar.', 'a picture of a cartoon horse.', 'a picture of a cartoon house.', 'a picture of a cartoon person.'], 'photo': ['a picture of a photo dog.', 'a picture of a photo elephant.', 'a picture of a photo giraffe.', 'a picture of a photo guitar.', 'a picture of a photo horse.', 'a picture of a photo house.', 'a picture of a photo person.'], 'sketch': ['a picture of a sketch dog.', 'a picture of a sketch elephant.', 'a picture of a sketch giraffe.', 'a picture of a sketch guitar.', 'a picture of a sketch horse.', 'a picture of a sketch house.', 'a picture of a sketch person.']}
+{'original': ['a picture of a dog.', 'a picture of a elephant.', 'a picture of a giraffe.', 'a picture of a guitar.', 'a picture of a horse.', 'a picture of a house.', 'a picture of a person.'], 'art_painting': ['a picture of a art painting dog.', 'a picture of a art painting elephant.', 'a picture of a art painting giraffe.', 'a picture of a art painting guitar.', 'a picture of a art painting horse.', 'a picture of a art painting house.', 'a picture of a art painting person.']}
+Turning Off Gradients in Image and Text Encoder
+Parameters to be updated: {'adapters.0.fc.2.weight', 'adapters.1.fc.0.weight', 'adapter.fc.0.weight', 'adapters.2.fc.0.weight', 'adapter.fc.2.weight', 'adapters.2.fc.2.weight', 'adapters.1.fc.2.weight', 'adapters.0.fc.0.weight'}
+Build Evaluator: Classification
+epoch [1/2] batch [5/124] loss -33.6875 (-39.5438) acc 15.6250 (15.6250) lr 1.0000e-05 eta 0:01:21
+epoch [1/2] batch [10/124] loss -42.7188 (-38.6500) acc 18.7500 (16.0938) lr 1.0000e-05 eta 0:00:49
+epoch [1/2] batch [15/124] loss -52.7812 (-40.6042) acc 14.0625 (16.0417) lr 1.0000e-05 eta 0:00:39
+epoch [1/2] batch [20/124] loss -52.4375 (-39.8820) acc 14.0625 (15.4688) lr 1.0000e-05 eta 0:00:34
+epoch [1/2] batch [25/124] loss -34.5938 (-39.4294) acc 14.0625 (15.7500) lr 1.0000e-05 eta 0:00:31
+epoch [1/2] batch [30/124] loss -30.3125 (-38.4911) acc 15.6250 (16.0938) lr 1.0000e-05 eta 0:00:28
+epoch [1/2] batch [35/124] loss -26.5469 (-37.9679) acc 21.8750 (16.5179) lr 1.0000e-05 eta 0:00:26
+epoch [1/2] batch [40/124] loss -34.5000 (-37.2906) acc 15.6250 (16.2109) lr 1.0000e-05 eta 0:00:25
+epoch [1/2] batch [45/124] loss -37.8750 (-37.2740) acc 21.8750 (16.5278) lr 1.0000e-05 eta 0:00:23
+epoch [1/2] batch [50/124] loss -28.2500 (-37.0584) acc 17.1875 (16.6875) lr 1.0000e-05 eta 0:00:22
+epoch [1/2] batch [55/124] loss -30.5469 (-36.9636) acc 14.0625 (16.7614) lr 1.0000e-05 eta 0:00:21
+epoch [1/2] batch [60/124] loss -31.4375 (-36.8346) acc 23.4375 (16.8490) lr 1.0000e-05 eta 0:00:20
+epoch [1/2] batch [65/124] loss -22.1562 (-36.4224) acc 29.6875 (16.9471) lr 1.0000e-05 eta 0:00:20
+epoch [1/2] batch [70/124] loss -34.0625 (-36.6902) acc 21.8750 (16.8973) lr 1.0000e-05 eta 0:00:19
+epoch [1/2] batch [75/124] loss -37.0000 (-36.8494) acc 21.8750 (16.8542) lr 1.0000e-05 eta 0:00:18
+epoch [1/2] batch [80/124] loss -44.0312 (-36.7631) acc 10.9375 (16.8164) lr 1.0000e-05 eta 0:00:17
+epoch [1/2] batch [85/124] loss -34.4062 (-36.6983) acc 12.5000 (16.8015) lr 1.0000e-05 eta 0:00:17
+epoch [1/2] batch [90/124] loss -29.1406 (-36.5290) acc 20.3125 (16.8924) lr 1.0000e-05 eta 0:00:16
+epoch [1/2] batch [95/124] loss -37.3125 (-36.5673) acc 12.5000 (16.7928) lr 1.0000e-05 eta 0:00:15
+epoch [1/2] batch [100/124] loss -54.4688 (-36.6433) acc 20.3125 (17.0000) lr 1.0000e-05 eta 0:00:15
+epoch [1/2] batch [105/124] loss -33.9062 (-36.7487) acc 12.5000 (17.1131) lr 1.0000e-05 eta 0:00:14
+epoch [1/2] batch [110/124] loss -38.0000 (-36.7761) acc 20.3125 (17.1733) lr 1.0000e-05 eta 0:00:14
+epoch [1/2] batch [115/124] loss -33.1562 (-36.9226) acc 14.0625 (17.0788) lr 1.0000e-05 eta 0:00:13
+epoch [1/2] batch [120/124] loss -41.3438 (-37.2180) acc 10.9375 (17.0312) lr 1.0000e-05 eta 0:00:12
+epoch [2/2] batch [5/124] loss -27.7500 (-34.1750) acc 18.7500 (21.2500) lr 2.0000e-03 eta 0:00:24
+epoch [2/2] batch [10/124] loss -42.5000 (-34.9000) acc 21.8750 (19.6875) lr 2.0000e-03 eta 0:00:17
+epoch [2/2] batch [15/124] loss -41.9062 (-36.5771) acc 17.1875 (18.3333) lr 2.0000e-03 eta 0:00:14
+epoch [2/2] batch [20/124] loss -49.5000 (-36.9883) acc 17.1875 (18.4375) lr 2.0000e-03 eta 0:00:12
+epoch [2/2] batch [25/124] loss -43.3125 (-37.0206) acc 20.3125 (17.9375) lr 2.0000e-03 eta 0:00:11
+epoch [2/2] batch [30/124] loss -49.2500 (-36.6995) acc 23.4375 (18.0729) lr 2.0000e-03 eta 0:00:10
+epoch [2/2] batch [35/124] loss -46.4375 (-37.1402) acc 12.5000 (17.5893) lr 2.0000e-03 eta 0:00:09
+epoch [2/2] batch [40/124] loss -49.8438 (-37.6953) acc 17.1875 (17.5391) lr 2.0000e-03 eta 0:00:08
+epoch [2/2] batch [45/124] loss -47.2812 (-37.7556) acc 18.7500 (17.4306) lr 2.0000e-03 eta 0:00:07
+epoch [2/2] batch [50/124] loss -27.0312 (-37.0656) acc 9.3750 (17.2188) lr 2.0000e-03 eta 0:00:07
+epoch [2/2] batch [55/124] loss -38.6562 (-36.6239) acc 17.1875 (17.1875) lr 2.0000e-03 eta 0:00:06
+epoch [2/2] batch [60/124] loss -27.8438 (-36.0161) acc 15.6250 (17.1875) lr 2.0000e-03 eta 0:00:06
+epoch [2/2] batch [65/124] loss -29.0000 (-35.9779) acc 25.0000 (17.2356) lr 2.0000e-03 eta 0:00:05
+epoch [2/2] batch [70/124] loss -34.2188 (-36.1071) acc 14.0625 (17.1652) lr 2.0000e-03 eta 0:00:05
+epoch [2/2] batch [75/124] loss -41.4375 (-36.7604) acc 12.5000 (17.0208) lr 2.0000e-03 eta 0:00:04
+epoch [2/2] batch [80/124] loss -38.3750 (-37.0254) acc 9.3750 (16.7578) lr 2.0000e-03 eta 0:00:04
+epoch [2/2] batch [85/124] loss -57.6875 (-37.1344) acc 12.5000 (16.7831) lr 2.0000e-03 eta 0:00:03
+epoch [2/2] batch [90/124] loss -32.5625 (-36.8859) acc 14.0625 (16.9271) lr 2.0000e-03 eta 0:00:03
+epoch [2/2] batch [95/124] loss -42.2500 (-36.7419) acc 7.8125 (16.9243) lr 2.0000e-03 eta 0:00:02
+epoch [2/2] batch [100/124] loss -43.9062 (-36.7681) acc 17.1875 (16.8750) lr 2.0000e-03 eta 0:00:02
+epoch [2/2] batch [105/124] loss -39.7188 (-36.8458) acc 12.5000 (16.7560) lr 2.0000e-03 eta 0:00:01
+epoch [2/2] batch [110/124] loss -30.0469 (-36.8422) acc 28.1250 (16.8324) lr 2.0000e-03 eta 0:00:01
+epoch [2/2] batch [115/124] loss -46.9688 (-37.0265) acc 20.3125 (16.8478) lr 2.0000e-03 eta 0:00:00
+epoch [2/2] batch [120/124] loss -36.3750 (-36.9620) acc 7.8125 (16.8359) lr 2.0000e-03 eta 0:00:00
+Model Saved to: output/CLIPAdapter-ViTB32-PACS-art_painting/model.pth.tar-2
+Finish Training
+Evaluate on the Test Set
+----------  ------
+Total #     2,048
+Correct #   1,966
+Accuracy    96.00%
+Error Rate  4.00%
+Macro_F1    95.83%
+----------  ------

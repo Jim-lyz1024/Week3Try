@@ -1,0 +1,138 @@
+*** Config ***
+***************
+** Arguments **
+***************
+dataset: PACS
+gpu: 0
+model: RISE
+model_config_file: config/rise.yaml
+output_dir: output/RISE
+root: ./data/
+seed: 42
+source_domains: ['cartoon', 'photo', 'sketch']
+target_domains: ['art_painting']
+************
+** Config **
+************
+DATALOADER:
+  NUM_WORKERS: 8
+  TEST:
+    BATCH_SIZE: 64
+    SAMPLER: SequentialSampler
+  TRAIN:
+    BATCH_SIZE: 128
+    SAMPLER: RandomSampler
+DATASET:
+  NAME: PACS
+  ROOT: ./data/
+  SOURCE_DOMAINS: ['cartoon', 'photo', 'sketch']
+  SUBSAMPLE_CLASSES: all
+  TARGET_DOMAINS: ['art_painting']
+GPU: 0
+INPUT:
+  COLORJITTER_B: 0.4
+  COLORJITTER_C: 0.4
+  COLORJITTER_H: 0.1
+  COLORJITTER_S: 0.4
+  CROP_PADDING: 4
+  CUTOUT_LEN: 16
+  CUTOUT_N: 1
+  GB_K: 21
+  GB_P: 0.5
+  GN_MEAN: 0.0
+  GN_STD: 0.15
+  INTERPOLATION: bicubic
+  PIXEL_MEAN: [0.48145466, 0.4578275, 0.40821073]
+  PIXEL_STD: [0.26862954, 0.26130258, 0.27577711]
+  RANDAUGMENT_M: 10
+  RANDAUGMENT_N: 2
+  RGS_P: 0.2
+  RRCROP_SCALE: (0.08, 1.0)
+  SIZE: (224, 224)
+  TRANSFORMS: ['random_resized_crop', 'random_flip', 'normalize']
+MODEL:
+  NAME: RISE
+  RISE:
+    BACKBONE: ViT-B/32
+    LOSS_WEIGHT:
+      CLASSIFICATION: 0.1
+      DISTANCE: 0.5
+      DISTILLATION: 0.9
+    STUDENT_NETWORK: resnet18
+    TEMPERATURE: 3.0
+OPTIM:
+  ADAM_BETA1: 0.9
+  ADAM_BETA2: 0.999
+  GAMMA: 0.1
+  LR: 0.001
+  LR_SCHEDULER: StepLR
+  MAX_EPOCH: 1
+  MOMENTUM: 0.9
+  NAME: sgd
+  SGD_DAMPENING: 0
+  SGD_NESTEROV: False
+  STEP_SIZE: 16
+  WARMUP_CONS_LR: 1e-05
+  WARMUP_EPOCH: -1
+  WARMUP_MIN_LR: 1e-05
+  WARMUP_TYPE: none
+  WEIGHT_DECAY: 0.0005
+OUTPUT_DIR: output/RISE
+SEED: 42
+TEST:
+  EVALUATOR: Classification
+  FINAL_Model: last_step
+  SPLIT: Test
+TRAIN:
+  PRINT_FREQ: 5
+Build Trainer: RISE
+Build Dataset: PACS
+Transform for Train: Compose(
+    RandomResizedCrop(size=(224, 224), scale=(0.08, 1.0), ratio=(0.75, 1.3333), interpolation=bicubic, antialias=True)
+    RandomHorizontalFlip(p=0.5)
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+Transform for Test: Compose(
+    Resize(size=224, interpolation=bicubic, max_size=None, antialias=True)
+    CenterCrop(size=(224, 224))
+    ToTensor()
+    Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+)
+--------------  ------------------------------
+Dataset         PACS
+Source Domains  ['cartoon', 'photo', 'sketch']
+Target Domains  ['art_painting']
+# Classes       7
+# Train Data    7,942
+# Val Data      806
+# Test Data     2,048
+--------------  ------------------------------
+Loading CLIP Backbone: ViT-B/32
+Distillation_Loss_Weight: 0.9
+Classification_Loss_Weight: 0.1
+Distance Loss Weight: 0.5
+Temperature: 3.0
+Build Evaluator: Classification
+epoch [1/1] batch [5/62] loss 4.7501 (4.7509) distil_loss 4.5258 (4.5282) class_loss 1.9654 (1.9575) absolute_loss 0.9585 (0.9575) relative_loss 0.0021 (0.0021) acc 11.7188 (13.9062) lr 1.0000e-03 eta 0:00:42
+epoch [1/1] batch [10/62] loss 4.7449 (4.7229) distil_loss 4.5216 (4.4976) class_loss 1.9507 (1.9549) absolute_loss 0.9586 (0.9569) relative_loss 0.0021 (0.0021) acc 14.0625 (14.7656) lr 1.0000e-03 eta 0:00:27
+epoch [1/1] batch [15/62] loss 4.3890 (4.6974) distil_loss 4.1261 (4.4699) class_loss 1.9498 (1.9498) absolute_loss 0.9588 (0.9569) relative_loss 0.0022 (0.0021) acc 10.9375 (14.3229) lr 1.0000e-03 eta 0:00:21
+epoch [1/1] batch [20/62] loss 4.2226 (4.6218) distil_loss 3.9485 (4.3873) class_loss 1.8912 (1.9380) absolute_loss 0.9575 (0.9568) relative_loss 0.0021 (0.0021) acc 14.8438 (14.7656) lr 1.0000e-03 eta 0:00:17
+epoch [1/1] batch [25/62] loss 4.2848 (4.5714) distil_loss 4.0179 (4.3316) class_loss 1.8889 (1.9344) absolute_loss 0.9576 (0.9568) relative_loss 0.0021 (0.0021) acc 17.1875 (15.0000) lr 1.0000e-03 eta 0:00:14
+epoch [1/1] batch [30/62] loss 4.2116 (4.5331) distil_loss 3.9427 (4.2902) class_loss 1.8405 (1.9247) absolute_loss 0.9561 (0.9567) relative_loss 0.0022 (0.0021) acc 17.9688 (15.5990) lr 1.0000e-03 eta 0:00:12
+epoch [1/1] batch [35/62] loss 4.3178 (4.5263) distil_loss 4.0458 (4.2825) class_loss 1.9586 (1.9248) absolute_loss 0.9594 (0.9570) relative_loss 0.0022 (0.0021) acc 12.5000 (15.7143) lr 1.0000e-03 eta 0:00:09
+epoch [1/1] batch [40/62] loss 4.4826 (4.4931) distil_loss 4.2450 (4.2458) class_loss 1.8314 (1.9237) absolute_loss 0.9558 (0.9569) relative_loss 0.0022 (0.0021) acc 19.5312 (15.7812) lr 1.0000e-03 eta 0:00:07
+epoch [1/1] batch [45/62] loss 4.6414 (4.4765) distil_loss 4.4115 (4.2279) class_loss 1.9251 (1.9189) absolute_loss 0.9549 (0.9569) relative_loss 0.0021 (0.0021) acc 15.6250 (16.0938) lr 1.0000e-03 eta 0:00:06
+epoch [1/1] batch [50/62] loss 4.6716 (4.4736) distil_loss 4.4542 (4.2249) class_loss 1.8329 (1.9166) absolute_loss 0.9569 (0.9569) relative_loss 0.0021 (0.0021) acc 21.8750 (16.2969) lr 1.0000e-03 eta 0:00:04
+epoch [1/1] batch [55/62] loss 4.5709 (4.4799) distil_loss 4.3330 (4.2321) class_loss 1.9208 (1.9148) absolute_loss 0.9562 (0.9570) relative_loss 0.0021 (0.0021) acc 18.7500 (16.5057) lr 1.0000e-03 eta 0:00:02
+epoch [1/1] batch [60/62] loss 4.3495 (4.4552) distil_loss 4.0970 (4.2052) class_loss 1.8278 (1.9106) absolute_loss 0.9567 (0.9568) relative_loss 0.0021 (0.0021) acc 22.6562 (16.7188) lr 1.0000e-03 eta 0:00:00
+Model Saved to: output/RISE/model.pth.tar-1
+Finish Training
+Evaluate on the Test Set
+----------  ------
+Total #     2,048
+Correct #   336
+Accuracy    16.41%
+Error Rate  83.59%
+Macro_F1    10.18%
+----------  ------
