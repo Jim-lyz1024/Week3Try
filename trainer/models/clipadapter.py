@@ -105,12 +105,12 @@ class CustomCLIP(nn.Module):
             with torch.no_grad():
                 self.text_features2[domain] = self.clip_model.encode_text(tokenized_prompts)
                 self.text_features2[domain] = self.text_features2[domain] / self.text_features2[domain].norm(dim=-1,keepdim=True)
-        tar_f = self.text_features2['art_painting']
+        tar_f = self.text_features2[domain_names[0]]
         sim_scores = []
         for key,v in self.text_features.items():
             sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
         sim_scores = sim_scores[1:]
-        self.index = sim_scores.index(min(sim_scores))
+        self.index = sim_scores.index(max(sim_scores))
     def forward(self, image,domain_label=None):
         # if self.mode == 'eval' and not hasattr(self, 'eval_mode_set'):
         #     self.update_text_features(self.cfg)
@@ -240,8 +240,12 @@ class CLIPAdapter(Trainer):
         #     losses.append(loss_by_domain)
         #     total_loss += loss_by_domain
 
+        loss_by_domain = F.cross_entropy(domains_outputs[0], class_label)
+        losses.append(loss_by_domain)
+        total_loss += loss_by_domain
+
         for dl in domain_label:
-            for ith,domains_output in enumerate(domains_outputs):
+            for ith,domains_output in enumerate(domains_outputs[1:]):
                 if dl==ith:
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
@@ -257,8 +261,9 @@ class CLIPAdapter(Trainer):
         #     losses.append(loss_by_domain)
         #     total_loss += loss_by_domain
 
-        loss = total_loss / len(domains_outputs)
-            
+        loss = total_loss
+        # loss = total_loss / len(domains_outputs)
+
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
         

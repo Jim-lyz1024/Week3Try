@@ -158,7 +158,7 @@ class Trainer:
                 print(" ".join(info))
 
             end_time = time.time()
-
+            # break
     def before_epoch(self):
         pass
 
@@ -186,6 +186,7 @@ class Trainer:
             input_data, class_label = self.parse_batch_test(batch_data)
             output = self.model_inference(input_data)
             self.evaluator.process(output, class_label)
+            # break
 
         evaluation_results = self.evaluator.evaluate()
 
@@ -194,10 +195,8 @@ class Trainer:
     def parse_batch_train(self, batch_data):
         image = batch_data["img"].to(self.device)
         class_label = batch_data["class_label"].to(self.device)
-        
-        domain_label = batch_data["domain_label"].to(self.device)
 
-        return image, class_label, domain_label
+        return image, class_label
 
     def parse_batch_test(self, batch_data):
         input_data = batch_data["img"].to(self.device)
