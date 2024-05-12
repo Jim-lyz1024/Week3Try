@@ -105,18 +105,21 @@ class CustomCLIP(nn.Module):
             with torch.no_grad():
                 self.text_features2[domain] = self.clip_model.encode_text(tokenized_prompts)
                 self.text_features2[domain] = self.text_features2[domain] / self.text_features2[domain].norm(dim=-1,keepdim=True)
+        
         # tar_f = self.text_features2['art_painting']
-        tar_domain = cfg.DATASET.TARGET_DOMAINS[0]  # Assuming 'clipart' is the only target domain
+        tar_domain = cfg.DATASET.TARGET_DOMAINS[0] 
         tar_f = self.text_features2[tar_domain]
         sim_scores = []
+        
         for key,v in self.text_features.items():
             print(f"key:{key}")
             print(f"v:{v}")
             sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
         sim_scores = sim_scores[1:]
+        
         self.index = sim_scores.index(min(sim_scores))
         
-    def forward(self, image,domain_label=None):
+    def forward(self, image, domain_label=None):
         # if self.mode == 'eval' and not hasattr(self, 'eval_mode_set'):
         #     self.update_text_features(self.cfg)
         #     self.eval_mode_set = True  # Set a flag to avoid re-updating text features unnecessarily
@@ -129,7 +132,7 @@ class CustomCLIP(nn.Module):
 
         if domain_label is not None:
             adapter_features = []
-            for itj,d in enumerate(domain_label):
+            for itj, d in enumerate(domain_label):
                 adapter_features.append(self.adapters[d](image_features[itj:itj+1]))
             adapter_features = torch.vstack(adapter_features)
         else:
@@ -141,7 +144,6 @@ class CustomCLIP(nn.Module):
         # regularization, avoid updating gradient too fast
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
         # image_featuress = [image_featuress[i] / image_featuress[i].norm(dim=-1, keepdim=True) for i in range(len(self.adapters))]
-
         # Image features shape: torch.Size([64, 512])
         
         # Calculate similarity
@@ -229,7 +231,7 @@ class CLIPAdapter(Trainer):
         image, class_label = self.parse_batch_train(batch_data)
 
         domain_label = batch_data["domain_label"]
-        all_domains = self.model(image,domain_label=domain_label)
+        all_domains = self.model(image, domain_label=domain_label)
         domains_outputs = torch.split(all_domains, self.num_classes, dim=1)  # Split into 4 chunks of [batch size, 7]
         # domains_outputss = [torch.split(all_domainss[i], self.num_classes, dim=1) for i in range(len(all_domainss))]
 
@@ -249,7 +251,9 @@ class CLIPAdapter(Trainer):
                 else:
                     loss_by_domain = -F.cross_entropy(domains_output, class_label)
                 losses.append(loss_by_domain)
+                print(loss_by_domain)
                 total_loss += loss_by_domain
+            print("--------------------------------")
 
         # for jth,domain_output in enumerate(domains_outputss[dl]):
         #     if ith==jth:

@@ -57,7 +57,7 @@ class CustomCLIP(nn.Module):
         
         print(prompts)
         print("Number of prompts:", len(prompts))
-        exit()
+        # exit()
         
         prompts = torch.cat([clip.tokenize(prompt) for prompt in prompts])
         prompts = prompts.to(torch.cuda.current_device())

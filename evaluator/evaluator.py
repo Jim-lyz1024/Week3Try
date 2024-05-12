@@ -25,7 +25,8 @@ class Classification:
         # pred = model_output.max(1)[1]
         """ all_domains = torch.cat(list(model_output.values()), dim=1)
         pred = all_domains.max(1)[1] % 7 """
-        pred = model_output.max(1)[1] % 65
+        # print("Model output:", model_output.shape) # torch.Size([64, 28])
+        pred = model_output.max(1)[1] % 5
         matches = pred.eq(ground_truth).float()
         self._correct += int(matches.sum().item())
         self._total += ground_truth.shape[0]

@@ -46,3 +46,7 @@ python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-Digits
 ```
 
 3. Five seeds: **134, 232, 607, 779, 995** are used for the experiments. The results are saved in the output directory.
+
+4. Fill in the table with the results obtained from the output directory:
+   https://docs.google.com/spreadsheets/d/1OZXjCjE8OKRF_Ce-B-cyx3apKZreNTWA_9ncuXAn7Rs/edit#gid=0
+
