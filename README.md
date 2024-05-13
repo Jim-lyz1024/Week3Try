@@ -9,40 +9,40 @@ pip install -r requirements.txt
 
 PACS dataset:
 ```bash
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-PACS-art_painting --dataset PACS --source-domains cartoon photo sketch --target-domains art_painting            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-art_painting --dataset PACS --source-domains cartoon photo sketch --target-domains art_painting            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-PACS-art_painting --dataset PACS --source-domains art_painting photo sketch --target-domains cartoon            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-art_painting --dataset PACS --source-domains art_painting photo sketch --target-domains cartoon            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-PACS-art_painting --dataset PACS --source-domains cartoon art_painting sketch --target-domains photo            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-art_painting --dataset PACS --source-domains cartoon art_painting sketch --target-domains photo            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-PACS-art_painting --dataset PACS --source-domains cartoon photo art_painting --target-domains sketch            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-art_painting --dataset PACS --source-domains cartoon photo art_painting --target-domains sketch            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 OfficeHome:
 ```bash
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains clipart product real_world --target-domains art            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains clipart product real_world --target-domains art            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains art product real_world --target-domains clipart            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains art product real_world --target-domains clipart            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains art clipart real_world --target-domains product            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains art clipart real_world --target-domains product            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains art clipart product --target-domains real_world            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHome-art --dataset OfficeHome --source-domains art clipart product --target-domains real_world            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 VLCS dataset:
 ```bash
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-VLCS-labelme --dataset VLCS --source-domains labelme pascal sun --target-domains caltech            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-VLCS-labelme --dataset VLCS --source-domains labelme pascal sun --target-domains caltech            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-VLCS-labelme --dataset VLCS --source-domains caltech pascal sun --target-domains labelme            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-VLCS-labelme --dataset VLCS --source-domains caltech pascal sun --target-domains labelme            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-VLCS-labelme --dataset VLCS --source-domains caltech labelme sun --target-domains pascal            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-VLCS-labelme --dataset VLCS --source-domains caltech labelme sun --target-domains pascal            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-VLCS-labelme --dataset VLCS --source-domains caltech labelme pascal --target-domains sun            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-VLCS-labelme --dataset VLCS --source-domains caltech labelme pascal --target-domains sun            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 Digits dataset:
 ```bash
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapter-ViTB32-Digits-mnist --dataset Digits --source-domains mnist_m svhn syn --target-domains mnist            --model CLIPAdapter --model-config-file config/clipadapter.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-Digits-mnist --dataset Digits --source-domains mnist_m svhn syn --target-domains mnist            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 3. Five seeds: **134, 232, 607, 779, 995** are used for the experiments. The results are saved in the output directory.

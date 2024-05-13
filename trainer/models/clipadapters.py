@@ -35,7 +35,7 @@ class CustomCLIP(nn.Module):
         # self.adapter = Adapter(1024, 4).to(clip_model.dtype)
         # Adapter for VITB32 CLIP Backbone
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
-        self.adapter = Adapter(512, 4).to(clip_model.dtype)
+        # self.adapter = Adapter(512, 4).to(clip_model.dtype)
         self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
         self.dtype = clip_model.dtype
         self.mode = 'train'  # default mode
@@ -147,7 +147,6 @@ class CustomCLIP(nn.Module):
         # image_featuress = [image_featuress[i] / image_featuress[i].norm(dim=-1, keepdim=True) for i in range(len(self.adapters))]
         # Image features shape: torch.Size([64, 512])
         
-        # Calculate similarity
         logit_scale = self.logit_scale.exp()
         
         # Calculate logits for each domain
@@ -217,7 +216,7 @@ class CLIPAdapters(Trainer):
         self.model.to(self.device)
 
         # NOTE: Only Give text_encoder.adapter to the Optimizer
-        self.optimizer = build_optimizer(self.model.adapter, self.cfg.OPTIM)
+        self.optimizer = build_optimizer(self.model.adapters, self.cfg.OPTIM)
         self.lr_scheduler = build_lr_scheduler(self.optimizer, self.cfg.OPTIM)
 
         # Encapsulate the three operations of optimize, simplify the process by just use the model, don't have to perform the three operations in turn
@@ -267,6 +266,7 @@ class CLIPAdapters(Trainer):
         #     total_loss += loss_by_domain
 
         loss = total_loss
+        # print("Loss:", loss)
             
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
