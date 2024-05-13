@@ -14,6 +14,7 @@ class Classification:
         self._total = 0
         self._y_true = []
         self._y_pred = []
+        self.class_label_name_mapping = class_label_name_mapping
 
     def reset(self):
         self._correct = 0
@@ -26,7 +27,7 @@ class Classification:
         """ all_domains = torch.cat(list(model_output.values()), dim=1)
         pred = all_domains.max(1)[1] % 7 """
         # print("Model output:", model_output.shape) # torch.Size([64, 28])
-        pred = model_output.max(1)[1] % 5
+        pred = model_output.max(1)[1] % len(self.class_label_name_mapping)
         matches = pred.eq(ground_truth).float()
         self._correct += int(matches.sum().item())
         self._total += ground_truth.shape[0]

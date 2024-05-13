@@ -107,17 +107,18 @@ class CustomCLIP(nn.Module):
                 self.text_features2[domain] = self.text_features2[domain] / self.text_features2[domain].norm(dim=-1,keepdim=True)
         
         # tar_f = self.text_features2['art_painting']
-        tar_domain = cfg.DATASET.TARGET_DOMAINS[0] 
-        tar_f = self.text_features2[tar_domain]
+        # tar_domain = cfg.DATASET.TARGET_DOMAINS[0] 
+        # tar_f = self.text_features2[tar_domain]
+        tar_f = self.text_features2[domain_names[0]]
         sim_scores = []
         
         for key,v in self.text_features.items():
-            print(f"key:{key}")
-            print(f"v:{v}")
+            # print(f"key:{key}")
+            # print(f"v:{v}")
             sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
         sim_scores = sim_scores[1:]
         
-        self.index = sim_scores.index(min(sim_scores))
+        self.index = sim_scores.index(max(sim_scores))
         
     def forward(self, image, domain_label=None):
         # if self.mode == 'eval' and not hasattr(self, 'eval_mode_set'):
@@ -244,16 +245,18 @@ class CLIPAdapter(Trainer):
         #     losses.append(loss_by_domain)
         #     total_loss += loss_by_domain
 
+        loss_by_domain = F.cross_entropy(domains_outputs[0], class_label)
+        losses.append(loss_by_domain)
+        total_loss += loss_by_domain
+
         for dl in domain_label:
-            for ith, domains_output in enumerate(domains_outputs):
+            for ith,domains_output in enumerate(domains_outputs[1:]):
                 if dl==ith:
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
                     loss_by_domain = -F.cross_entropy(domains_output, class_label)
                 losses.append(loss_by_domain)
-                print(loss_by_domain)
                 total_loss += loss_by_domain
-            print("--------------------------------")
 
         # for jth,domain_output in enumerate(domains_outputss[dl]):
         #     if ith==jth:
@@ -263,7 +266,7 @@ class CLIPAdapter(Trainer):
         #     losses.append(loss_by_domain)
         #     total_loss += loss_by_domain
 
-        loss = total_loss / len(domains_outputs)
+        loss = total_loss
             
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
