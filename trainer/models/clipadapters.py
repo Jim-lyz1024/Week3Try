@@ -92,7 +92,7 @@ class CustomCLIP(nn.Module):
                 for class_name in self.class_names
             ]
 
-        print(prompts_domain)
+        # print(prompts_domain)
         # exit()
 
         self.text_features2 = {}
