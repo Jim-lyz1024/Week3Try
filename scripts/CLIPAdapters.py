@@ -7,7 +7,7 @@ os.chdir(program_directory)
 """ current_working_directory = os.getcwd()
 print(current_working_directory) """
 
-gpu = 2
+gpu = 0
 
 # dataset = "Digits"
 # source_domains = "mnist_m svhn syn"
@@ -38,13 +38,12 @@ target_domains = "labelme"
 # target_domains = "clipart"
 
 backbone = "ViTB32"
-model = "CLIPAdapter"
+model = "CLIPAdapters"
 output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_domains
 
-model_config_file = "config/clipadapter.yaml"
+model_config_file = "config/clipadapters.yaml"
 
-# seeds = [134, 232, 607, 779, 995]
-seeds = [134]
+seeds = [134, 232, 607, 779, 995]
 
 for seed in seeds:
     command = (

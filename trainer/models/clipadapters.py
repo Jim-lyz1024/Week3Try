@@ -265,26 +265,11 @@ class CLIPAdapters(Trainer):
         #     losses.append(loss_by_domain)
         #     total_loss += loss_by_domain
 
-        loss = total_loss
+        loss = 0.05 * total_loss
         # print("Loss:", loss)
             
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
-        
-        """ logits_domain = self.model(image)
-        
-        print("Logits domain:", logits_domain)
-        
-        # Initialize a dictionary to store loss for each domain
-        losses_domain = {}
-        total_loss = 0
-        
-        for domain_name, output in logits_domain.items():
-            # print(f"Domain: {domain_name}, Output: {output}")
-            loss_by_domain = F.cross_entropy(output, class_label)
-            losses_domain[domain_name] = loss_by_domain
-            total_loss += loss_by_domain
-        loss = total_loss / len(losses_domain) """
 
         self.model_backward_and_update(loss)
 
