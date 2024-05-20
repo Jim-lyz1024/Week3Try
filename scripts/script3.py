@@ -10,9 +10,9 @@ gpu = 0
 # source_domains = "mnist mnist_m syn"
 # target_domains = "svhn"
 
-# dataset = "PACS"
-# source_domains = "art_painting cartoon sketch"
-# target_domains = "photo"
+dataset = "PACS"
+source_domains = "art_painting cartoon sketch"
+target_domains = "photo"
 
 # dataset = "OfficeHome"
 # source_domains = "art clipart real_world"
@@ -26,9 +26,9 @@ gpu = 0
 # source_domains = "location_38 location_43 location_100"
 # target_domains = "location_46"
 
-dataset = "NICO"
-source_domains = "autumn dim outdoor rock water"
-target_domains = "grass"
+# dataset = "NICO"
+# source_domains = "autumn dim outdoor rock water"
+# target_domains = "grass"
 
 # dataset = "DomainNet"
 # source_domains = "clipart infograph quickdraw real sketch"

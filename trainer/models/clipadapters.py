@@ -264,14 +264,19 @@ class CLIPAdapters(Trainer):
         #         loss_by_domain = -F.cross_entropy(domain_output, class_label)
         #     losses.append(loss_by_domain)
         #     total_loss += loss_by_domain
-
-        loss = 0.05 * total_loss
-        # print("Loss:", loss)
-            
+                   
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
 
+        loss = 0.05 * total_loss
+        # loss = total_loss
         self.model_backward_and_update(loss)
+       
+        # Add gradient clipping
+        # self.optimizer.zero_grad()
+        # loss.backward()
+        # torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+        # self.optimizer.step()
 
         loss_summary = {
             "loss": loss.item(),
@@ -282,44 +287,3 @@ class CLIPAdapters(Trainer):
             self.update_lr()
 
         return loss_summary
-
-''' 
-# loss calculation for each domain
-def forward_backward(self, batch_data):
-    image, class_label, domain_label = self.parse_batch_train(batch_data)
-    all_domains = self.model(image)
-
-    domains_outputs = torch.split(all_domains, self.num_classes, dim=1)  # Assuming 7 classes per domain
-    # Assuming domain order in domains_outputs corresponds to ['original', 'cartoon', 'photo', 'sketch']
-
-    total_loss = 0
-    num_domains = len(domains_outputs) - 1  # excluding 'original'
-    batch_size = domains_outputs[0].shape[0]
-
-    # Iterate over each example in the batch
-    for i in range(batch_size):
-        current_domain_label = domain_label[i].item()
-        # Minimize loss for the current domain and 'original'
-        loss = F.cross_entropy(domains_outputs[0][i:i+1], class_label[i:i+1])  # loss for 'original'
-        loss += F.cross_entropy(domains_outputs[current_domain_label + 1][i:i+1], class_label[i:i+1])  # current domain
-        
-        # Maximize loss for other source domains
-        for j in range(1, num_domains + 1):
-            if j != current_domain_label + 1:  # +1 to skip 'original' and match the index
-                loss -= F.cross_entropy(domains_outputs[j][i:i+1], class_label[i:i+1])
-        
-        total_loss += loss
-
-    average_loss = total_loss / batch_size
-    self.model_backward_and_update(average_loss)
-
-    loss_summary = {
-        "loss": average_loss.item(),
-        "acc": compute_accuracy(domains_outputs[1:], class_label)[0].item()  # assuming class_label is the same for all
-    }
-
-    if (self.batch_idx + 1) == self.num_batches:
-        self.update_lr()
-
-    return loss_summary
-'''

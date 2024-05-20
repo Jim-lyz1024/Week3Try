@@ -4,23 +4,23 @@ import os
 program_directory = "/home/yil708/data/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 0
+gpu = 1
 
 # dataset = "Digits"
 # source_domains = "mnist_m svhn syn"
 # target_domains = "mnist"
 
-# dataset = "PACS"
-# source_domains = "cartoon photo sketch"
-# target_domains = "art_painting"
+dataset = "PACS"
+source_domains = "cartoon photo sketch"
+target_domains = "art_painting"
 
 # dataset = "OfficeHome"
 # source_domains = "clipart product real_world"
 # target_domains = "art"
 
-dataset = "VLCS"
-source_domains = "caltech pascal sun"
-target_domains = "labelme"
+# dataset = "VLCS"
+# source_domains = "caltech pascal sun"
+# target_domains = "labelme"
 
 # dataset = "TerraInc"
 # source_domains = "location_43 location_46 location_100"
@@ -40,7 +40,8 @@ output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_d
 
 model_config_file = "config/clipadapters.yaml"
 
-seeds = [134, 232, 607, 779, 995]
+# seeds = [134, 232, 607, 779, 995]
+seeds = [134]
 
 for seed in seeds:
     command = (
