@@ -268,15 +268,15 @@ class CLIPAdapters(Trainer):
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
 
-        # loss = 0.05 * total_loss
-        # self.model_backward_and_update(loss)
+        loss = 0.05 * total_loss
+        self.model_backward_and_update(loss)
        
         # Add gradient clipping
-        loss = total_loss
-        self.optimizer.zero_grad()
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-        self.optimizer.step()
+        # loss = total_loss
+        # self.optimizer.zero_grad()
+        # loss.backward()
+        # torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+        # self.optimizer.step()
 
         loss_summary = {
             "loss": loss.item(),

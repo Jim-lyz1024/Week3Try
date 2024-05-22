@@ -114,7 +114,19 @@ class Trainer:
             self.before_epoch()
             self.run_epoch()
             self.after_epoch()
+            # 
+            if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
+                self.evaluate_after_epoch()
         self.after_train()
+    
+    #####
+    def evaluate_after_epoch(self):
+            print(f"Evaluating model after epoch {self.current_epoch + 1}")
+            accuracy = self.test()  # Assuming 'test' method returns accuracy
+            print(f"Accuracy after epoch {self.current_epoch + 1}: {accuracy:.2f}%")
+            # Optionally log accuracy to tensorboard or other logging tools
+            self.write_scalar('Accuracy/Val', accuracy, self.current_epoch + 1)
+
 
     def before_train(self):
         # Initialize SummaryWriter
