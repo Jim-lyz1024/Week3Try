@@ -1,26 +1,27 @@
 import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
-program_directory = "/home/yil708/data/Week3Try/"
+# program_directory = "/home/yil708/data/Week3Try/"
+program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 0
+gpu = 7
 
 # dataset = "Digits"
 # source_domains = "mnist mnist_m syn"
 # target_domains = "svhn"
 
-dataset = "PACS"
-source_domains = "art_painting cartoon sketch"
-target_domains = "photo"
+# dataset = "PACS"
+# source_domains = "art_painting cartoon sketch"
+# target_domains = "photo"
 
 # dataset = "OfficeHome"
 # source_domains = "art clipart real_world"
 # target_domains = "product"
 
-# dataset = "VLCS"
-# source_domains = "caltech labelme sun"
-# target_domains = "pascal"
+dataset = "VLCS"
+source_domains = "caltech labelme sun"
+target_domains = "pascal"
 
 # dataset = "TerraInc"
 # source_domains = "location_38 location_43 location_100"
@@ -40,7 +41,8 @@ output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_d
 
 model_config_file = "config/clipadapters.yaml"
 
-seeds = [134, 232, 607, 779, 995]
+# seeds = [134, 232, 607, 779, 995]
+seeds = [134]
 
 for seed in seeds:
     command = (

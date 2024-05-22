@@ -1,10 +1,11 @@
 import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
-program_directory = "/home/yil708/data/Week3Try/"
+# program_directory = "/home/yil708/data/Week3Try/"
+program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 2
+gpu = 1
 
 # dataset = "Digits"
 # source_domains = "mnist svhn syn"
@@ -41,7 +42,7 @@ output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_d
 model_config_file = "config/clipadapters.yaml"
 
 # seeds = [134, 232, 607, 779, 995]
-seeds = [134, 232, 607]
+seeds = [134]
 
 for seed in seeds:
     command = (

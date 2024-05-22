@@ -63,7 +63,6 @@ class CustomCLIP(nn.Module):
         ]
         
         print(prompts_domain)
-        # exit()
         
         self.text_features = {}
         for domain, prompts in prompts_domain.items():
@@ -93,9 +92,9 @@ class CustomCLIP(nn.Module):
             ]
 
         # print(prompts_domain)
-        # exit()
 
         self.text_features2 = {}
+        
         for domain, prompts in prompts_domain.items():
             tokenized_prompts = [clip.tokenize(prompt) for prompt in prompts]
             # Flatten the list of tokenized prompts
@@ -114,11 +113,12 @@ class CustomCLIP(nn.Module):
         
         for key,v in self.text_features.items():
             # print(f"key:{key}")
-            # print(f"v:{v}")
+            # print(f"v:{v.shape}")
             sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
         sim_scores = sim_scores[1:]
         
         self.index = sim_scores.index(max(sim_scores))
+        
         
     def forward(self, image, domain_label=None):
         # if self.mode == 'eval' and not hasattr(self, 'eval_mode_set'):
@@ -128,17 +128,17 @@ class CustomCLIP(nn.Module):
 
         adapter_ratio = 0.2
         # computes the image features using the CLIP image encoder
-        image_features = self.image_encoder(image.type(self.dtype))
+        image_features = self.image_encoder(image.type(self.dtype)) # Image Features Shape: torch.Size([64, 512])
         # obtain adapted features
-
+        
         if domain_label is not None:
             adapter_features = []
             for itj, d in enumerate(domain_label):
-                adapter_features.append(self.adapters[d](image_features[itj:itj+1]))
+                adapter_features.append(self.adapters[d](image_features[itj:itj+1])) # image_features: torch.Size([1, 512])
             adapter_features = torch.vstack(adapter_features)
         else:
             adapter_features = self.adapters[self.index](image_features)
-
+        
         image_features = ( adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features)
         # image_featuress = [( adapter_ratio * adapter_featuress[i] + (1 - adapter_ratio) * image_features) for i in range(len(self.adapters))]
 
@@ -268,15 +268,15 @@ class CLIPAdapters(Trainer):
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
 
-        loss = 0.05 * total_loss
-        # loss = total_loss
-        self.model_backward_and_update(loss)
+        # loss = 0.05 * total_loss
+        # self.model_backward_and_update(loss)
        
         # Add gradient clipping
-        # self.optimizer.zero_grad()
-        # loss.backward()
-        # torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-        # self.optimizer.step()
+        loss = total_loss
+        self.optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+        self.optimizer.step()
 
         loss_summary = {
             "loss": loss.item(),
