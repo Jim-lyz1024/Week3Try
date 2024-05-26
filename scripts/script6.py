@@ -5,7 +5,7 @@ import os
 program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 0
+gpu = 4
 
 # dataset = "Digits"
 # source_domains = "mnist mnist_m svhn"
@@ -41,7 +41,8 @@ output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_d
 
 model_config_file = "config/clipadapters.yaml"
 
-seeds = [134, 232, 607, 779, 995]
+# seeds = [134, 232, 607, 779, 995]
+seeds = [134]
 
 for seed in seeds:
     command = (

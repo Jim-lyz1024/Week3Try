@@ -5,19 +5,19 @@ import os
 program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 6
+gpu = 4
 
 # dataset = "Digits"
 # source_domains = "mnist mnist_m svhn"
 # target_domains = "syn"
 
-dataset = "PACS"
-source_domains = "art_painting cartoon photo"
-target_domains = "sketch"
+# dataset = "PACS"
+# source_domains = "art_painting cartoon photo"
+# target_domains = "sketch"
 
-# dataset = "OfficeHome"
-# source_domains = "art clipart product"
-# target_domains = "real_world"
+dataset = "OfficeHome"
+source_domains = "art clipart product"
+target_domains = "real_world"
 
 # dataset = "VLCS"
 # source_domains = "caltech labelme pascal"
@@ -37,10 +37,10 @@ target_domains = "sketch"
 
 backbone = "ViTB32"
 # backbone = "RN50"
-model = "CLIPAdapter"
+model = "CLIPAdapters"
 output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_domains
 
-model_config_file = "config/clipadapter.yaml"
+model_config_file = "config/clipadapters.yaml"
 
 # seeds = [134, 232, 607, 779, 995]
 seeds = [134]

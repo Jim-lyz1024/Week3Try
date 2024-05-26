@@ -5,7 +5,7 @@ import os
 program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 7
+gpu = 4
 
 # dataset = "Digits"
 # source_domains = "mnist mnist_m syn"
@@ -15,13 +15,13 @@ gpu = 7
 # source_domains = "art_painting cartoon sketch"
 # target_domains = "photo"
 
-# dataset = "OfficeHome"
-# source_domains = "art clipart real_world"
-# target_domains = "product"
+dataset = "OfficeHome"
+source_domains = "art clipart real_world"
+target_domains = "product"
 
-dataset = "VLCS"
-source_domains = "caltech labelme sun"
-target_domains = "pascal"
+# dataset = "VLCS"
+# source_domains = "caltech labelme sun"
+# target_domains = "pascal"
 
 # dataset = "TerraInc"
 # source_domains = "location_38 location_43 location_100"
@@ -36,6 +36,7 @@ target_domains = "pascal"
 # target_domains = "painting"
 
 backbone = "ViTB32"
+# backbone = "RN50"
 model = "CLIPAdapters"
 output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_domains
 

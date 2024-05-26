@@ -35,8 +35,10 @@ class CustomCLIP(nn.Module):
         # self.adapter = Adapter(1024, 4).to(clip_model.dtype)
         # Adapter for VITB32 CLIP Backbone
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
-        # self.adapter = Adapter(512, 4).to(clip_model.dtype)
-        self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
+        # self.adapter = Adapter(512, 4).to(clip_model.dtype) 
+        # 512 for ViTB32
+        self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))]) 
+        # self.adapters = nn.ModuleList([Adapter(1024, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
         self.dtype = clip_model.dtype
         self.mode = 'train'  # default mode
         self.cfg = cfg
@@ -268,15 +270,16 @@ class CLIPAdapters(Trainer):
         # output = self.model(image)
         # loss = F.cross_entropy(output, class_label)
 
-        loss = 0.05 * total_loss
-        self.model_backward_and_update(loss)
+        # loss = 0.05 * total_loss
+        # loss = total_loss
+        # self.model_backward_and_update(loss)
        
         # Add gradient clipping
-        # loss = total_loss
-        # self.optimizer.zero_grad()
-        # loss.backward()
-        # torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-        # self.optimizer.step()
+        loss = total_loss
+        self.optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+        self.optimizer.step()
 
         loss_summary = {
             "loss": loss.item(),
