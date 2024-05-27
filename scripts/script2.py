@@ -15,13 +15,13 @@ gpu = 4
 # source_domains = "art_painting photo sketch"
 # target_domains = "cartoon"
 
-dataset = "OfficeHome"
-source_domains = "art product real_world"
-target_domains = "clipart"
+# dataset = "OfficeHome"
+# source_domains = "art product real_world"
+# target_domains = "clipart"
 
-# dataset = "VLCS"
-# source_domains = "caltech pascal sun"
-# target_domains = "labelme"
+dataset = "VLCS"
+source_domains = "caltech pascal sun"
+target_domains = "labelme"
 
 # dataset = "TerraInc"
 # source_domains = "location_38 location_46 location_100"

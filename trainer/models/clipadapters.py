@@ -117,9 +117,10 @@ class CustomCLIP(nn.Module):
             # print(f"key:{key}")
             # print(f"v:{v.shape}")
             sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
-        sim_scores = sim_scores[1:]
         
-        self.index = sim_scores.index(max(sim_scores))
+        self.sim_scores = sim_scores[1:]
+        
+        # self.index = sim_scores.index(max(sim_scores))
         
         
     def forward(self, image, domain_label=None):
@@ -139,8 +140,14 @@ class CustomCLIP(nn.Module):
                 adapter_features.append(self.adapters[d](image_features[itj:itj+1])) # image_features: torch.Size([1, 512])
             adapter_features = torch.vstack(adapter_features)
         else:
-            adapter_features = self.adapters[self.index](image_features)
-        
+            adapter_features = []
+            for i, adapter in enumerate(self.adapters):
+                adapter_features.append(adapter(image_features))
+            # Compute weights using softmax
+            weights = F.softmax(torch.tensor(self.sim_scores), dim=0).to(self.dtype)
+            combined_adapter_features = sum(w * f for w, f in zip(weights, adapter_features))
+            adapter_features = combined_adapter_features
+
         image_features = ( adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features)
         # image_featuress = [( adapter_ratio * adapter_featuress[i] + (1 - adapter_ratio) * image_features) for i in range(len(self.adapters))]
 
@@ -255,7 +262,7 @@ class CLIPAdapters(Trainer):
                 if dl==ith:
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
-                    loss_by_domain = -F.cross_entropy(domains_output, class_label)
+                    loss_by_domain = -0.3 * F.cross_entropy(domains_output, class_label)
                 losses.append(loss_by_domain)
                 total_loss += loss_by_domain
 
