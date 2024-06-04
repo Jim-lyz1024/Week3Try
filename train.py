@@ -9,7 +9,8 @@ def reset_cfg_from_wandb(cfg):
     cfg.DATALOADER.TRAIN.BATCH_SIZE = wandb.config.DATALOADER_TRAIN_BATCH_SIZE
     cfg.OPTIM.LR = wandb.config.OPTIM_LR
     cfg.OPTIM.MAX_EPOCH = wandb.config.OPTIM_MAX_EPOCH
-    cfg.OPTIM.NAME = wandb.config.OPTIM_NAME
+    cfg.MODEL.CLIPAdapters.DOMAIN_LOSS_WEIGHT = wandb.config.DOMAIN_LOSS_WEIGHT  
+
 
 def reset_cfg_from_args(cfg, args):
     cfg.GPU = args.gpu
@@ -64,7 +65,7 @@ def print_args(args, cfg):
 
 def main(args):
     # Initialize W&B
-    wandb.init(project="clip-adapters", config=args)  # 直接初始化W&B并读取配置
+    wandb.init(project="clip-adapters", config=args)  
     cfg = setup_cfg(args)
 
     if cfg.SEED >= 0:
@@ -97,13 +98,13 @@ if __name__ == "__main__":
                 'values': [32, 64, 128]
             },
             'OPTIM_LR': {
-                'values': [0.00001, 0.0001, 0.001, 0.01]
+                'values': [0.00001, 0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05]
             },
             'OPTIM_MAX_EPOCH': {
-                'values': [5, 10, 20]
+                'values': [20, 35, 50]
             },
-            'OPTIM_NAME': {
-                'values': ['sgd', 'adam']
+            'DOMAIN_LOSS_WEIGHT': {
+                'values': [0.1, 0.2, 0.3, 0.4, 0.5]
             }
         }
     }
@@ -116,8 +117,8 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="PACS")
     parser.add_argument("--source-domains", type=str, nargs="+", default=["photo", "art_painting", "cartoon"])
     parser.add_argument("--target-domains", type=str, nargs="+", default=["sketch"])
-    parser.add_argument("--model", type=str, default="CLIPAdapters")  # 确保默认使用 CLIPAdapters
-    parser.add_argument("--model-config-file", type=str, default="config/clipadapters.yaml")  # 指定默认配置文件
+    parser.add_argument("--model", type=str, default="CLIPAdapters")  
+    parser.add_argument("--model-config-file", type=str, default="config/clipadapters.yaml") 
     args = parser.parse_args()
     
     sweep_id = wandb.sweep(sweep=sweep_configuration, project="clip-adapters")
