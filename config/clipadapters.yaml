@@ -16,9 +16,10 @@ OPTIM:
   NAME: "sgd"
   # LR: 0.002
   # LR: 0.00001
-  LR: 0.0001
+  # LR: 0.0001
+  LR: 0.01
   # MAX_EPOCH: 50
-  MAX_EPOCH: 50
+  MAX_EPOCH: 1
   LR_SCHEDULER: "Cosine"
   WARMUP_EPOCH: 1
   WARMUP_TYPE: "constant"

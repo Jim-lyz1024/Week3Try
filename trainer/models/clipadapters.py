@@ -73,10 +73,11 @@ class CustomCLIP(nn.Module):
             tokenized_prompts = torch.cat(tokenized_prompts).to(torch.cuda.current_device())
             
             # Obtain text features for each domain's prompts
+            # self.text_features['original'].shape: torch.Size([7, 512])
             with torch.no_grad():
                 self.text_features[domain] = self.clip_model.encode_text(tokenized_prompts)
                 self.text_features[domain] = self.text_features[domain] / self.text_features[domain].norm(dim=-1, keepdim=True)
-
+        
     def update_text_features2(self, cfg):
         domain_names = cfg.DATASET.TARGET_DOMAINS
         prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
@@ -154,7 +155,7 @@ class CustomCLIP(nn.Module):
         # regularization, avoid updating gradient too fast
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
         # image_featuress = [image_featuress[i] / image_featuress[i].norm(dim=-1, keepdim=True) for i in range(len(self.adapters))]
-        # Image features shape: torch.Size([64, 512])
+        
         
         logit_scale = self.logit_scale.exp()
         
@@ -163,6 +164,8 @@ class CustomCLIP(nn.Module):
         logits_domain = {}
         # logits_domains = [{} for i in range(len(self.adapters))]
         for ith,(domain, text_feature) in enumerate(self.text_features.items()):
+            # Image features shape: torch.Size([64, 512])
+            # text_feature.shape = torch.Size([7, 512])
             logits_domain[domain] = logit_scale * image_features @ text_feature.t()
             # for i in range(len(self.adapters)):
             #     logits_domains[i][domain] = logit_scale * image_featuress[i] @ text_feature.t()
@@ -237,6 +240,7 @@ class CLIPAdapters(Trainer):
         )
 
     def forward_backward(self, batch_data):
+        # class_label.shape: torch.Size([64])
         image, class_label = self.parse_batch_train(batch_data)
 
         domain_label = batch_data["domain_label"]
@@ -278,15 +282,15 @@ class CLIPAdapters(Trainer):
         # loss = F.cross_entropy(output, class_label)
 
         # loss = 0.05 * total_loss
-        # loss = total_loss
-        # self.model_backward_and_update(loss)
+        loss = total_loss
+        self.model_backward_and_update(loss)
        
         # Add gradient clipping
-        loss = total_loss
-        self.optimizer.zero_grad()
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-        self.optimizer.step()
+        # loss = total_loss
+        # self.optimizer.zero_grad()
+        # loss.backward()
+        # torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+        # self.optimizer.step()
 
         loss_summary = {
             "loss": loss.item(),

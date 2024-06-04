@@ -5,7 +5,7 @@ import os
 program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 3
+gpu = 1
 
 # dataset = "Digits"
 # source_domains = "mnist mnist_m svhn"
