@@ -8,14 +8,14 @@ from utils import collect_env_info, get_cfg_default, set_random_seed, setup_logg
 def reset_cfg_from_wandb(cfg):
     cfg.DATALOADER.TRAIN.BATCH_SIZE = wandb.config.DATALOADER_TRAIN_BATCH_SIZE
     cfg.OPTIM.LR = wandb.config.OPTIM_LR
-    cfg.OPTIM.MAX_EPOCH = wandb.config.OPTIM_MAX_EPOCH
+    # cfg.OPTIM.MAX_EPOCH = wandb.config.OPTIM_MAX_EPOCH
     cfg.MODEL.CLIPAdapters.DOMAIN_LOSS_WEIGHT = wandb.config.DOMAIN_LOSS_WEIGHT  
-    cfg.SEED = wandb.config.SEED
+    # cfg.SEED = wandb.config.SEED
 
 def reset_cfg_from_args(cfg, args):
     cfg.GPU = args.gpu
     cfg.OUTPUT_DIR = args.output_dir
-    # cfg.SEED = args.seed
+    cfg.SEED = args.seed
     cfg.DATASET.ROOT = args.root
 
     if args.dataset:
@@ -99,18 +99,15 @@ if __name__ == "__main__":
                 'values': [32, 64, 128]
             },
             'OPTIM_LR': {
-                'values': [0.00001, 0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05]
-            },
-            'OPTIM_MAX_EPOCH': {
-                'values': [20, 35, 50]
-                # 'values': [2, 3, 5]
+                'values': [0.00001, 0.0001, 0.001, 0.005, 0.01, 0.02]
             },
             'DOMAIN_LOSS_WEIGHT': {
-                'values': [0.1, 0.2, 0.3, 0.4, 0.5]
-            },
-            'SEED': {
-                'values': [134, 232, 607, 779, 995] 
+                'values': [0.1, 0.2, 0.3]
             }
+            # ,
+            # 'SEED': {
+            #     'values': [134, 232, 607, 779, 995] 
+            # }
         }
     }
 
