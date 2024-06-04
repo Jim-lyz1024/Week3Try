@@ -10,7 +10,7 @@ def reset_cfg_from_wandb(cfg):
     cfg.OPTIM.LR = wandb.config.OPTIM_LR
     cfg.OPTIM.MAX_EPOCH = wandb.config.OPTIM_MAX_EPOCH
     cfg.MODEL.CLIPAdapters.DOMAIN_LOSS_WEIGHT = wandb.config.DOMAIN_LOSS_WEIGHT  
-
+    cfg.SEED = wandb.config.SEED
 
 def reset_cfg_from_args(cfg, args):
     cfg.GPU = args.gpu
@@ -105,6 +105,9 @@ if __name__ == "__main__":
             },
             'DOMAIN_LOSS_WEIGHT': {
                 'values': [0.1, 0.2, 0.3, 0.4, 0.5]
+            },
+            'SEED': {
+                'values': [134, 232, 607, 779, 995] 
             }
         }
     }
