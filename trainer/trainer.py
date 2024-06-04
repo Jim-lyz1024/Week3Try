@@ -117,9 +117,11 @@ class Trainer:
             self.after_epoch()
             # 
             if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
-                accuracy = self.evaluate_after_epoch()
+                accuracy_train = self.evaluate_after_epoch()
                 # Log metrics to W&B
-                wandb.log({"epoch": self.current_epoch + 1, "accuracy": accuracy})
+                # wandb.log({"epoch_train": self.current_epoch + 1, "accuracy_train": accuracy})
+                wandb.log({"epoch_train": self.current_epoch + 1})
+                wandb.log({"accuracy_train": accuracy_train})                
             
         self.after_train()
     
@@ -130,6 +132,7 @@ class Trainer:
         print(f"Accuracy after epoch {self.current_epoch + 1}: {accuracy:.2f}%")
         # Optionally log accuracy to tensorboard or other logging tools
         self.write_scalar('Accuracy/Val', accuracy, self.current_epoch + 1)
+        return accuracy
 
 
     def before_train(self):

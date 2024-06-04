@@ -11,13 +11,13 @@ gpu = 1
 # source_domains = "mnist mnist_m svhn"
 # target_domains = "syn"
 
-# dataset = "PACS"
-# source_domains = "art_painting cartoon photo"
-# target_domains = "sketch"
+dataset = "PACS"
+source_domains = "art_painting cartoon photo"
+target_domains = "sketch"
 
-dataset = "OfficeHome"
-source_domains = "art clipart product"
-target_domains = "real_world"
+# dataset = "OfficeHome"
+# source_domains = "art clipart product"
+# target_domains = "real_world"
 
 # dataset = "VLCS"
 # source_domains = "caltech labelme pascal"
@@ -42,8 +42,8 @@ output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_d
 
 model_config_file = "config/clipadapters.yaml"
 
-seeds = [134, 232, 607, 779, 995]
-# seeds = [134]
+# seeds = [134, 232, 607, 779, 995]
+seeds = [134]
 
 for seed in seeds:
     command = (
