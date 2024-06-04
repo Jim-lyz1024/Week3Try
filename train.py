@@ -15,7 +15,7 @@ def reset_cfg_from_wandb(cfg):
 def reset_cfg_from_args(cfg, args):
     cfg.GPU = args.gpu
     cfg.OUTPUT_DIR = args.output_dir
-    cfg.SEED = args.seed
+    # cfg.SEED = args.seed
     cfg.DATASET.ROOT = args.root
 
     if args.dataset:
@@ -69,6 +69,7 @@ def main(args):
     cfg = setup_cfg(args)
 
     if cfg.SEED >= 0:
+        wandb.log({"seed": cfg.SEED})
         set_random_seed(cfg.SEED)
 
     torch.cuda.set_device(cfg.GPU)
