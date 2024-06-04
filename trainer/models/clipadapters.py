@@ -10,6 +10,8 @@ from optim import build_lr_scheduler, build_optimizer
 from trainer import MODEL_REGISTRY, Trainer
 from utils import PROMPT_TEMPLATES
 
+import wandb
+
 
 class Adapter(nn.Module):
     def __init__(self, channel_in, reduction=4): # reduction=4 refer to the original paper

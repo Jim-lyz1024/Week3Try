@@ -6,6 +6,7 @@ from collections import OrderedDict
 import torch
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
+import wandb  # Import wandb
 
 from datasets import DataManager
 from evaluator import build_evaluator
@@ -116,16 +117,19 @@ class Trainer:
             self.after_epoch()
             # 
             if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
-                self.evaluate_after_epoch()
+                accuracy = self.evaluate_after_epoch()
+                # Log metrics to W&B
+                wandb.log({"epoch": self.current_epoch + 1, "accuracy": accuracy})
+            
         self.after_train()
     
     #####
     def evaluate_after_epoch(self):
-            print(f"Evaluating model after epoch {self.current_epoch + 1}")
-            accuracy = self.test()  # Assuming 'test' method returns accuracy
-            print(f"Accuracy after epoch {self.current_epoch + 1}: {accuracy:.2f}%")
-            # Optionally log accuracy to tensorboard or other logging tools
-            self.write_scalar('Accuracy/Val', accuracy, self.current_epoch + 1)
+        print(f"Evaluating model after epoch {self.current_epoch + 1}")
+        accuracy = self.test()  # Assuming 'test' method returns accuracy
+        print(f"Accuracy after epoch {self.current_epoch + 1}: {accuracy:.2f}%")
+        # Optionally log accuracy to tensorboard or other logging tools
+        self.write_scalar('Accuracy/Val', accuracy, self.current_epoch + 1)
 
 
     def before_train(self):
