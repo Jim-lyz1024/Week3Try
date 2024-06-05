@@ -112,15 +112,15 @@ class CustomCLIP(nn.Module):
         # tar_domain = cfg.DATASET.TARGET_DOMAINS[0] 
         # tar_f = self.text_features2[tar_domain]
         tar_f = self.text_features2[domain_names[0]]
+        # print(f"tar_f:{tar_f.shape}") # torch.Size([7, 512])
         sim_scores = []
         
         for key,v in self.text_features.items():
-            # print(f"key:{key}")
-            # print(f"v:{v.shape}")
+            # print(f"key:{key}") # original, cartoon, photo, sketch  
+            # print(f"v:{v.shape}") # torch.Size([7, 512])
             sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
         
         self.sim_scores = sim_scores[1:]
-        
         # self.index = sim_scores.index(max(sim_scores))
         
         
@@ -161,6 +161,13 @@ class CustomCLIP(nn.Module):
         
         # Calculate logits for each domain
         # logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
+        
+        ##### In test: only use original prompt
+        if domain_label == None:
+            logits = logit_scale * image_features @ self.text_features['original'].t()
+            return logits
+        
+        ##### In train: use all prompts
         logits_domain = {}
         # logits_domains = [{} for i in range(len(self.adapters))]
         for ith,(domain, text_feature) in enumerate(self.text_features.items()):
@@ -266,7 +273,7 @@ class CLIPAdapters(Trainer):
                 if dl==ith:
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
-                    loss_by_domain = -0.3 * F.cross_entropy(domains_output, class_label)
+                    loss_by_domain = -0.1 * F.cross_entropy(domains_output, class_label)
                 losses.append(loss_by_domain)
                 total_loss += loss_by_domain
 
