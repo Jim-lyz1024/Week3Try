@@ -1,11 +1,11 @@
 import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
-program_directory = "/home/yil708/data/Week3Try/"
-# program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
+# program_directory = "/home/yil708/data/Week3Try/"
+program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 3
+gpu = 4
 
 # dataset = "Digits"
 # source_domains = "mnist mnist_m syn"
@@ -15,17 +15,17 @@ gpu = 3
 # source_domains = "art_painting cartoon sketch"
 # target_domains = "photo"
 
-dataset = "OfficeHome"
-source_domains = "art clipart real_world"
-target_domains = "product"
+# dataset = "OfficeHome"
+# source_domains = "art clipart real_world"
+# target_domains = "product"
 
 # dataset = "VLCS"
 # source_domains = "caltech labelme sun"
 # target_domains = "pascal"
 
-# dataset = "TerraInc"
-# source_domains = "location_38 location_43 location_100"
-# target_domains = "location_46"
+dataset = "TerraInc"
+source_domains = "location_38 location_43 location_100"
+target_domains = "location_46"
 
 # dataset = "NICO"
 # source_domains = "autumn dim outdoor rock water"

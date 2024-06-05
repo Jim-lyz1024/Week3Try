@@ -23,11 +23,9 @@ class Classification:
         self._y_pred = []
 
     def process(self, model_output, ground_truth):        
-        # pred = model_output.max(1)[1]
-        """ all_domains = torch.cat(list(model_output.values()), dim=1)
-        pred = all_domains.max(1)[1] % 7 """
-        # print("Model output:", model_output.shape) # torch.Size([64, 28])
-        pred = model_output.max(1)[1] % len(self.class_label_name_mapping)
+        # pred = model_output.max(1)[1] % len(self.class_label_name_mapping)
+        # print("Model output:", model_output.shape) # torch.Size([64, 7])
+        pred = model_output.max(1)[1]
         matches = pred.eq(ground_truth).float()
         self._correct += int(matches.sum().item())
         self._total += ground_truth.shape[0]
