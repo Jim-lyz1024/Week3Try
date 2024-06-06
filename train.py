@@ -89,7 +89,8 @@ def main(args):
 
 if __name__ == "__main__":
     sweep_configuration = {
-        'method': 'bayes',
+        # 'method': 'bayes',
+        'method': 'grid', 
         'metric': {
             'name': 'accuracy',
             'goal': 'maximize'
@@ -99,10 +100,10 @@ if __name__ == "__main__":
                 'values': [32, 64, 128]
             },
             'OPTIM_LR': {
-                'values': [0.00001, 0.0001, 0.001, 0.005, 0.01, 0.02]
+                'values': [0.00001, 0.0001, 0.001, 0.005, 0.01, 0.02, 0.05]
             },
             'DOMAIN_LOSS_WEIGHT': {
-                'values': [0.1, 0.2, 0.3]
+                'values': [0.1, 0.2, 0.3, 0.4]
             }
             # ,
             # 'SEED': {

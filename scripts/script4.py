@@ -11,9 +11,9 @@ gpu = 5
 # source_domains = "mnist mnist_m svhn"
 # target_domains = "syn"
 
-# dataset = "PACS"
-# source_domains = "art_painting cartoon photo"
-# target_domains = "sketch"
+dataset = "PACS"
+source_domains = "art_painting cartoon photo"
+target_domains = "sketch"
 
 # dataset = "OfficeHome"
 # source_domains = "art clipart product"
@@ -23,9 +23,9 @@ gpu = 5
 # source_domains = "caltech labelme pascal"
 # target_domains = "sun"
 
-dataset = "TerraInc"
-source_domains = "location_38 location_43 location_46"
-target_domains = "location_100"
+# dataset = "TerraInc"
+# source_domains = "location_38 location_43 location_46"
+# target_domains = "location_100"
 
 # dataset = "NICO"
 # source_domains = "autumn dim grass rock water"
