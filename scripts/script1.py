@@ -1,8 +1,8 @@
 import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
-# program_directory = "/home/yil708/data/Week3Try/"
-program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
+program_directory = "/home/yil708/data/Week3Try/"
+# program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
 gpu = 2

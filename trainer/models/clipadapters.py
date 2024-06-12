@@ -267,13 +267,15 @@ class CLIPAdapters(Trainer):
         loss_by_domain = F.cross_entropy(domains_outputs[0], class_label)
         losses.append(loss_by_domain)
         total_loss += loss_by_domain
+        
+        domain_loss_weight = self.cfg.MODEL.CLIPAdapters.DOMAIN_LOSS_WEIGHT
 
         for dl in domain_label:
             for ith,domains_output in enumerate(domains_outputs[1:]):
                 if dl==ith:
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
-                    loss_by_domain = -0.1 * F.cross_entropy(domains_output, class_label)
+                    loss_by_domain = -domain_loss_weight * F.cross_entropy(domains_output, class_label)
                 losses.append(loss_by_domain)
                 total_loss += loss_by_domain
 
