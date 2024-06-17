@@ -11,6 +11,7 @@ from datasets import DataManager
 from evaluator import build_evaluator
 from utils import AverageMeter, MetricMeter
 
+import psutil
 
 class Trainer:
     """Generic Trainer Class for Implementing Generic Function"""
@@ -42,6 +43,12 @@ class Trainer:
         self.evaluator = build_evaluator(
             cfg, class_label_name_mapping=self.class_label_name_mapping
         )
+        
+        #
+        self.training_time = 0
+        self.inference_time = 0
+        self.gpu_memory_usage = 0
+        self.cpu_memory_usage = 0
 
     def build_model(self):
         raise NotImplementedError
@@ -110,14 +117,22 @@ class Trainer:
 
     def train(self):
         self.before_train()
+        start_time = time.time()
         for self.current_epoch in range(self.max_epoch):
             self.before_epoch()
             self.run_epoch()
             self.after_epoch()
             # 
-            if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
-                self.evaluate_after_epoch()
+            # if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
+            #     self.evaluate_after_epoch()
+        end_time = time.time()
+        self.training_time = end_time - start_time
+        self.gpu_memory_usage = torch.cuda.max_memory_allocated()
+        self.cpu_memory_usage = psutil.virtual_memory().used
         self.after_train()
+        print(f"Training Time: {self.training_time:.2f}s")
+        # print(f"GPU Memory Usage: {self.gpu_memory_usage / (1024 ** 3):.2f} GB")
+        # print(f"CPU Memory Usage: {self.cpu_memory_usage / (1024 ** 3):.2f} GB")
     
     #####
     def evaluate_after_epoch(self):
@@ -197,12 +212,17 @@ class Trainer:
 
         print("Evaluate on the {} Set".format(split))
 
+        start_time = time.time()
         for _, batch_data in enumerate(tqdm(data_loader)):
             input_data, class_label = self.parse_batch_test(batch_data)
             output = self.model_inference(input_data)
             self.evaluator.process(output, class_label)
+        end_time = time.time()
+        self.inference_time = end_time - start_time
 
         evaluation_results = self.evaluator.evaluate()
+        
+        print(f"Inference Time: {self.inference_time:.2f}s")
 
         return list(evaluation_results.values())[0]
 
