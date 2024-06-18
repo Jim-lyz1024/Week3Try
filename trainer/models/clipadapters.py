@@ -40,109 +40,70 @@ class CustomCLIP(nn.Module):
         self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))]) 
         # self.adapters = nn.ModuleList([Adapter(1024, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
         self.dtype = clip_model.dtype
-        self.mode = 'train'  # default mode
         self.cfg = cfg
         self.class_names = class_names
         self.clip_model = clip_model
-        self.text_features = {}
-        self.update_text_features(self.cfg)
-        self.update_text_features2(self.cfg)
-
-    def update_text_features(self, cfg):
-        domain_names = cfg.DATASET.SOURCE_DOMAINS if self.mode == 'train' else cfg.DATASET.TARGET_DOMAINS
-        prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
-        
-        # Generate prompts for each domain
-        prompts_domain = {}
-        
-        prompts_original = [prompt_template.format(class_name.replace("_", " ")) for class_name in self.class_names]
-        prompts_domain['original'] = prompts_original
-        
-        for domain in domain_names:
-            prompts_domain[domain] = [
-            prompt_template.format(domain.replace("_", " ") + ' ' + class_name.replace("_", " "))
-            for class_name in self.class_names
-        ]
-        
-        print(prompts_domain)
         
         self.text_features = {}
-        for domain, prompts in prompts_domain.items():
-            tokenized_prompts = [clip.tokenize(prompt) for prompt in prompts]
-            # Flatten the list of tokenized prompts
-            tokenized_prompts = torch.cat(tokenized_prompts).to(torch.cuda.current_device())
-            
-            # Obtain text features for each domain's prompts
-            # self.text_features['original'].shape: torch.Size([7, 512])
-            with torch.no_grad():
-                self.text_features[domain] = self.clip_model.encode_text(tokenized_prompts)
-                self.text_features[domain] = self.text_features[domain] / self.text_features[domain].norm(dim=-1, keepdim=True)
-        
-    def update_text_features2(self, cfg):
-        domain_names = cfg.DATASET.TARGET_DOMAINS
-        prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]
-
-        # Generate prompts for each domain
-        prompts_domain = {}
-
-        prompts_original = [prompt_template.format(class_name.replace("_", " ")) for class_name in self.class_names]
-        prompts_domain['original'] = prompts_original
-
-        for domain in domain_names:
-            prompts_domain[domain] = [
-                prompt_template.format(domain.replace("_", " ") + ' ' + class_name.replace("_", " "))
-                for class_name in self.class_names
-            ]
-
-        # print(prompts_domain)
-
         self.text_features2 = {}
-        
-        for domain, prompts in prompts_domain.items():
-            tokenized_prompts = [clip.tokenize(prompt) for prompt in prompts]
-            # Flatten the list of tokenized prompts
-            tokenized_prompts = torch.cat(tokenized_prompts).to(torch.cuda.current_device())
+        self.sim_scores = []
+        self.initialize_text_features()
+    
+    def initialize_text_features(self):
+        def generate_prompts(domain_names, prompt_template):
+            prompts_domain = {}
+            prompts_original = [prompt_template.format(class_name.replace("_", " ")) for class_name in self.class_names]
+            prompts_domain['original'] = prompts_original
 
-            # Obtain text features for each domain's prompts
-            with torch.no_grad():
-                self.text_features2[domain] = self.clip_model.encode_text(tokenized_prompts)
-                self.text_features2[domain] = self.text_features2[domain] / self.text_features2[domain].norm(dim=-1,keepdim=True)
+            for domain in domain_names:
+                prompts_domain[domain] = [
+                    prompt_template.format(domain.replace("_", " ") + ' ' + class_name.replace("_", " "))
+                    for class_name in self.class_names
+                ]
+            return prompts_domain
+
+        prompt_template = PROMPT_TEMPLATES[self.cfg.DATASET.NAME]
         
-        # tar_f = self.text_features2['art_painting']
-        # tar_domain = cfg.DATASET.TARGET_DOMAINS[0] 
-        # tar_f = self.text_features2[tar_domain]
-        tar_f = self.text_features2[domain_names[0]]
-        # print(f"tar_f:{tar_f.shape}") # torch.Size([7, 512])
-        sim_scores = []
-        
-        for key,v in self.text_features.items():
-            # print(f"key:{key}") # original, cartoon, photo, sketch  
-            # print(f"v:{v.shape}") # torch.Size([7, 512])
-            sim_scores.append(F.cosine_similarity(v.flatten(), tar_f.flatten(),dim=0))
-        
+        source_domain_names = self.cfg.DATASET.SOURCE_DOMAINS
+        target_domain_names = self.cfg.DATASET.TARGET_DOMAINS
+
+        # Generate prompts for source and target domains
+        source_prompts = generate_prompts(source_domain_names, prompt_template)
+        target_prompts = generate_prompts(target_domain_names, prompt_template)
+
+        print(source_prompts)
+        print(target_prompts)
+
+        def encode_text(prompts):
+            text_features = {}
+            for domain, prompts_list in prompts.items():
+                tokenized_prompts = [clip.tokenize(prompt) for prompt in prompts_list]
+                tokenized_prompts = torch.cat(tokenized_prompts).to(torch.cuda.current_device())
+                with torch.no_grad():
+                    text_features[domain] = self.clip_model.encode_text(tokenized_prompts) # torch.Size([7, 512])
+                    text_features[domain] = text_features[domain] / text_features[domain].norm(dim=-1, keepdim=True)
+            return text_features
+
+        self.text_features = encode_text(source_prompts)
+        self.text_features2 = encode_text(target_prompts)
+
+        tar_f = self.text_features2[target_domain_names[0]] # torch.Size([7, 512])
+        sim_scores = [F.cosine_similarity(v.flatten(), tar_f.flatten(), dim=0) for v in self.text_features.values()]
         self.sim_scores = sim_scores[1:]
-        # self.index = sim_scores.index(max(sim_scores))
         
         
     def forward(self, image, domain_label=None):
-        # if self.mode == 'eval' and not hasattr(self, 'eval_mode_set'):
-        #     self.update_text_features(self.cfg)
-        #     self.eval_mode_set = True  # Set a flag to avoid re-updating text features unnecessarily
-        #     print(self.text_features)
-
         adapter_ratio = 0.2
-        # computes the image features using the CLIP image encoder
-        image_features = self.image_encoder(image.type(self.dtype)) # Image Features Shape: torch.Size([64, 512])
-        # obtain adapted features
+        image_features = self.image_encoder(image.type(self.dtype)) # torch.Size([64, 512])
+        
+        adapter_features = []
         
         if domain_label is not None:
-            adapter_features = []
             for itj, d in enumerate(domain_label):
                 adapter_features.append(self.adapters[d](image_features[itj:itj+1])) # image_features: torch.Size([1, 512])
             adapter_features = torch.vstack(adapter_features)
         else:
-            adapter_features = []
-            for i, adapter in enumerate(self.adapters):
+            for adapter in self.adapters:
                 adapter_features.append(adapter(image_features))
             # Compute weights using softmax
             weights = F.softmax(torch.tensor(self.sim_scores), dim=0).to(self.dtype)
@@ -150,35 +111,25 @@ class CustomCLIP(nn.Module):
             adapter_features = combined_adapter_features
 
         image_features = ( adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features)
-        # image_featuress = [( adapter_ratio * adapter_featuress[i] + (1 - adapter_ratio) * image_features) for i in range(len(self.adapters))]
 
         # regularization, avoid updating gradient too fast
-        image_features = image_features / image_features.norm(dim=-1, keepdim=True)
-        # image_featuress = [image_featuress[i] / image_featuress[i].norm(dim=-1, keepdim=True) for i in range(len(self.adapters))]
-        
+        image_features = image_features / image_features.norm(dim=-1, keepdim=True)        
         
         logit_scale = self.logit_scale.exp()
         
         # Calculate logits for each domain
-        # logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
+        # logits = logit_scale * image_features @ self.text_features.t() 
         
         ##### In test: only use original prompt
-        if domain_label == None:
+        if domain_label is None:
             logits = logit_scale * image_features @ self.text_features['original'].t()
-            return logits
-        
         ##### In train: use all prompts
-        logits_domain = {}
-        # logits_domains = [{} for i in range(len(self.adapters))]
-        for ith,(domain, text_feature) in enumerate(self.text_features.items()):
-            # Image features shape: torch.Size([64, 512])
-            # text_feature.shape = torch.Size([7, 512])
-            logits_domain[domain] = logit_scale * image_features @ text_feature.t()
-            # for i in range(len(self.adapters)):
-            #     logits_domains[i][domain] = logit_scale * image_featuress[i] @ text_feature.t()
-
-        all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
-        # all_domainss = [torch.cat(list(logits_domains[i].values()), dim=1) for i in range(len(self.adapters))]
+        else:
+            logits_domain = {}
+            for domain, text_feature in self.text_features.items():
+                logits_domain[domain] = logit_scale * image_features @ text_feature.t() # torch.Size([64, 7]) @ torch.Size([7, 512])
+                logits = torch.cat(list(logits_domain.values()), dim=1)
+        return logits
 
         # cosine_similarity = {}
         # logits_domains = [{} for i in range(len(self.adapters))]
@@ -192,8 +143,7 @@ class CustomCLIP(nn.Module):
         #
         # all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
         # all_domainss = [torch.cat(list(logits_domains[i].values()), dim=1) for i in range(len(self.adapters))]
-        
-        return all_domains
+    
     
  
 @MODEL_REGISTRY.register()
@@ -253,19 +203,12 @@ class CLIPAdapters(Trainer):
         domain_label = batch_data["domain_label"]
         all_domains = self.model(image, domain_label=domain_label)
         domains_outputs = torch.split(all_domains, self.num_classes, dim=1)  # Split into 4 chunks of [batch size, 7]
-        # domains_outputss = [torch.split(all_domainss[i], self.num_classes, dim=1) for i in range(len(all_domainss))]
 
         total_loss = 0
-        losses = []
-
-        # # Compute the loss for each domain
-        # for domain_output in domains_outputs:
-        #     loss_by_domain = F.cross_entropy(domain_output, class_label)
-        #     losses.append(loss_by_domain)
-        #     total_loss += loss_by_domain
+        # losses = []
 
         loss_by_domain = F.cross_entropy(domains_outputs[0], class_label)
-        losses.append(loss_by_domain)
+        # losses.append(loss_by_domain)
         total_loss += loss_by_domain
 
         for dl in domain_label:
@@ -274,21 +217,9 @@ class CLIPAdapters(Trainer):
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
                     loss_by_domain = -0.1 * F.cross_entropy(domains_output, class_label)
-                losses.append(loss_by_domain)
+                # losses.append(loss_by_domain)
                 total_loss += loss_by_domain
 
-        # for jth,domain_output in enumerate(domains_outputss[dl]):
-        #     if ith==jth:
-        #         loss_by_domain = F.cross_entropy(domain_output, class_label)
-        #     else:
-        #         loss_by_domain = -F.cross_entropy(domain_output, class_label)
-        #     losses.append(loss_by_domain)
-        #     total_loss += loss_by_domain
-                   
-        # output = self.model(image)
-        # loss = F.cross_entropy(output, class_label)
-
-        # loss = 0.05 * total_loss
         loss = total_loss
         self.model_backward_and_update(loss)
        

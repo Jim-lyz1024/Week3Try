@@ -48,10 +48,10 @@ class Trainer:
 
     def set_model_mode(self, mode="train", model_names=None):
         # assert mode in ['train', 'eval'], "Invalid mode. Expected 'train' or 'eval', got {}".format(mode)
-        try:
-            self.model.mode = mode
-        except:
-            pass
+        # try:
+        #     self.model.mode = mode
+        # except:
+        #     pass
         
         model_names = self.get_model_names(model_names)
 
