@@ -43,6 +43,7 @@ class CustomCLIP(nn.Module):
         self.cfg = cfg
         self.class_names = class_names
         self.clip_model = clip_model
+        
         self.text_features = {}
         self.text_features2 = {}
         self.sim_scores = []
@@ -125,22 +126,18 @@ class CustomCLIP(nn.Module):
         # logits = logit_scale * image_features @ self.text_features.t() # .t() means transpose of a matrix
         
         ##### In test: only use original prompt
-        if domain_label == None:
+        if domain_label is None:
             logits = logit_scale * image_features @ self.text_features['original'].t()
-            return logits
-        
         ##### In train: use all prompts
-        logits_domain = {}
-        # logits_domains = [{} for i in range(len(self.adapters))]
-        for ith,(domain, text_feature) in enumerate(self.text_features.items()):
-            # Image features shape: torch.Size([64, 512])
-            # text_feature.shape = torch.Size([7, 512])
-            logits_domain[domain] = logit_scale * image_features @ text_feature.t()
-            # for i in range(len(self.adapters)):
-            #     logits_domains[i][domain] = logit_scale * image_featuress[i] @ text_feature.t()
-
-        all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
-        # all_domainss = [torch.cat(list(logits_domains[i].values()), dim=1) for i in range(len(self.adapters))]
+        else:
+            logits_domain = {}
+            for domain, text_feature in self.text_features.items():
+                # Image features shape: torch.Size([64, 512])
+                # text_feature.shape = torch.Size([7, 512])
+                logits_domain[domain] = logit_scale * image_features @ text_feature.t()
+                logits = torch.cat(list(logits_domain.values()), dim=1)
+        return logits
+            # all_domainss = [torch.cat(list(logits_domains[i].values()), dim=1) for i in range(len(self.adapters))]
 
         # cosine_similarity = {}
         # logits_domains = [{} for i in range(len(self.adapters))]
@@ -154,8 +151,6 @@ class CustomCLIP(nn.Module):
         #
         # all_domains = torch.cat(list(logits_domain.values()), dim=1) # All Domains: torch.Size([64, 28])
         # all_domainss = [torch.cat(list(logits_domains[i].values()), dim=1) for i in range(len(self.adapters))]
-        
-        return all_domains
     
  
 @MODEL_REGISTRY.register()
@@ -218,10 +213,10 @@ class CLIPAdapters(Trainer):
         # domains_outputss = [torch.split(all_domainss[i], self.num_classes, dim=1) for i in range(len(all_domainss))]
 
         total_loss = 0
-        losses = []
+        # losses = []
 
         loss_by_domain = F.cross_entropy(domains_outputs[0], class_label)
-        losses.append(loss_by_domain)
+        # losses.append(loss_by_domain)
         total_loss += loss_by_domain
 
         for dl in domain_label:
@@ -230,7 +225,7 @@ class CLIPAdapters(Trainer):
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
                     loss_by_domain = -0.1 * F.cross_entropy(domains_output, class_label)
-                losses.append(loss_by_domain)
+                # losses.append(loss_by_domain)
                 total_loss += loss_by_domain
 
         loss = total_loss
