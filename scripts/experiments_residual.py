@@ -35,9 +35,9 @@ def main():
     for dataset_name in datasets:
         for domain_name in domains[dataset_name]:
             for model_name in models:
-                backbone = "RN50"
+                backbone = "ViT-B/32"
 
-                output_dir = "output/backbones/" + model_name + "-" + backbone + "-" + dataset_name + "-" + domain_name
+                output_dir = "output/residual0.6/" + model_name + "-" + backbone + "-" + dataset_name + "-" + domain_name
 
                 model_config_file = "config/clipadapter.yaml" if model_name == 'CLIPAdapter' else "config/clipadapters.yaml"
                 

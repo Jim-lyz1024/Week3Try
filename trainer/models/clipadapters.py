@@ -37,8 +37,8 @@ class CustomCLIP(nn.Module):
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
         # self.adapter = Adapter(512, 4).to(clip_model.dtype) 
         # 512 for ViTB32
-        # self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))]) 
-        self.adapters = nn.ModuleList([Adapter(1024, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
+        self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))]) 
+        # self.adapters = nn.ModuleList([Adapter(1024, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
         self.dtype = clip_model.dtype
         self.cfg = cfg
         self.class_names = class_names
@@ -93,7 +93,7 @@ class CustomCLIP(nn.Module):
         
         
     def forward(self, image, domain_label=None):
-        adapter_ratio = 0.2
+        adapter_ratio = 0.6
         # computes the image features using the CLIP image encoder
         image_features = self.image_encoder(image.type(self.dtype)) # Image Features Shape: torch.Size([64, 512])
         # obtain adapted features
