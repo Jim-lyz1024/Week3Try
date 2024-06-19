@@ -7,14 +7,14 @@ os.chdir(program_directory)
 gpu = 3
 
 # Define the datasets and domains to be used
-datasets = ['PACS', 'OfficeHome', 'VLCS', 'TerraInc']
+datasets = ['PACS', 'OfficeHome', 'VLCS', 'TerraInc', 'NICO']
 domains = {
     # 'Digits': ['mnist', 'mnist_m', 'svhn', 'syn'],
     'PACS': ['art_painting', 'cartoon', 'photo', 'sketch'],
     'OfficeHome': ['art', 'clipart', 'product', 'real_world'],
     'VLCS': ['caltech', 'labelme', 'pascal', 'sun'],
     'TerraInc': ['location_38', 'location_43', 'location_46', 'location_100'],
-    # 'NICO': ['autumn', 'dim', 'grass', 'outdoor', 'rock', 'water']
+    'NICO': ['autumn', 'dim', 'grass', 'outdoor', 'rock', 'water']
 }
 
 # Define the models to be evaluated
@@ -27,7 +27,7 @@ source_domains = {
     'OfficeHome': ['art', 'clipart', 'product', 'real_world'],
     'VLCS': ['caltech', 'labelme', 'pascal', 'sun'],
     'TerraInc': ['location_38', 'location_43', 'location_46', 'location_100'],
-    # 'NICO': ['autumn', 'dim', 'grass', 'outdoor', 'rock', 'water']
+    'NICO': ['autumn', 'dim', 'grass', 'outdoor', 'rock', 'water']
 }
 
 def main(): 
@@ -37,7 +37,7 @@ def main():
             for model_name in models:
                 backbone = "RN50"
 
-                output_dir = "output/backbones/" + model_name + "-" + backbone + "-" + dataset_name + "-" + domain_name
+                output_dir = "output/backbonesnew/" + model_name + "-" + backbone + "-" + dataset_name + "-" + domain_name
 
                 model_config_file = "config/clipadapter.yaml" if model_name == 'CLIPAdapter' else "config/clipadapters.yaml"
                 

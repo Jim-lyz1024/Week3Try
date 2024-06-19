@@ -4,7 +4,7 @@ import os
 program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
-gpu = 3
+gpu = 4
 
 # Define the datasets and domains to be used
 datasets = ['PACS', 'OfficeHome', 'VLCS', 'TerraInc']
@@ -37,7 +37,7 @@ def main():
             for model_name in models:
                 backbone = "ViTB32"
 
-                output_dir = "output/residual0.6/" + model_name + "-" + backbone + "-" + dataset_name + "-" + domain_name
+                output_dir = "output/residual0.8/" + model_name + "-" + backbone + "-" + dataset_name + "-" + domain_name
 
                 model_config_file = "config/clipadapter.yaml" if model_name == 'CLIPAdapter' else "config/clipadapters.yaml"
                 

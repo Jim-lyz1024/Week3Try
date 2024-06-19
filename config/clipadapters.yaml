@@ -32,5 +32,5 @@ TRAIN:
 MODEL:
   NAME: CLIPAdapters
   CLIPAdapters:
-    # BACKBONE: "RN50"
-    BACKBONE: "ViT-B/32"
+    BACKBONE: "RN50"
+    # BACKBONE: "ViT-B/32"
