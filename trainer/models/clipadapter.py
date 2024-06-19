@@ -32,9 +32,9 @@ class CustomCLIP(nn.Module):
         self.image_encoder = clip_model.visual
         self.logit_scale = clip_model.logit_scale
         # Adapter for RN50 CLIP Backbone
-        # self.adapter = Adapter(1024, 4).to(clip_model.dtype)
+        self.adapter = Adapter(1024, 4).to(clip_model.dtype)
         # Adapter for VITB32 CLIP Backbone
-        self.adapter = Adapter(512, 4).to(clip_model.dtype)
+        # self.adapter = Adapter(512, 4).to(clip_model.dtype)
         self.dtype = clip_model.dtype
 
         prompt_template = PROMPT_TEMPLATES[cfg.DATASET.NAME]

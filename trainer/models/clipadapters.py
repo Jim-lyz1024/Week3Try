@@ -37,8 +37,8 @@ class CustomCLIP(nn.Module):
         # 512 and 1024 are the default dimensions, using different values for the backbone parameter.
         # self.adapter = Adapter(512, 4).to(clip_model.dtype) 
         # 512 for ViTB32
-        self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))]) 
-        # self.adapters = nn.ModuleList([Adapter(1024, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
+        # self.adapters = nn.ModuleList([Adapter(512, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))]) 
+        self.adapters = nn.ModuleList([Adapter(1024, 4).to(clip_model.dtype) for i in range(len(cfg.DATASET.SOURCE_DOMAINS))])
         self.dtype = clip_model.dtype
         self.cfg = cfg
         self.class_names = class_names

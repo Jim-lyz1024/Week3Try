@@ -1,6 +1,7 @@
 DATALOADER:
   TRAIN:
-    BATCH_SIZE: 64
+    # BATCH_SIZE: 64
+    BATCH_SIZE: 32
   TEST:
     BATCH_SIZE: 64
   NUM_WORKERS: 8
@@ -16,7 +17,7 @@ OPTIM:
   NAME: "sgd"
   # LR: 0.002
   # LR: 0.00001
-  LR: 0.00001
+  LR: 0.001
   # LR: 0.01
   MAX_EPOCH: 50
   # MAX_EPOCH: 4
@@ -31,5 +32,5 @@ TRAIN:
 MODEL:
   NAME: CLIPAdapters
   CLIPAdapters:
-    # BACKBONE: "RN50"
-    BACKBONE: "ViT-B/32"
+    BACKBONE: "RN50"
+    # BACKBONE: "ViT-B/32"

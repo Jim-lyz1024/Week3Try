@@ -122,9 +122,9 @@ class Trainer:
             self.before_epoch()
             self.run_epoch()
             self.after_epoch()
-            # 
-            # if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
-            #     self.evaluate_after_epoch()
+            
+            if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
+                self.evaluate_after_epoch()
         end_time = time.time()
         self.training_time = end_time - start_time
         self.gpu_memory_usage = torch.cuda.max_memory_allocated()
@@ -136,11 +136,11 @@ class Trainer:
     
     #####
     def evaluate_after_epoch(self):
-            print(f"Evaluating model after epoch {self.current_epoch + 1}")
-            accuracy = self.test()  # Assuming 'test' method returns accuracy
-            print(f"Accuracy after epoch {self.current_epoch + 1}: {accuracy:.2f}%")
-            # Optionally log accuracy to tensorboard or other logging tools
-            self.write_scalar('Accuracy/Val', accuracy, self.current_epoch + 1)
+        print(f"Evaluating model after epoch {self.current_epoch + 1}")
+        accuracy = self.test()  # Assuming 'test' method returns accuracy
+        print(f"Accuracy after epoch {self.current_epoch + 1}: {accuracy:.2f}%")
+        # Optionally log accuracy to tensorboard or other logging tools
+        self.write_scalar('Accuracy/Val', accuracy, self.current_epoch + 1)
 
 
     def before_train(self):
