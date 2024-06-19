@@ -97,14 +97,18 @@ if __name__ == "__main__":
         },
         'parameters': {
             'DATALOADER_TRAIN_BATCH_SIZE': {
-                'values': [32, 64, 128]
+                'values': [32]
             },
             'OPTIM_LR': {
-                'values': [0.00001, 0.0001, 0.001, 0.005, 0.01, 0.05]
+                # 'values': [0.00001, 0.0001, 0.001, 0.005, 0.01, 0.05]
+                'values': [0.0001]
             },
             'DOMAIN_LOSS_WEIGHT': {
-                'values': [0.1, 0.2, 0.3]
-            }
+                'values': [0, 0.4, 0.5]
+            },
+            'ADAPTER_RATIO': {
+                'values': [0.2, 0.4, 0.6, 0.8]
+            },
             # ,
             # 'SEED': {
             #     'values': [134, 232, 607, 779, 995] 

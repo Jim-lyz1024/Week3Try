@@ -47,6 +47,8 @@ class CustomCLIP(nn.Module):
         self.text_features = {}
         self.update_text_features(self.cfg)
         self.update_text_features2(self.cfg)
+        
+        self.adapter_ratio = cfg.MODEL.CLIPAdapters.ADAPTER_RATIO # for ratio experiment
 
     def update_text_features(self, cfg):
         domain_names = cfg.DATASET.SOURCE_DOMAINS if self.mode == 'train' else cfg.DATASET.TARGET_DOMAINS
@@ -130,7 +132,8 @@ class CustomCLIP(nn.Module):
         #     self.eval_mode_set = True  # Set a flag to avoid re-updating text features unnecessarily
         #     print(self.text_features)
 
-        adapter_ratio = 0.2
+        # adapter_ratio = 0.2
+        adapter_ratio = self.adapter_ratio
         # computes the image features using the CLIP image encoder
         image_features = self.image_encoder(image.type(self.dtype)) # Image Features Shape: torch.Size([64, 512])
         # obtain adapted features

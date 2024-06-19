@@ -110,6 +110,7 @@ def get_cfg_default():
     _C.MODEL.CLIPAdapters = CN()
     _C.MODEL.CLIPAdapters.BACKBONE = "ViT-B/32"
     _C.MODEL.CLIPAdapters.DOMAIN_LOSS_WEIGHT = 0.1
+    _C.MODEL.CLIPAdapters.ADAPTER_RATIO = 0.2
 
     # RISE
     _C.MODEL.RISE = CN()
