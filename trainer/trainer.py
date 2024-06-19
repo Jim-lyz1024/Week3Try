@@ -123,8 +123,8 @@ class Trainer:
             self.run_epoch()
             self.after_epoch()
             
-            # if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
-            #     self.evaluate_after_epoch()
+            if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
+                self.evaluate_after_epoch()
         end_time = time.time()
         # self.training_time = end_time - start_time
         # self.gpu_memory_usage = torch.cuda.max_memory_allocated()

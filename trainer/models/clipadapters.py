@@ -93,7 +93,7 @@ class CustomCLIP(nn.Module):
         
         
     def forward(self, image, domain_label=None):
-        adapter_ratio = 0.6
+        adapter_ratio = 0.2
         # computes the image features using the CLIP image encoder
         image_features = self.image_encoder(image.type(self.dtype)) # Image Features Shape: torch.Size([64, 512])
         # obtain adapted features
@@ -224,7 +224,7 @@ class CLIPAdapters(Trainer):
                 if dl==ith:
                     loss_by_domain = F.cross_entropy(domains_output, class_label)
                 else:
-                    loss_by_domain = -0.1 * F.cross_entropy(domains_output, class_label)
+                    loss_by_domain = -0 * F.cross_entropy(domains_output, class_label)
                 # losses.append(loss_by_domain)
                 total_loss += loss_by_domain
 
