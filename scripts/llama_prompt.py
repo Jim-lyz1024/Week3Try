@@ -1,14 +1,11 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-# 加载模型和分词器
 tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B")
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Meta-Llama-3-8B")
 
 def generate_text(prompt, max_length=1000, num_return_sequences=1):
-    # 对输入的文本进行编码
     inputs = tokenizer(prompt, return_tensors="pt")
     
-    # 生成文本
     outputs = model.generate(
         inputs.input_ids, 
         max_length=max_length, 
