@@ -11,13 +11,13 @@ gpu = 3
 # source_domains = "mnist svhn syn"
 # target_domains = "mnist_m"
 
-# dataset = "PACS"
-# source_domains = "art_painting photo sketch"
-# target_domains = "cartoon"
+dataset = "PACS"
+source_domains = "art_painting photo sketch"
+target_domains = "cartoon"
 
-dataset = "OfficeHome"
-source_domains = "art product real_world"
-target_domains = "clipart"
+# dataset = "OfficeHome"
+# source_domains = "art product real_world"
+# target_domains = "clipart"
 
 # dataset = "VLCS"
 # source_domains = "caltech pascal sun"

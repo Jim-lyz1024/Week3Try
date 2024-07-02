@@ -12,3 +12,5 @@ from .vlcs import VLCS  # noqa
 from .nico import NICO  # noqa
 from .domainnet import DomainNet  # noqa
 from .terrainc import TerraInc  # noqa
+
+from .office_home_p import OfficeHomeP  # noqa

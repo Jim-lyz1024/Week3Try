@@ -15,7 +15,11 @@ gpu = 1
 # source_domains = "cartoon photo sketch"
 # target_domains = "art_painting"
 
-dataset = "OfficeHome"
+# dataset = "OfficeHome"
+# source_domains = "clipart product real_world"
+# target_domains = "art"
+
+dataset = "OfficeHomeP"
 source_domains = "clipart product real_world"
 target_domains = "art"
 
@@ -37,10 +41,10 @@ target_domains = "art"
 
 backbone = "ViTB32"
 # backbone = "RN50"
-model = "CLIPAdapter"
+model = "CLIPAdapters"
 output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_domains
 
-model_config_file = "config/clipadapter.yaml"
+model_config_file = "config/clipadapters.yaml"
 
 # seeds = [134, 232, 607, 779, 995]
 seeds = [134]
