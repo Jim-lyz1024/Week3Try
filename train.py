@@ -9,7 +9,8 @@ def reset_cfg_from_wandb(cfg):
     cfg.DATALOADER.TRAIN.BATCH_SIZE = wandb.config.DATALOADER_TRAIN_BATCH_SIZE
     cfg.OPTIM.LR = wandb.config.OPTIM_LR
     # cfg.OPTIM.MAX_EPOCH = wandb.config.OPTIM_MAX_EPOCH
-    cfg.MODEL.CLIPAdapters.DOMAIN_LOSS_WEIGHT = wandb.config.DOMAIN_LOSS_WEIGHT  
+    cfg.MODEL.CLIPAdapters.DOMAIN_LOSS_WEIGHT = wandb.config.DOMAIN_LOSS_WEIGHT
+    cfg.MODEL.CLIPAdapters.ADAPTER_RATIO = wandb.config.ADAPTER_RATIO  
     # cfg.SEED = wandb.config.SEED
 
 def reset_cfg_from_args(cfg, args):
@@ -69,7 +70,7 @@ def main(args):
     cfg = setup_cfg(args)
 
     if cfg.SEED >= 0:
-        wandb.log({"seed": cfg.SEED})
+        #wandb.log({"seed": cfg.SEED})
         set_random_seed(cfg.SEED)
 
     torch.cuda.set_device(cfg.GPU)
@@ -104,10 +105,10 @@ if __name__ == "__main__":
                 'values': [0.0001]
             },
             'DOMAIN_LOSS_WEIGHT': {
-                'values': [0, 0.4, 0.5]
+                'values': [0.1]
             },
             'ADAPTER_RATIO': {
-                'values': [0.2, 0.4, 0.6, 0.8]
+                'values': [0.2, 0.4, 0.6, 0.8, 1.0]
             },
             # ,
             # 'SEED': {
