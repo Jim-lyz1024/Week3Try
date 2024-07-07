@@ -41,10 +41,10 @@ target_domains = "art"
 
 backbone = "ViTB32"
 # backbone = "RN50"
-model = "CLIPAdapters"
+model = "CLIPAdapter"
 output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_domains
 
-model_config_file = "config/clipadapters.yaml"
+model_config_file = "config/clipadapter.yaml"
 
 # seeds = [134, 232, 607, 779, 995]
 seeds = [134]

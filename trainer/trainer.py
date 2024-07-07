@@ -115,8 +115,8 @@ class Trainer:
             self.run_epoch()
             self.after_epoch()
             # 
-            if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
-                self.evaluate_after_epoch()
+            # if self.cfg.MODEL.NAME == "CLIPAdapters" or "CLIPAdapter":
+            #     self.evaluate_after_epoch()
         self.after_train()
     
     #####
