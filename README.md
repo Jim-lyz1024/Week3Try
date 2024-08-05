@@ -16,6 +16,8 @@ python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-
 python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-photo --dataset PACS --source-domains cartoon art_painting sketch --target-domains photo            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
 python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-sketch --dataset PACS --source-domains cartoon photo art_painting --target-domains sketch            --model CLIPAdapters --model-config-file config/clipadapters.yaml
+
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-sketch --dataset PACSSubdomain --source-domains cartoon0 cartoon1 cartoon2 photo0 photo1 photo2 art_painting0 art_painting1 art_painting2 --target-domains sketch            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 OfficeHome:

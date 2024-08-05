@@ -201,6 +201,7 @@ class CLIPAdapters(Trainer):
         image, class_label = self.parse_batch_train(batch_data)
 
         domain_label = batch_data["domain_label"]
+        print("Domain Label: ", domain_label)
         all_domains = self.model(image, domain_label=domain_label)
         domains_outputs = torch.split(all_domains, self.num_classes, dim=1)  # Split into 4 chunks of [batch size, 7]
 

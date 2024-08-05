@@ -115,7 +115,7 @@ for i, (image_path, label) in enumerate(zip(image_paths, cluster_labels)):
     relative_path = os.path.relpath(image_path, base_path)
     subdomain_mapping[relative_path] = int(label)
 
-# 保存subdomain映射到文件
+# save the subdomain mapping to a JSON file
 with open('subdomain_mapping.json', 'w') as f:
     json.dump(subdomain_mapping, f)
 
