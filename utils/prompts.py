@@ -17,11 +17,11 @@ PROMPT_TEMPLATES = {
     "ObjectNet": "a photo of a {}.",
     "Digits": "a picture of a {}.",
     "PACS": "a picture of a {}.",
-    #
-    "PACSSubdomain": "a picture of a {}.",
     "OfficeHome": "a picture of a {}.",
     #
     "OfficeHomeP": "a picture of a {}.",
+    "PACSSubdomain": "a picture of a {}.",
+    "OfficeHomeSubdomain": "a picture of a {}.",
     #
     "VLCS": "a picture of a {}.",
     "NICO": "a picture of a {}.",

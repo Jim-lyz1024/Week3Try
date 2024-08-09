@@ -15,3 +15,4 @@ from .terrainc import TerraInc  # noqa
 
 from .office_home_p import OfficeHomeP  # noqa
 from .subdomain_pacs import PACSSubdomain  # noqa
+from .subdomain_office import OfficeHomeSubdomain  # noqa

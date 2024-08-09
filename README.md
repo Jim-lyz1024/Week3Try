@@ -17,7 +17,7 @@ python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-
 
 python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-sketch --dataset PACS --source-domains cartoon photo art_painting --target-domains sketch            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
-python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACS-sketch --dataset PACSSubdomain --source-domains cartoon0 cartoon1 cartoon2 photo0 photo1 photo2 art_painting0 art_painting1 art_painting2 --target-domains sketch            --model CLIPAdapters --model-config-file config/clipadapters.yaml
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-PACSSubdomain-sketch --dataset PACSSubdomain --source-domains cartoon0 cartoon1 cartoon2 photo0 photo1 photo2 art_painting0 art_painting1 art_painting2 --target-domains sketch            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 OfficeHome:
@@ -29,6 +29,8 @@ python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-Offic
 python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHome-product --dataset OfficeHome --source-domains art clipart real_world --target-domains product            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
 python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHome-real_world --dataset OfficeHome --source-domains art clipart product --target-domains real_world            --model CLIPAdapters --model-config-file config/clipadapters.yaml
+
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHomeSubdomain-art --dataset OfficeHomeSubdomain --source-domains clipart0 clipart1 clipart2 product0 product1 product2 real_world0 real_world1 real_world2 --target-domains art            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 VLCS dataset:

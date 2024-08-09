@@ -43,6 +43,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 # base_path = os.path.abspath(os.path.join(script_dir, '..', 'data', 'pacs_copy', 'images', 'art_painting'))
 # base_path = os.path.abspath(os.path.join(script_dir, '..', 'data', 'pacs_copy', 'images', 'cartoon'))
 base_path = os.path.abspath(os.path.join(script_dir, '..', 'data', 'pacs_copy', 'images', 'photo'))
+# base_path = os.path.abspath(os.path.join(script_dir, '..', 'data', 'office_home', 'images', 'photo'))
 
 print(f"Base path: {base_path}")
 if not os.path.exists(base_path):
