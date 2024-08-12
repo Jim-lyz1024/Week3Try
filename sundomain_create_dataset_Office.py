@@ -32,8 +32,9 @@ def create_subdomain_dataset(original_dataset_path, subdomain_mapping_path, new_
 
 # Usage
 original_dataset_path = "data/office_home"
-new_dataset_path = "data/OfficeHome-subdomain"
-domains = ["clipart", "product", "real_world"]
+new_dataset_path = "data/OfficeHome-subdomain-clipart"
+# domains = ["clipart", "product", "real_world"]
+domains = ["art"]
 
 for domain in domains:
     create_subdomain_dataset(

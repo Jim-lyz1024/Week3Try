@@ -31,6 +31,10 @@ python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-Offic
 python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHome-real_world --dataset OfficeHome --source-domains art clipart product --target-domains real_world            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 
 python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHomeSubdomain-art --dataset OfficeHomeSubdomain --source-domains clipart0 clipart1 clipart2 product0 product1 product2 real_world0 real_world1 real_world2 --target-domains art            --model CLIPAdapters --model-config-file config/clipadapters.yaml
+
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHomeSubdomain-clipart --dataset OfficeHomeSubdomainClipart --source-domains art0 art1 art2 product0 product1 product2 real_world0 real_world1 real_world2 --target-domains clipart            --model CLIPAdapters --model-config-file config/clipadapters.yaml
+
+python train.py --gpu 0 --seed 134 --output-dir output/CLIPAdapters-ViTB32-OfficeHomeSubdomain-product --dataset OfficeHomeSubdomainProduct --source-domains art0 art1 art2 clipart0 clipart1 clipart2 real_world0 real_world1 real_world2 --target-domains product            --model CLIPAdapters --model-config-file config/clipadapters.yaml
 ```
 
 VLCS dataset:

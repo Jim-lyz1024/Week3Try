@@ -47,7 +47,9 @@ if not os.path.exists(base_path):
     raise FileNotFoundError(f"The directory {base_path} does not exist.")
 
 # Process source domains (clipart, product, real_world)
-source_domains = ['clipart', 'product', 'real_world']
+# source_domains = ['clipart', 'product', 'real_world']
+source_domains = ['art']
+
 for domain in source_domains:
     domain_path = os.path.join(base_path, domain)
     image_paths = []
