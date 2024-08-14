@@ -33,6 +33,7 @@ def create_subdomain_dataset(original_dataset_path, subdomain_mapping_path, new_
 # Usage
 original_dataset_path = "data/office_home"
 new_dataset_path = "data/OfficeHome-subdomain-clipart"
+# new_dataset_path = "data/OfficeHome-subdomain-DB-clipart"
 # domains = ["clipart", "product", "real_world"]
 domains = ["art"]
 
@@ -40,6 +41,7 @@ for domain in domains:
     create_subdomain_dataset(
         os.path.join(original_dataset_path, domain),
         f"subdomain_{domain}_mapping.json",
+        # f"subdomain_DBSCAN_{domain}_mapping.json",
         new_dataset_path,
         domain
     )
