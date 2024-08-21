@@ -14,6 +14,7 @@ from itertools import product
 from scipy.special import kl_div
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
+from sklearn.cluster import KMeans
 
 logging.basicConfig(level=logging.INFO)
 
@@ -102,15 +103,28 @@ def visualize_clustering(features, labels, domain, method):
     tsne = TSNE(n_components=2, perplexity=30, random_state=42)
     features_tsne = tsne.fit_transform(features)
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(15, 13))
     plt.scatter(features_tsne[:, 0], features_tsne[:, 1], c=labels, cmap='viridis', alpha=0.8)
-    plt.colorbar(label='Cluster')
-    plt.title(f"t-SNE Visualization of {domain} Domain - {method}")
-    plt.xlabel("t-SNE Dimension 1")
-    plt.ylabel("t-SNE Dimension 2")
+    # plt.colorbar(label='Cluster')
+    plt.xlim(-100, 100)
+    plt.ylim(-100, 100)
+    plt.title(f"t-SNE Visualization of {domain} Domain - {method}", fontsize=20)
+    # plt.xlabel("t-SNE Dimension 1")
+    # plt.ylabel("t-SNE Dimension 2")
     plt.tight_layout()
-    plt.savefig(f"tsne_{domain}_{method}.png")
+    plt.savefig(f"tsne_DN_{domain}_{method}.png")
     plt.close()    
+
+def try_kmeans_clustering(features, n_clusters_values):
+    results = []
+    for n_clusters in n_clusters_values:
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+        labels = kmeans.fit_predict(features)
+        logging.info(f"KMeans with n_clusters={n_clusters} produced {len(set(labels))} clusters")
+        result = process_clustering_result(features, labels, f"KMeans, n_clusters={n_clusters}")
+        results.append(result)
+        logging.info(f"Average KL divergence: {result['avg_kl']}")
+    return results  
 
 # Adjust the base path for DomainNet
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -161,12 +175,17 @@ for domain in domains:
     # min_samples_values = [2, 5, 10, 20, 30]
     min_samples_values = [30]
 
-    results = try_clustering_parameters(features_pca, eps_values, min_samples_values)
+    # results = try_clustering_parameters(features_pca, eps_values, min_samples_values)
+    
+    # K-Means clustering
+    # n_clusters_values = [3, 4, 5, 6, 7, 8] ### Change here to try different number of clusters
+    n_clusters_values = [4]
+    results = try_kmeans_clustering(features_pca, n_clusters_values)
 
     if not results:
         logging.warning("No parameter combination produced 2-10 clusters. Saving all results.")
         # If no good results, save all results including those with 1 or >10 clusters
-        results = try_clustering_parameters(features_normalized, eps_values, min_samples_values)
+        # results = try_clustering_parameters(features_normalized, eps_values, min_samples_values)
 
     # Sort results by average KL divergence (descending order)
     results.sort(key=lambda x: x['avg_kl'], reverse=True)
@@ -186,7 +205,7 @@ for domain in domains:
             relative_path = os.path.relpath(image_path, domain_path)
             subdomain_mapping[relative_path] = int(label)
             
-        visualize_clustering(features_pca, np.zeros_like(best_labels), domain, "Before Clustering")
+        # visualize_clustering(features_pca, np.zeros_like(best_labels), domain, "Before Clustering")
  
         visualize_clustering(features_pca, best_labels, domain, best_result['method'])
 

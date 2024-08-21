@@ -104,12 +104,12 @@ def visualize_clustering(features, labels, domain, method):
     tsne = TSNE(n_components=2, perplexity=30, random_state=42)
     features_tsne = tsne.fit_transform(features)
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(15, 13))
     plt.scatter(features_tsne[:, 0], features_tsne[:, 1], c=labels, cmap='viridis', alpha=0.8)
-    plt.colorbar(label='Cluster')
-    plt.title(f"t-SNE Visualization of {domain} Domain - {method}")
-    plt.xlabel("t-SNE Dimension 1")
-    plt.ylabel("t-SNE Dimension 2")
+    # plt.colorbar(label='Cluster')
+    plt.xlim(-100, 100)
+    plt.ylim(-100, 100)
+    plt.title(f"t-SNE Visualization of {domain} Domain - {method}", fontsize=20)
     plt.tight_layout()
     plt.savefig(f"tsne_NICO_{domain}_{method}.png")
     plt.close()  
@@ -135,8 +135,8 @@ if not os.path.exists(base_path):
 
 # Process all domains in NICO dataset
 # domains = ['autumn', 'dim', 'grass', 'outdoor', 'rock', 'water']
-domains = ['dim']
-# domains = ['autumn']
+# domains = ['dim']
+domains = ['autumn']
 
 for domain in domains:
     domain_path = os.path.join(base_path, domain)
@@ -177,7 +177,8 @@ for domain in domains:
     # results = try_clustering_parameters(features_pca, eps_values, min_samples_values)
     
     # K-Means clustering
-    n_clusters_values = [4] ### Change here to try different number of clusters
+    # n_clusters_values = [3, 4, 5, 6, 7, 8] ### Change here to try different number of clusters
+    n_clusters_values = [6]
     results = try_kmeans_clustering(features_pca, n_clusters_values)
 
 
@@ -203,9 +204,9 @@ for domain in domains:
             relative_path = os.path.relpath(image_path, domain_path)
             subdomain_mapping[relative_path] = int(label)
             
-        # visualize_clustering(features_pca, np.zeros_like(best_labels), domain, "Before Clustering")
+        visualize_clustering(features_pca, np.zeros_like(best_labels), domain, "Before Clustering")
  
-        visualize_clustering(features_pca, best_labels, domain, best_result['method'])
+        # visualize_clustering(features_pca, best_labels, domain, best_result['method'])
 
         # Save subdomain mapping to a JSON file
         with open(f'subdomain_DBSCAN_nico_{domain}_mapping.json', 'w') as f:
