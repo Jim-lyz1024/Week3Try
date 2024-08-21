@@ -2,3 +2,6 @@ data/
 output/*
 wandb/*
 **/__pycache__/*
+*/*.json
+*/*.npy
+*/*.png
