@@ -14,6 +14,8 @@ from itertools import product
 from scipy.special import kl_div
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
+from sklearn.cluster import KMeans
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -109,20 +111,32 @@ def visualize_clustering(features, labels, domain, method):
     plt.xlabel("t-SNE Dimension 1")
     plt.ylabel("t-SNE Dimension 2")
     plt.tight_layout()
-    plt.savefig(f"tsne_{domain}_{method}.png")
-    plt.close()    
+    plt.savefig(f"tsne_NICO_{domain}_{method}.png")
+    plt.close()  
+    
+def try_kmeans_clustering(features, n_clusters_values):
+    results = []
+    for n_clusters in n_clusters_values:
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+        labels = kmeans.fit_predict(features)
+        logging.info(f"KMeans with n_clusters={n_clusters} produced {len(set(labels))} clusters")
+        result = process_clustering_result(features, labels, f"KMeans, n_clusters={n_clusters}")
+        results.append(result)
+        logging.info(f"Average KL divergence: {result['avg_kl']}")
+    return results      
 
-# Adjust the base path for DomainNet
+# Adjust the base path for NICO dataset
 script_dir = os.path.dirname(os.path.abspath(__file__))
-base_path = os.path.abspath(os.path.join(script_dir, '..', 'data', 'domainnet'))
+base_path = os.path.abspath(os.path.join(script_dir, '..', 'data', 'nico'))
 
 print(f"Base path: {base_path}")
 if not os.path.exists(base_path):
     raise FileNotFoundError(f"The directory {base_path} does not exist.")
 
-# Process all domains in DomainNet
-# domains = ['clipart', 'infograph', 'painting', 'quickdraw', 'real', 'sketch']
-domains = ['infograph']
+# Process all domains in NICO dataset
+# domains = ['autumn', 'dim', 'grass', 'outdoor', 'rock', 'water']
+domains = ['dim']
+# domains = ['autumn']
 
 for domain in domains:
     domain_path = os.path.join(base_path, domain)
@@ -141,11 +155,11 @@ for domain in domains:
     logging.info(f"Found {len(image_paths)} images in total for {domain}")
 
     # Extract or load features
-    feature_file = f'features_domainnet_{domain}.npy'
+    feature_file = f'features_nico_{domain}.npy'
     features = extract_and_save_features(image_paths, feature_file)
 
     logging.info(f"Feature shape for {domain}: {features.shape}")
-
+    
     # Normalize features
     scaler = StandardScaler()
     features_normalized = scaler.fit_transform(features)
@@ -156,26 +170,29 @@ for domain in domains:
     logging.info(f"PCA reduced features shape: {features_pca.shape}")
 
     # Try different clustering parameters
-    # eps_values = [0.1, 0.3, 0.5, 0.7, 0.9]
-    eps_values = [0.1]
-    # min_samples_values = [2, 5, 10, 20, 30]
-    min_samples_values = [30]
+    # eps_values = [0.1]
+    eps_values = [0.1, 0.3, 0.5, 0.7, 0.9]
+    # min_samples_values = [30]
+    min_samples_values = [2, 5, 10, 20, 30]
+    # results = try_clustering_parameters(features_pca, eps_values, min_samples_values)
+    
+    # K-Means clustering
+    n_clusters_values = [4] ### Change here to try different number of clusters
+    results = try_kmeans_clustering(features_pca, n_clusters_values)
 
-    results = try_clustering_parameters(features_pca, eps_values, min_samples_values)
 
     if not results:
         logging.warning("No parameter combination produced 2-10 clusters. Saving all results.")
-        # If no good results, save all results including those with 1 or >10 clusters
         results = try_clustering_parameters(features_normalized, eps_values, min_samples_values)
 
     # Sort results by average KL divergence (descending order)
     results.sort(key=lambda x: x['avg_kl'], reverse=True)
 
     # Save results to a JSON file
-    with open(f'dbscan_results_domainnet_{domain}.json', 'w') as f:
+    with open(f'dbscan_results_nico_{domain}.json', 'w') as f:
         json.dump(results, f, indent=2)
 
-    logging.info(f"DBSCAN results for {domain} saved to dbscan_results_domainnet_{domain}.json")
+    logging.info(f"DBSCAN results for {domain} saved to dbscan_results_nico_{domain}.json")
 
     if results:
         best_result = results[0]
@@ -186,20 +203,20 @@ for domain in domains:
             relative_path = os.path.relpath(image_path, domain_path)
             subdomain_mapping[relative_path] = int(label)
             
-        visualize_clustering(features_pca, np.zeros_like(best_labels), domain, "Before Clustering")
+        # visualize_clustering(features_pca, np.zeros_like(best_labels), domain, "Before Clustering")
  
         visualize_clustering(features_pca, best_labels, domain, best_result['method'])
 
         # Save subdomain mapping to a JSON file
-        with open(f'subdomain_DBSCAN_domainnet_{domain}_mapping.json', 'w') as f:
+        with open(f'subdomain_DBSCAN_nico_{domain}_mapping.json', 'w') as f:
             json.dump(subdomain_mapping, f)
 
-        logging.info(f"Subdomain mapping for {domain} saved to subdomain_DBSCAN_domainnet_{domain}_mapping.json")
+        logging.info(f"Subdomain mapping for {domain} saved to subdomain_DBSCAN_nico_{domain}_mapping.json")
         logging.info(f"Best method: {best_result['method']}")
         logging.info(f"Number of clusters: {best_result['n_clusters']}")
         logging.info(f"Average KL divergence: {best_result['avg_kl']}")
         logging.info(f"KL divergence matrix: {best_result['kl_matrix']}")
     else:
-        logging.warning(f"No suitable clustering found for {domain}. Check the dbscan_results_domainnet_{domain}.json file for details.")
+        logging.warning(f"No suitable clustering found for {domain}. Check the dbscan_results_nico_{domain}.json file for details.")
 
-logging.info("Subdomain division completed for all domains in DomainNet.")
+logging.info("Subdomain division completed for all domains in NICO.")
