@@ -19,3 +19,5 @@ from .subdomain_office import OfficeHomeSubdomain  # noqa
 from .subdomain_office_clipart import OfficeHomeSubdomainClipart  # noqa
 from .subdomain_office_product import OfficeHomeSubdomainProduct  # noqa
 
+from .subdomain_nico_autumn import NICOSubdomainAutumn  # noqa
+

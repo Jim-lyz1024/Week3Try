@@ -24,6 +24,7 @@ PROMPT_TEMPLATES = {
     "OfficeHomeSubdomain": "a picture of a {}.",
     "OfficeHomeSubdomainClipart": "a picture of a {}.",
     "OfficeHomeSubdomainProduct": "a picture of a {}.",
+    "NICOSubdomainAutumn": "a picture of a {}.",
     #
     "VLCS": "a picture of a {}.",
     "NICO": "a picture of a {}.",

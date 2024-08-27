@@ -1,8 +1,8 @@
 import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
-program_directory = "/home/yil708/data/Week3Try/"
-# program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
+# program_directory = "/home/yil708/data/Week3Try/"
+program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
 gpu = 3
@@ -11,9 +11,9 @@ gpu = 3
 # source_domains = "mnist svhn syn"
 # target_domains = "mnist_m"
 
-dataset = "PACS"
-source_domains = "art_painting photo sketch"
-target_domains = "cartoon"
+# dataset = "PACS"
+# source_domains = "art_painting photo sketch"
+# target_domains = "cartoon"
 
 # dataset = "OfficeHome"
 # source_domains = "art product real_world"
@@ -27,8 +27,12 @@ target_domains = "cartoon"
 # source_domains = "location_38 location_46 location_100"
 # target_domains = "location_43"
 
-# dataset = "NICO"
-# source_domains = "autumn grass outdoor rock water"
+dataset = "NICO"
+source_domains = "autumn grass outdoor rock water"
+target_domains = "dim"
+
+# dataset = "NICOSubdomainAutumn"
+# source_domains = "autumn0 autumn1 autumn2 autumn3 autumn4 autumn5 grass outdoor rock water"
 # target_domains = "dim"
 
 # dataset = "DomainNet"
