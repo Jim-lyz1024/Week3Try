@@ -5,3 +5,4 @@ wandb/*
 */*.json
 */*.npy
 */*.png
+**/*.pyc

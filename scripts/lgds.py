@@ -2,7 +2,8 @@ import os
 
 # program_directory = "/data/dzha866/Project/VIGIL/"
 # program_directory = "/home/yil708/data/Week3Try/"
-program_directory = "D:\yil708\Week3Try"
+program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
+# program_directory = "D:\yil708\Week3Try"
 os.chdir(program_directory)
 
 """ current_working_directory = os.getcwd()
@@ -39,7 +40,7 @@ target_domains = "art_painting"
 # target_domains = "clipart"
 
 backbone = "ViTB32"
-model = "lgds"
+model = "LGDS"
 output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_domains
 
 model_config_file = "config/lgds.yaml"
