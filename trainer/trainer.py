@@ -247,8 +247,12 @@ class Trainer:
 
     def get_model_names(self, model_names=None):
         if model_names is not None:
+            if not isinstance(model_names, list):
+                model_names = [model_names]
+
             for model_name in model_names:
                 assert model_name in list(self._models.keys())
+            return model_names
         else:
             return list(self._models.keys())
 
