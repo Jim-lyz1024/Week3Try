@@ -109,6 +109,10 @@ def get_cfg_default():
     # CLIPAdapters
     _C.MODEL.CLIPAdapters = CN()
     _C.MODEL.CLIPAdapters.BACKBONE = "ViT-B/32"
+    
+    # LGDS
+    _C.MODEL.LGDS = CN()
+    _C.MODEL.LGDS.BACKBONE = "ViT-B/32"
 
     # RISE
     _C.MODEL.RISE = CN()

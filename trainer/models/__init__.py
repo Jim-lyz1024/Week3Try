@@ -6,3 +6,4 @@ from .clipadapters import CLIPAdapters  # noqa
 from .clipadapter import CLIPAdapter  # noqa
 from .rise import RISE  # noqa
 from .nkd import NKD  # noqa
+from .lgds import LGDS  # noqa
