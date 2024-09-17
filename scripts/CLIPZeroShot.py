@@ -1,17 +1,18 @@
 import os
 
-program_directory = "/data/dzha866/Project/VIGIL/"
+# program_directory = "/data/dzha866/Project/VIGIL/"
+program_directory = "/data/yil708/Code-VIGIL/Week3Try/"
 os.chdir(program_directory)
 
 gpu = 0
 
-dataset = "Digits"
-source_domains = "mnist_m svhn syn"
-target_domains = "mnist"
+# dataset = "Digits"
+# source_domains = "mnist_m svhn syn"
+# target_domains = "mnist"
 
-# dataset = "PACS"
-# source_domains = "cartoon photo sketch"
-# target_domains = "art_painting"
+dataset = "PACS"
+source_domains = "cartoon photo sketch"
+target_domains = "art_painting"
 
 # dataset = "OfficeHome"
 # source_domains = "clipart product real_world"

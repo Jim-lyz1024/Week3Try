@@ -26,6 +26,10 @@ class PACS(DatasetBase):
         self._split_dir = os.path.join(self._dataset_dir, "splits")
         # The following images contain errors and should be ignored
         self._error_img_paths = ["sketch/dog/n02103406_4068-1.png"]
+        
+        ######
+        self.input_domains = cfg.DATASET.SOURCE_DOMAINS
+        self.target_domains = cfg.DATASET.TARGET_DOMAINS
 
         if not os.path.exists(self._dataset_dir):
             self.download_data_from_gdrive(os.path.join(root, "pacs.zip"))

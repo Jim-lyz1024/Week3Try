@@ -137,6 +137,7 @@ class Trainer:
 
     def after_train(self):
         print("Finish Training")
+        self.extract_source_features_and_plot_tsne()
         self.test()
 
     def run_epoch(self):
@@ -188,7 +189,7 @@ class Trainer:
 
         if split is None:
             split = self.cfg.TEST.SPLIT
-        if split == "Validation" and self.val_loader is not None:
+        if split == "Validation" and self.data_loader_val is not None:
             data_loader = self.data_loader_val
         elif split == "Test":
             data_loader = self.data_loader_test
@@ -197,28 +198,94 @@ class Trainer:
 
         print("Evaluate on the {} Set".format(split))
 
+        # Check if get_image_features is implemented
+        collect_features = hasattr(self, 'get_image_features')
+
+        if collect_features:
+            all_image_features = []
+            all_class_labels = []
+            all_domain_labels = []
+
         for _, batch_data in enumerate(tqdm(data_loader)):
-            input_data, class_label = self.parse_batch_test(batch_data)
+            input_data, class_label, domain_label = self.parse_batch_test(batch_data)
             output = self.model_inference(input_data)
             self.evaluator.process(output, class_label)
 
+            if collect_features:
+                image_features = self.get_image_features(input_data)
+                all_image_features.append(image_features.cpu())
+                all_class_labels.append(class_label.cpu())
+                all_domain_labels.append(domain_label.cpu())
+
         evaluation_results = self.evaluator.evaluate()
+
+        if collect_features:
+            all_image_features = torch.cat(all_image_features, dim=0)
+            all_class_labels = torch.cat(all_class_labels, dim=0)
+            all_domain_labels = torch.cat(all_domain_labels, dim=0)
+
+            # Map domain labels to domain names
+            domain_labels_np = all_domain_labels.numpy()
+            input_domains = self.data_manager.dataset.input_domains
+            domain_names = [input_domains[label] for label in domain_labels_np]
+
+            # Map class labels to class names
+            class_labels_np = all_class_labels.numpy()
+            class_label_name_mapping = self.data_manager.dataset.class_label_name_mapping
+            class_names = [class_label_name_mapping[label] for label in class_labels_np]
+
+            # Iterate over each class
+            unique_classes = torch.unique(all_class_labels)
+            for class_id in unique_classes:
+                idx = (all_class_labels == class_id)
+                idx_np = idx.cpu().numpy()
+                class_image_features = all_image_features[idx]
+                # Filter domain names based on idx
+                class_domain_names = [domain_names[i] for i in range(len(domain_names)) if idx_np[i]]
+
+                # Perform TSNE
+                from sklearn.manifold import TSNE
+                image_features_np = class_image_features.numpy()
+                tsne = TSNE(n_components=2, random_state=42)
+                image_features_2d = tsne.fit_transform(image_features_np)
+
+                # Plot TSNE
+                import matplotlib.pyplot as plt
+                import seaborn as sns
+
+                plt.figure(figsize=(8, 8))
+                sns.scatterplot(
+                    x=image_features_2d[:, 0],
+                    y=image_features_2d[:, 1],
+                    hue=class_domain_names,
+                    palette='Set1',
+                    legend='full',
+                    alpha=0.7
+                )
+                class_name = class_label_name_mapping[class_id.item()]
+                plt.title(f'TSNE of Class {class_name}')
+                plt.legend(title='Domain')
+                plt.tight_layout()
+                # plt.savefig(os.path.join('./', f'tsne_class_{class_id}.png'))
+                plt.close()
 
         return list(evaluation_results.values())[0]
 
     def parse_batch_train(self, batch_data):
         image = batch_data["img"].to(self.device)
         class_label = batch_data["class_label"].to(self.device)
+        domain_label = batch_data["domain_label"].to(self.device)
         
         # domain_label = batch_data["domain_label"].to(self.device)
 
         # return image, class_label, domain_label
-        return image, class_label
+        return image, class_label, domain_label
 
     def parse_batch_test(self, batch_data):
         input_data = batch_data["img"].to(self.device)
         class_label = batch_data["class_label"].to(self.device)
-        return input_data, class_label
+        domain_label = batch_data["domain_label"].to(self.device)
+        return input_data, class_label, domain_label
 
     def forward_backward(self, batch_data):
         raise NotImplementedError
@@ -287,3 +354,88 @@ class Trainer:
                 fpath,
             )
             print("Model Saved to: {}".format(fpath))
+            
+    def get_image_features(self, input_data):
+        raise NotImplementedError("get_image_features method not implemented.")
+
+    def extract_source_features_and_plot_tsne(self):
+        self.set_model_mode("eval")
+
+        data_loader = self.data_loader_train  # Source domain data
+
+        if data_loader is None:
+            print("Source data loader is not available.")
+            return
+
+        print("Extracting features from source domains")
+
+        all_image_features = []
+        all_class_labels = []
+        all_domain_labels = []
+
+        for _, batch_data in enumerate(tqdm(data_loader)):
+            input_data, class_label, domain_label = self.parse_batch_train(batch_data)
+            image_features = self.get_image_features(input_data)
+            all_image_features.append(image_features.cpu())
+            all_class_labels.append(class_label.cpu())
+            all_domain_labels.append(domain_label.cpu())
+
+        all_image_features = torch.cat(all_image_features, dim=0)
+        all_class_labels = torch.cat(all_class_labels, dim=0)
+        all_domain_labels = torch.cat(all_domain_labels, dim=0)
+
+        # Map domain labels to domain names
+        domain_labels_np = all_domain_labels.numpy()
+        input_domains = self.data_manager.dataset.input_domains
+        domain_names = [input_domains[label] for label in domain_labels_np]
+
+        # Map class labels to class names
+        class_labels_np = all_class_labels.numpy()
+        class_label_name_mapping = self.data_manager.dataset.class_label_name_mapping
+        class_names = [class_label_name_mapping[label] for label in class_labels_np]
+
+        # Perform UMAP with supervision
+        import umap
+        reducer = umap.UMAP(
+            n_components=2,
+            n_neighbors=25,  # Decrease to focus on local structure (try values like 5, 10, 15)
+            min_dist=0.5,    # Increase to spread out the clusters (try values like 0.1, 0.3, 0.5)
+            random_state=42
+        )
+        embedding = reducer.fit_transform(all_image_features.numpy(), y=class_labels_np)
+
+        # Create a DataFrame for plotting
+        import pandas as pd
+        df = pd.DataFrame({
+            'UMAP1': embedding[:, 0],
+            'UMAP2': embedding[:, 1],
+            'Domain': domain_names,
+            'Class': class_names
+        })
+
+        # Plot using seaborn
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        plt.figure(figsize=(12, 10))
+        sns.scatterplot(
+            data=df,
+            x='UMAP1', y='UMAP2',
+            hue='Domain',
+            palette='Set1',
+            marker='o',  # Use the same marker for all points
+            s=60,
+            alpha=0.7
+        )
+
+        # Annotate clusters with class names
+        # Compute the centroid of each class cluster
+        centroids = df.groupby('Class')[['UMAP1', 'UMAP2']].mean().reset_index()
+        for _, row in centroids.iterrows():
+            plt.text(row['UMAP1'], row['UMAP2'], row['Class'], fontsize=12, fontweight='bold')
+
+        plt.title('UMAP of Source Domain Image Features')
+        plt.legend(title='Domain', bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.output_dir, 'umap_source_domains.png'))
+        plt.close()

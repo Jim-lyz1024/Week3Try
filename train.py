@@ -93,6 +93,9 @@ def main(args):
 
     trainer = build_trainer(cfg)
     if args.model == "CLIPZeroShot":
+        ###
+        trainer.train()
+        ###
         trainer.test()
     else:
         trainer.train()
