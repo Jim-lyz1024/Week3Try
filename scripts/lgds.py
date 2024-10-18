@@ -8,7 +8,7 @@ os.chdir(program_directory)
 """ current_working_directory = os.getcwd()
 print(current_working_directory) """
 
-gpu = 4
+gpu = 1
 
 # dataset = "Digits"
 # source_domains = "mnist_m svhn syn"
@@ -18,9 +18,9 @@ gpu = 4
 # source_domains = "cartoon photo sketch"
 # target_domains = "art_painting"
 
-dataset = "PACS"
-source_domains = "art_painting cartoon photo"
-target_domains = "sketch"
+# dataset = "PACS"
+# source_domains = "art_painting cartoon photo"
+# target_domains = "sketch"
 
 # dataset = "OfficeHome"
 # source_domains = "clipart product real_world"
@@ -29,6 +29,10 @@ target_domains = "sketch"
 # dataset = "VLCS"
 # source_domains = "caltech pascal sun"
 # target_domains = "labelme"
+
+dataset = "VLCS"
+source_domains = "labelme caltech sun"
+target_domains = "pascal"
 
 # dataset = "TerraInc"
 # source_domains = "location_43 location_46 location_100"
@@ -42,7 +46,8 @@ target_domains = "sketch"
 # source_domains = "infograph painting quickdraw real sketch"
 # target_domains = "clipart"
 
-backbone = "ViTB32"
+# backbone = "ViTB32"
+backbone = "RN50"
 model = "LGDS"
 output_dir = "output/" + model + "-" + backbone + "-" + dataset + "-" + target_domains
 
