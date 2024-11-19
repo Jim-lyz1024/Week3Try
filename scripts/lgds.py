@@ -9,15 +9,19 @@ os.chdir(program_directory)
 """ current_working_directory = os.getcwd()
 print(current_working_directory) """
 
-gpu = 2
+gpu = 0
 
 # dataset = "Digits"
 # source_domains = "mnist_m svhn syn"
 # target_domains = "mnist"
 
+# dataset = "PACS"
+# source_domains = "cartoon photo sketch"
+# target_domains = "art_painting"
+
 dataset = "PACS"
-source_domains = "cartoon photo sketch"
-target_domains = "art_painting"
+source_domains = "art_painting cartoon photo"
+target_domains = "sketch"
 
 # dataset = "OfficeHome"
 # source_domains = "clipart product real_world"

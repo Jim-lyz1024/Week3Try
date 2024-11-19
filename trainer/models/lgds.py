@@ -91,38 +91,57 @@ class CustomCLIP(nn.Module):
         tar_f = self.text_features2[target_domain_names[0]]
         sim_scores = [F.cosine_similarity(v.flatten(), tar_f.flatten(), dim=0) for v in self.text_features.values()]
         self.sim_scores = sim_scores[1:]
+        print("Similarity Scores: ", self.sim_scores)
         
     def forward(self, image, domain_labels=None):
-        adapter_ratio = 0.2
         image_features = self.image_encoder(image.type(self.dtype))
-        
-        adapter_features = []
+        image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+
+        # Training phase
         if domain_labels is not None:
+            adapter_features = []
             for image_feature, domain_label in zip(image_features, domain_labels):
                 adapter_features.append(self.adapters[domain_label](image_feature))
             adapter_features = torch.vstack(adapter_features)
-        else:
-            for adapter in self.adapters:
-                adapter_features.append(adapter(image_features))
-            # Compute weights using softmax
-            weights = F.softmax(torch.tensor(self.sim_scores), dim=0).to(self.dtype)
-            combined_adapter_features = sum(w * f for w, f in zip(weights, adapter_features))
-            adapter_features = combined_adapter_features
+            # Use fixed adapter_ratio during training
+            adapter_ratio = 0.2
+            image_features = (adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features)
+            image_features = image_features / image_features.norm(dim=-1, keepdim=True)
 
-        image_features = (adapter_ratio * adapter_features + (1 - adapter_ratio) * image_features)
-        image_features = image_features / image_features.norm(dim=-1, keepdim=True)        
-        
-        logit_scale = self.logit_scale.exp()        
-        ##### In test: only use original prompt
-        if domain_labels is None:
-            logits = logit_scale * image_features @ self.text_features['original'].t()
-        ##### In train: use all prompts
-        else:
+            # Compute logits using all prompts
+            logit_scale = self.logit_scale.exp()
             logits_domain = {}
             for domain, text_feature in self.text_features.items():
                 logits_domain[domain] = logit_scale * image_features @ text_feature.t()
             logits = torch.cat(list(logits_domain.values()), dim=1)
-        
+        # Inference phase
+        else:
+            adapter_features_list = []
+            for adapter in self.adapters:
+                adapter_feature = adapter(image_features)
+                adapter_features_list.append(adapter_feature)
+            # Compute weights using softmax
+            sim_scores_tensor = torch.tensor(self.sim_scores).to(self.dtype).to(image_features.device)
+            weights = F.softmax(sim_scores_tensor, dim=0)
+            combined_adapter_features = sum(w * f for w, f in zip(weights, adapter_features_list))
+            print("Weights: ", weights)
+
+            # Compute balancing parameter beta
+            sum_sim = sim_scores_tensor.sum()
+            print("Sum Similarity: ", sum_sim)
+            max_sim_sum = len(self.sim_scores)  # Since max similarity is 1 for each
+            beta = sum_sim / max_sim_sum
+            beta = beta.item()
+            print("Beta: ", beta)
+
+            # Combine adapter features and image features using beta
+            image_features = (beta * combined_adapter_features + (1 - beta) * image_features)
+            image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+
+            # Compute logits using only 'original' prompts
+            logit_scale = self.logit_scale.exp()
+            logits = logit_scale * image_features @ self.text_features['original'].t()
+
         return logits
     
     
